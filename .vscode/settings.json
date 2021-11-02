@@ -1,0 +1,8 @@
+{
+  "cSpell.words": ["audiobook", "audiobooks"],
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": false,
+    "editor.rulers": [61]
+  }
+}
