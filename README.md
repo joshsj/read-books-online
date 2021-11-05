@@ -2,16 +2,9 @@
 
 A university project, built with a full JS stack.
 
-## Progress Tracking
+## Resources
 
-See [Projects](../../projects)
+- [Project Board](https://github.com/users/joshsj/projects/2/)
 
-Each board constitutes an epic.
-
-Issues will have an expected label, e.g
-[bug](../../issues?q=is%3Aissue+label%3Abug),
-[enhancement](../../issues?q=is%3Aissue+label%3Aenhancement).
-
-An additional label may be added to identify its associated
-user story, prefixed with 'story:&nbsp;'. For example,
-'story:&nbsp;user&nbsp;roles'
+* [How to Write Epics and User Stories](https://productcoalition.com/how-to-write-epics-and-user-stories-best-practice-1de5b983900)
+* [How to write acceptance criteria?](https://productcoalition.com/how-to-write-acceptance-criteria-e2be975f92a3)
