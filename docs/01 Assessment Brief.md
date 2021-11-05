@@ -34,8 +34,8 @@ An Administrator role, which comprises of an authoriser who
 can monitor/create/delete employee and client accounts as
 well as approving or denying requests.
 
-![Request flow diagram of the proposed system](./assets/request-flow.png)
-_Figure 1: Request flow diagram of the proposed system_
+![Request flow diagram of the proposed system](./assets/request%20flow.png)
+<br>_Figure 1: Request flow diagram of the proposed system_
 
 As shown in the process diagram (figure 1), the process
 starts with the client raising a ticket (Request new book).
