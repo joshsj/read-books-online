@@ -5,6 +5,8 @@ import { testRoutes } from "./routes/test";
 const createServer = ({ SERVER_PORT, NODE_ENV }: Env) => {
   const app = express();
 
+  app.use(express.json());
+
   if (NODE_ENV === "development") {
     app.use("/test", testRoutes);
   }
