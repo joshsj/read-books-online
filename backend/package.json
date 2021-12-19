@@ -4,17 +4,21 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
+    "module-alias": "^2.2.2",
     "typescript": "^4.4.4"
   },
   "scripts": {
     "run": "node -r dotenv/config  build/index.js",
     "clean": "npx tsc --build --clean",
-
     "prestart": "npx tsc --build",
     "start": "npm run run",
     "poststart": "npm run clean"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/node": "^17.0.0"
+  },
+  "_moduleAliases": {
+    "@/": "build/"
   }
 }

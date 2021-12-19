@@ -1,12 +1,18 @@
-type Env = { SERVER_HOST: string; SERVER_PORT: number };
+type NodeEnv = "development" | "production";
+
+type Env = Readonly<{
+  SERVER_PORT: number;
+  NODE_ENV: NodeEnv;
+}>;
 type FileEnv = { [K in keyof Env]: string };
 
-const getEnv = (env?: any): Env => {
-  const { SERVER_HOST, SERVER_PORT } = (env ?? process.env) as FileEnv;
+const getEnv = (): Env => {
+  const { SERVER_PORT, NODE_ENV } = process.env as FileEnv;
 
-  const data: Env = { SERVER_HOST, SERVER_PORT: parseInt(SERVER_PORT) };
-
-  return data;
+  return Object.freeze({
+    SERVER_PORT: parseInt(SERVER_PORT),
+    NODE_ENV: NODE_ENV as NodeEnv,
+  });
 };
 
 export { getEnv, Env };

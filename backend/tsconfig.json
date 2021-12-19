@@ -1,5 +1,10 @@
 {
   "extends": "../tsconfig.target.json",
 
-  "compilerOptions": { "outDir": "build" }
+  "compilerOptions": {
+    "outDir": "build",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }
