@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.target.json",
+
+  "compilerOptions": { "outDir": "build" }
+}

@@ -1,0 +1,12 @@
+{
+  // extends is limited to 1 so chaining configs is necessary
+  "extends": "./tsconfig.strict.json",
+
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}

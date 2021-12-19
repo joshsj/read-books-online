@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+
+    // Extra rules
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
