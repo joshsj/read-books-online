@@ -1,15 +1,29 @@
 import { Dependency, Logger } from "@/dependency";
+import { ApiError, ApiErrorType } from "@/error";
 import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
+
+const defaultErrorData = [
+  "Unknown error occurred",
+  500,
+  "Internal error occurred",
+] as const;
+
+const statusCodes: { [K in ApiErrorType]: number } = {
+  validation: 400,
+};
 
 // Function must be declared with all 4 arguments to be understood by Express
 const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
   const log = container.resolve<Logger>(Dependency.logger);
 
-  // TODO: check error type
-  log("server", "Error", err);
+  const [logMessage, status, message] =
+    err instanceof ApiError
+      ? ["API error occurred", statusCodes[err.type], err.message]
+      : defaultErrorData;
 
-  res.status(500).send("Internal error occurred");
+  log("server", logMessage, err);
+  res.status(status).send(message);
 };
 
 export { errorHandler };
