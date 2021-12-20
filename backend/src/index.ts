@@ -16,9 +16,6 @@ const configureDependencies = (env: Env) =>
 const main = async () => {
   const env = getEnv();
 
-  logger("general", "info");
-  logger("general", "info", { infoAgain: 1 });
-
   configureDependencies(env);
 
   startServer();
