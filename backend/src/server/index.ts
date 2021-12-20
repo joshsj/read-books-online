@@ -1,8 +1,15 @@
 import { Dependency, Logger } from "@/dependency";
-import { Env } from "@/env";
-import express from "express";
+import { Env, NodeEnv } from "@/env";
+import express, { Express } from "express";
 import { container } from "tsyringe";
 import { testRoutes } from "./routes/test";
+import { errorHandler } from "./middlewares/errorHandler";
+
+const configureRoutes = (app: Express, NODE_ENV: NodeEnv): void => {
+  if (NODE_ENV === "development") {
+    app.use("/test", testRoutes);
+  }
+};
 
 const startServer = () => {
   const { SERVER_PORT, NODE_ENV } = container.resolve<Env>(Dependency.env);
@@ -10,11 +17,10 @@ const startServer = () => {
 
   const app = express();
 
-  app.use(express.json());
+  configureRoutes(app, NODE_ENV);
 
-  if (NODE_ENV === "development") {
-    app.use("/test", testRoutes);
-  }
+  app.use(express.json());
+  app.use(errorHandler);
 
   const server = app.listen(SERVER_PORT, () =>
     log("server", `Listening on port ${SERVER_PORT}`)

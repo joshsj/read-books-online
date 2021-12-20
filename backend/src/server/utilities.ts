@@ -9,4 +9,4 @@ const handleAsync =
   (req, res, next) =>
     handler(req, res, next).catch(next);
 
-export { handleAsync, AsyncRequestHandler };
+export { handleAsync };

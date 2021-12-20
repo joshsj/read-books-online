@@ -15,4 +15,4 @@ const getEnv = (): Env => {
   });
 };
 
-export { getEnv, Env };
+export { getEnv, Env, NodeEnv };
