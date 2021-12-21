@@ -1,4 +1,4 @@
-import { IQueryHandler, IRequest } from "@/cqrs/types";
+import { IQueryHandler, IRequest } from "@/library/cqrs/types";
 import { IValidator } from "@/dependency";
 
 type TestRequest = IRequest<"testRequest"> & { name: string };

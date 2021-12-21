@@ -1,4 +1,4 @@
-import { IRequest, IRequestName } from "./cqrs/types";
+import { IRequest, IRequestName } from "./library/cqrs/types";
 
 const Dependency = Object.freeze({
   logger: Symbol(),

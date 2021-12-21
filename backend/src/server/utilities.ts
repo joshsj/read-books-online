@@ -1,14 +1,14 @@
-import { RequestHandler } from "express-serve-static-core";
+import { RequestHandler, Response } from "express-serve-static-core";
 
-type AsyncRequestHandler<T = void> = (
+type AsyncRequestHandler = (
   ...args: Parameters<RequestHandler>
-) => Promise<T>;
+) => Promise<void>;
 
 const handleAsync =
-  <T>(handler: AsyncRequestHandler<T>): RequestHandler =>
+  (handler: AsyncRequestHandler): RequestHandler =>
   (req, res, next) =>
-    handler(req, res, next)
-      .then((result) => res.status(200).send(result))
-      .catch(next);
+    handler(req, res, next).catch(next);
 
-export { handleAsync };
+const ok = (res: Response, result: any) => res.status(200).send(result);
+
+export { handleAsync, ok };

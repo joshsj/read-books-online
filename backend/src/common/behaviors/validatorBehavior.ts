@@ -1,4 +1,4 @@
-import { IBehavior, IRequest, IRequestName } from "@/cqrs/types";
+import { IBehavior, IRequest, IRequestName } from "@/library/cqrs/types";
 import { Dependency, IValidator, Logger } from "@/dependency";
 import { throwApiError } from "@/error";
 import { container } from "tsyringe";

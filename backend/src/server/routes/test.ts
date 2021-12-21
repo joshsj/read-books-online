@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { handleAsync } from "@/server/utilities";
+import { handleAsync, ok } from "@/server/utilities";
 import { throwApiError } from "@/error";
 import { container } from "tsyringe";
 import { Dependency } from "@/dependency";
-import { IRequestSender } from "@/cqrs/types";
+import { IRequestSender } from "@/library/cqrs/types";
 import { TestRequest } from "@/services/test";
 
 const routes = Router();
@@ -17,15 +17,18 @@ routes.get(
 
 routes.get(
   "/handler",
-  handleAsync(async () => {
+  handleAsync(async ({}, res) => {
     const request: TestRequest = {
       requestName: "testRequest",
       name: "the name is bond",
     };
 
-    return await container
-      .resolve<IRequestSender>(Dependency.requestSender)
-      .send(request);
+    ok(
+      res,
+      await container
+        .resolve<IRequestSender>(Dependency.requestSender)
+        .send(request)
+    );
   })
 );
 
