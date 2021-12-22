@@ -1,20 +1,21 @@
-import { IRequest, IRequestName } from "./library/cqrs/types";
+import { IRequest, IRequestName } from "@/common/cqrs";
+import { toDependencies } from "@/common/utilities";
+import {
+  ILogger as _ILogger,
+  Dependency as _Dependency,
+} from "@/common/dependency";
 
-const Dependency = Object.freeze({
-  logger: Symbol(),
-  env: Symbol(),
-  handler: Symbol(),
-  behavior: Symbol(),
-  requestSender: Symbol(),
-  validator: Symbol(),
-} as const);
+type ILoggerContext = "general" | "init" | "server" | "cqrs";
+type ILogger = _ILogger<ILoggerContext>;
 
-type LoggerContext = "general" | "init" | "server" | "cqrs";
-type Logger = (context: LoggerContext, data: any, ...rest: any[]) => void;
+const Dependency = {
+  ..._Dependency,
+  ...toDependencies(["handler", "behavior", "requestSender", "validator"]),
+};
 
 type IValidator<T extends IRequest<IRequestName>> = {
   requestName: T["requestName"];
   validate: (t: T) => string[];
 };
 
-export { Dependency, Logger, IValidator };
+export { Dependency, ILogger, IValidator };

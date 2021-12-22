@@ -1,10 +1,10 @@
-import { IBehavior } from "@/library/cqrs/types";
-import { Dependency, Logger } from "@/dependency";
+import { IBehavior } from "@/common/cqrs";
+import { Dependency, ILogger } from "@/dependency";
 import { container } from "tsyringe";
 
 const requestLoggerBehavior: IBehavior = {
   handle: async (request, next) => {
-    const log = container.resolve<Logger>(Dependency.logger);
+    const log = container.resolve<ILogger>(Dependency.logger);
 
     log("cqrs", `Received ${request.requestName}`);
 

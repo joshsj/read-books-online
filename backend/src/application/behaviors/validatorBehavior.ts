@@ -1,11 +1,11 @@
-import { IBehavior, IRequest, IRequestName } from "@/library/cqrs/types";
-import { Dependency, IValidator, Logger } from "@/dependency";
-import { throwApiError } from "@/error";
+import { IBehavior, IRequest, IRequestName } from "@/common/cqrs";
+import { Dependency, IValidator, ILogger } from "@/dependency";
+import { throwApiError } from "@/hosting/error";
 import { container } from "tsyringe";
 
 const validatorBehavior: IBehavior = {
   handle: async (request, next) => {
-    const log = container.resolve<Logger>(Dependency.logger);
+    const log = container.resolve<ILogger>(Dependency.logger);
 
     const validators = container
       .resolveAll<IValidator<IRequest<IRequestName>>>(Dependency.validator)

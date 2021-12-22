@@ -1,5 +1,5 @@
-import { Dependency, Logger } from "@/dependency";
-import { ApiError, ApiErrorType } from "@/error";
+import { Dependency, ILogger } from "@/dependency";
+import { ApiError, ApiErrorType } from "@/hosting/error";
 import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
 
@@ -15,7 +15,7 @@ const statusCodes: { [K in ApiErrorType]: number } = {
 
 // Function must be declared with all 4 arguments to be understood by Express
 const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
-  const log = container.resolve<Logger>(Dependency.logger);
+  const log = container.resolve<ILogger>(Dependency.logger);
 
   const [logMessage, status, message] =
     err instanceof ApiError

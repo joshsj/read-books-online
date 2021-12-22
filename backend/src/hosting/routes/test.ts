@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { handleAsync, ok } from "@/server/utilities";
-import { throwApiError } from "@/error";
+import { handleAsync, ok } from "@/hosting/utilities";
+import { throwApiError } from "@/hosting/error";
 import { container } from "tsyringe";
 import { Dependency } from "@/dependency";
-import { IRequestSender } from "@/library/cqrs/types";
-import { TestRequest } from "@/services/test";
+import { IRequestSender } from "@/common/cqrs";
+import { TestRequest } from "@/application/features/test";
 
 const routes = Router();
 

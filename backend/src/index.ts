@@ -1,14 +1,16 @@
-import "reflect-metadata";
+import { requestLoggerBehavior } from "@/application/behaviors/requestLoggerBehavior";
+import { validatorBehavior } from "@/application/behaviors/validatorBehavior";
+import { logger } from "@/application/logger";
+import {
+  testRequestHandler,
+  testRequestValidator,
+} from "@/application/features/test";
+import { IBehavior, ICQRSManager, IRequestSender } from "@/common/cqrs";
+import { Dependency, ILogger } from "@/dependency";
+import { Env, getEnv } from "@/env";
+import { startServer } from "@/hosting";
+import { createCQRSManager } from "@/library/cqrsManager";
 import { container } from "tsyringe";
-import { requestLoggerBehavior } from "./common/behaviors/requestLoggerBehavior";
-import { validatorBehavior } from "./common/behaviors/validatorBehavior";
-import { logger } from "./common/logger";
-import { createCQRSManager } from "./library/cqrs";
-import { IBehavior, ICQRSManager, IRequestSender } from "./library/cqrs/types";
-import { Dependency, Logger } from "./dependency";
-import { Env, getEnv } from "./env";
-import { startServer } from "./server";
-import { testRequestHandler, testRequestValidator } from "./services/test";
 
 // TODO: replace with directory scanning
 const registerCQRSDependencies = (cqrsManager: ICQRSManager) => {
@@ -32,7 +34,7 @@ const main = async () => {
   const env = getEnv();
 
   container
-    .register<Logger>(Dependency.logger, { useValue: logger })
+    .register<ILogger>(Dependency.logger, { useValue: logger })
     .register<Env>(Dependency.env, { useValue: env });
 
   const cqrsManager = createCQRSManager();

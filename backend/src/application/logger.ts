@@ -1,6 +1,6 @@
-import { Logger } from "@/dependency";
+import { ILogger } from "@/dependency";
 
-const logger: Logger = (context, data: any, ...rest: any[]) =>
+const logger: ILogger = (context, data: any, ...rest: any[]) =>
   console.log(
     `[${context}] ${[data, ...rest]
       .map((x) => (typeof x === "object" ? JSON.stringify(x) : x))

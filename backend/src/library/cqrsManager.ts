@@ -1,5 +1,5 @@
-import { Dependency, Logger } from "@/dependency";
-import { guard } from "@/utilities";
+import { guard } from "@/common/utilities";
+import { Dependency, ILogger } from "@/dependency";
 import { container } from "tsyringe";
 import {
   IHandler,
@@ -8,12 +8,12 @@ import {
   IRequest,
   IResponseReturnValue,
   IRequestName,
-} from "./types";
+} from "@/common/cqrs";
 
 const _send = async <T extends IRequest<IRequestName>>(
   request: T
 ): Promise<IResponseReturnValue> => {
-  const log = container.resolve<Logger>(Dependency.logger);
+  const log = container.resolve<ILogger>(Dependency.logger);
   const handlers = container
     .resolveAll<IHandler>(Dependency.handler)
     .filter((h) => h.handles === request.requestName);
