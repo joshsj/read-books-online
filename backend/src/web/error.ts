@@ -6,13 +6,4 @@ class ApiError extends Error {
   }
 }
 
-const createApiError = (
-  type: ApiError["type"],
-  message: ApiError["message"]
-): ApiError => new ApiError(type, message);
-
-const throwApiError = (...args: Parameters<typeof createApiError>): never => {
-  throw createApiError(...args);
-};
-
-export { ApiError, ApiErrorType, createApiError, throwApiError };
+export { ApiError, ApiErrorType };

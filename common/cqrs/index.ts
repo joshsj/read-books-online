@@ -7,44 +7,45 @@ import {
   IResponseReturnValue,
 } from "./types";
 
-const send = async <T extends IRequest<IRequestName>>(
-  handlers: IHandler[],
-  behaviors: IBehavior[],
-  request: T
-): Promise<IResponseReturnValue> => {
-  handlers = handlers.filter((h) => h.handles === request.requestName);
+class CQRS implements ICQRS {
+  constructor(
+    private readonly handlers: IHandler[],
+    private readonly behaviors: IBehavior[]
+  ) {}
 
-  if (handlers.length === 0) {
-    throw new Error(`No handler found for ${request.requestName}`);
-  }
-
-  if (handlers.length > 1) {
-    throw new Error(
-      `Multiple handlers registered for request ${request.requestName}`
+  send = async <T extends IRequest<IRequestName>>(request: T) => {
+    const handlers = this.handlers.filter(
+      (h) => h.handles === request.requestName
     );
-  }
 
-  const handler = handlers[0]!;
+    if (handlers.length === 0) {
+      throw new Error(`No handler found for ${request.requestName}`);
+    }
 
-  if (!behaviors.length) {
-    return await handler.handle(request);
-  }
+    if (handlers.length > 1) {
+      throw new Error(
+        `Multiple handlers registered for request ${request.requestName}`
+      );
+    }
 
-  let behaviorCounter = 0;
+    const handler = handlers[0]!;
 
-  const next = async (): Promise<IResponseReturnValue> => {
-    ++behaviorCounter;
+    if (!this.behaviors.length) {
+      return await handler.handle(request);
+    }
 
-    return await (behaviorCounter < behaviors.length
-      ? behaviors[behaviorCounter]!.handle(request, next)
-      : handler.handle(request));
+    let behaviorCounter = 0;
+
+    const next = async (): Promise<IResponseReturnValue> => {
+      ++behaviorCounter;
+
+      return await (behaviorCounter < this.behaviors.length
+        ? this.behaviors[behaviorCounter]!.handle(request, next)
+        : handler.handle(request));
+    };
+
+    return await this.behaviors[0]!.handle(request, next);
   };
+}
 
-  return await behaviors[0]!.handle(request, next);
-};
-
-const createCQRS = (handlers: IHandler[], behaviors: IBehavior[]): ICQRS => ({
-  send: (request) => send(handlers, behaviors, request),
-});
-
-export { createCQRS };
+export { CQRS };

@@ -1,8 +1,8 @@
 import { IBehavior, IRequest, IRequestName } from "@/common/cqrs/types";
-import { Dependency } from "@/application/dependency";
-import { throwApiError } from "@/web/error";
 import { container } from "tsyringe";
 import { ILogger, IValidator } from "@/application/common/interfaces";
+import { Dependency } from "@/application/dependency";
+import { ApiError } from "@/web/error";
 
 const validatorBehavior: IBehavior = {
   handle: async (request, next) => {
@@ -27,14 +27,16 @@ const validatorBehavior: IBehavior = {
 
     const errors = validators.flatMap((v) => v.validate(request));
 
-    errors.length
-      ? throwApiError(
-          "validation",
-          `Validation failed for request ${
-            request.requestName
-          } with errors ${errors.join(", ")}`
-        )
-      : log("cqrs", `Validation passed for request ${request.requestName}`);
+    if (errors.length) {
+      throw new ApiError(
+        "validation",
+        `Validation failed for request ${
+          request.requestName
+        } with errors ${errors.join(", ")}`
+      );
+    }
+
+    log("cqrs", `Validation passed for request ${request.requestName}`);
 
     return await next();
   },

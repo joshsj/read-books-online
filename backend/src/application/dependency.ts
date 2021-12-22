@@ -1,18 +1,16 @@
 import { requestLoggerBehavior } from "@/application/common/behaviors/requestLoggerBehavior";
 import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
-import { createCQRS } from "@/common/cqrs";
+import { CQRS } from "@/common/cqrs";
 import { IBehavior, ICQRS, IHandler } from "@/common/cqrs/types";
-import { Dependency as _Dependency } from "@/common/dependency";
+import { Dependency as CommonDependency } from "@/common/dependency";
 import { toDependencies } from "@/common/utilities";
 import { container } from "tsyringe";
 import { testRequestHandler, testRequestValidator } from "./test";
 
-const Dependency = toDependencies([
-  "handler",
-  "behavior",
-  "requestSender",
-  "validator",
-]);
+const Dependency = {
+  ...CommonDependency,
+  ...toDependencies(["handler", "behavior", "requestSender", "validator"]),
+};
 
 // TODO: replace with directory scanning
 const registerDependencies = () => {
@@ -21,7 +19,7 @@ const registerDependencies = () => {
 
   container.register<ICQRS>(Dependency.requestSender, {
     useFactory: (c) =>
-      createCQRS(
+      new CQRS(
         c.resolveAll<IHandler>(Dependency.handler),
         c.resolveAll<IBehavior>(Dependency.behavior)
       ),

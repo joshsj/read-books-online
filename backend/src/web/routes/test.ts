@@ -1,10 +1,10 @@
-import { Router } from "express";
-import { handleAsync, ok } from "@/web/utilities";
-import { throwApiError } from "@/web/error";
-import { container } from "tsyringe";
 import { Dependency } from "@/application/dependency";
-import { ICQRS } from "@/common/cqrs/types";
 import { TestRequest } from "@/application/test";
+import { ICQRS } from "@/common/cqrs/types";
+import { ApiError } from "@/web/error";
+import { handleAsync, ok } from "@/web/utilities";
+import { Router } from "express";
+import { container } from "tsyringe";
 
 const routes = Router();
 
@@ -12,7 +12,9 @@ routes.get("/hello", (_req, res) => res.send("hello world"));
 
 routes.get(
   "/throw",
-  handleAsync(async () => throwApiError("validation", "some validation failed"))
+  handleAsync(async () => {
+    throw new ApiError("validation", "some validation failed");
+  })
 );
 
 routes.get(
