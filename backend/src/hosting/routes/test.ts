@@ -3,7 +3,7 @@ import { handleAsync, ok } from "@/hosting/utilities";
 import { throwApiError } from "@/hosting/error";
 import { container } from "tsyringe";
 import { Dependency } from "@/dependency";
-import { IRequestSender } from "@/common/cqrs";
+import { ICQRS } from "@/common/cqrs/types";
 import { TestRequest } from "@/application/features/test";
 
 const routes = Router();
@@ -25,9 +25,7 @@ routes.get(
 
     ok(
       res,
-      await container
-        .resolve<IRequestSender>(Dependency.requestSender)
-        .send(request)
+      await container.resolve<ICQRS>(Dependency.requestSender).send(request)
     );
   })
 );

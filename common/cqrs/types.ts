@@ -27,14 +27,10 @@ type IBehavior = {
   ) => Promise<T>;
 };
 
-type IRequestSender = {
+type ICQRS = {
   send: <T extends IRequest<IRequestName>>(
     request: T
   ) => Promise<IResponseReturnValue>;
-};
-
-type ICQRSManager = {
-  sender: IRequestSender;
 };
 
 export {
@@ -45,7 +41,6 @@ export {
   IQueryHandler,
   ICommandHandler,
   IBehavior,
-  IRequestSender,
-  ICQRSManager,
+  ICQRS as ICQRS,
   IHandler,
 };

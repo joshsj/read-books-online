@@ -1,4 +1,4 @@
-import { IRequest, IRequestName } from "@/common/cqrs";
+import { IRequest, IRequestName } from "@/common/cqrs/types";
 import { toDependencies } from "@/common/utilities";
 import {
   ILogger as _ILogger,

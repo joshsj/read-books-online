@@ -1,4 +1,4 @@
-import { IBehavior } from "@/common/cqrs";
+import { IBehavior } from "@/common/cqrs/types";
 import { Dependency, ILogger } from "@/dependency";
 import { container } from "tsyringe";
 
