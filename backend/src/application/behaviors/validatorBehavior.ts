@@ -1,6 +1,6 @@
 import { IBehavior, IRequest, IRequestName } from "@/common/cqrs/types";
 import { Dependency, IValidator, ILogger } from "@/dependency";
-import { throwApiError } from "@/hosting/error";
+import { throwApiError } from "@/web/error";
 import { container } from "tsyringe";
 
 const validatorBehavior: IBehavior = {

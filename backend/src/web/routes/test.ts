@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { handleAsync, ok } from "@/hosting/utilities";
-import { throwApiError } from "@/hosting/error";
+import { handleAsync, ok } from "@/web/utilities";
+import { throwApiError } from "@/web/error";
 import { container } from "tsyringe";
 import { Dependency } from "@/dependency";
 import { ICQRS } from "@/common/cqrs/types";
