@@ -4,10 +4,11 @@ import {
   testRequestHandler,
   testRequestValidator,
 } from "@/application/features/test";
+import { ILogger } from "@/application/interfaces";
 import { logger } from "@/application/logger";
 import { createCQRS } from "@/common/cqrs";
 import { IBehavior, ICQRS, IHandler } from "@/common/cqrs/types";
-import { Dependency, ILogger } from "@/dependency";
+import { Dependency } from "@/dependency";
 import { Env, getEnv } from "@/env";
 import { startServer } from "@/web/server";
 import { container } from "tsyringe";
