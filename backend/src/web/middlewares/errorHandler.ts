@@ -1,4 +1,4 @@
-import { ILogger } from "@/application/interfaces";
+import { ILogger } from "@/application/common/interfaces";
 import { Dependency } from "@/dependency";
 import { ApiError, ApiErrorType } from "@/web/error";
 import { ErrorRequestHandler } from "express";

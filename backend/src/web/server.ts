@@ -1,4 +1,4 @@
-import { ILogger } from "@/application/interfaces";
+import { ILogger } from "@/application/common/interfaces";
 import { Dependency } from "@/dependency";
 import { Env, NodeEnv } from "@/env";
 import { errorHandler } from "@/web/middlewares/errorHandler";

@@ -1,11 +1,8 @@
-import { requestLoggerBehavior } from "@/application/behaviors/requestLoggerBehavior";
-import { validatorBehavior } from "@/application/behaviors/validatorBehavior";
-import {
-  testRequestHandler,
-  testRequestValidator,
-} from "@/application/features/test";
-import { ILogger } from "@/application/interfaces";
-import { logger } from "@/application/logger";
+import { requestLoggerBehavior } from "@/application/common/behaviors/requestLoggerBehavior";
+import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
+import { testRequestHandler, testRequestValidator } from "@/application/test";
+import { ILogger } from "@/application/common/interfaces";
+import { logger } from "@/infrastructure/logger";
 import { createCQRS } from "@/common/cqrs";
 import { IBehavior, ICQRS, IHandler } from "@/common/cqrs/types";
 import { Dependency } from "@/dependency";

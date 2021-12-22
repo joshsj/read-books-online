@@ -4,7 +4,7 @@ import { throwApiError } from "@/web/error";
 import { container } from "tsyringe";
 import { Dependency } from "@/dependency";
 import { ICQRS } from "@/common/cqrs/types";
-import { TestRequest } from "@/application/features/test";
+import { TestRequest } from "@/application/test";
 
 const routes = Router();
 
