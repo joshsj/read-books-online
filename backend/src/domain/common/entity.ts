@@ -1,9 +1,9 @@
-type Entity<TId> = { id: TId };
+type Entity = { id: string };
 
-type AuditedEntity<TId> = {
+type AuditedEntity = {
   created: Date;
-  createdBy: TId;
+  createdBy: string;
 
   modified: Date;
-  modifiedBy: TId;
+  modifiedBy: string;
 };
