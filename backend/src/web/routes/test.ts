@@ -2,7 +2,7 @@ import { Router } from "express";
 import { handleAsync, ok } from "@/web/utilities";
 import { throwApiError } from "@/web/error";
 import { container } from "tsyringe";
-import { Dependency } from "@/dependency";
+import { Dependency } from "@/application/dependency";
 import { ICQRS } from "@/common/cqrs/types";
 import { TestRequest } from "@/application/test";
 

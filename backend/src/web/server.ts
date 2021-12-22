@@ -1,5 +1,5 @@
 import { ILogger } from "@/application/common/interfaces";
-import { Dependency } from "@/dependency";
+import { Dependency } from "@/application/dependency";
 import { Env, NodeEnv } from "@/env";
 import { errorHandler } from "@/web/middlewares/errorHandler";
 import { testRoutes } from "@/web/routes/test";
