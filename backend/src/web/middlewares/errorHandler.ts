@@ -1,4 +1,5 @@
-import { Dependency, ILogger } from "@/dependency";
+import { ILogger } from "@/application/interfaces";
+import { Dependency } from "@/dependency";
 import { ApiError, ApiErrorType } from "@/web/error";
 import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";

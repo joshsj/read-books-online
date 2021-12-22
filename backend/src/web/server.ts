@@ -1,9 +1,10 @@
-import { Dependency, ILogger } from "@/dependency";
+import { ILogger } from "@/application/interfaces";
+import { Dependency } from "@/dependency";
 import { Env, NodeEnv } from "@/env";
+import { errorHandler } from "@/web/middlewares/errorHandler";
+import { testRoutes } from "@/web/routes/test";
 import express, { Express } from "express";
 import { container } from "tsyringe";
-import { testRoutes } from "@/web/routes/test";
-import { errorHandler } from "@/web/middlewares/errorHandler";
 
 const configureRoutes = (app: Express, NODE_ENV: NodeEnv): void => {
   if (NODE_ENV === "development") {
