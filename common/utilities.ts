@@ -18,4 +18,8 @@ const guard: Guard = (
   }
 };
 
-export { Dependencies, toDependencies, guard, Guard };
+type Class<T, TParam = any> = {
+  new (...params: TParam[]): T;
+};
+
+export { Dependencies, toDependencies, guard, Guard, Class };

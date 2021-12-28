@@ -1,12 +1,25 @@
-import { Array, Static } from "runtypes";
-import { BaseEntity } from "../common/baseEntity";
-import { NonZeroLengthString } from "../common/constrainedTypes";
-import { Role } from "./role";
+import { prop } from "@typegoose/typegoose";
+import { Array, Record, Static, String } from "runtypes";
+import { Length } from "../common/constrainedTypes";
+import { Entity } from "../common/entity";
+import { Role } from "../constants/role";
 
-const User = BaseEntity.extend({
-  name: NonZeroLengthString,
-  roles: Array(Role),
+const Helper = Record({
+  name: Length(String, { min: 1 }),
+  roles: Length(Array(Role), { min: 1 }),
 });
-type User = Static<typeof User>;
+type IUser = Static<typeof Helper>;
+
+class User extends Entity<IUser> implements IUser {
+  @prop()
+  name!: string;
+
+  @prop()
+  roles!: Role[];
+
+  constructor(user: IUser) {
+    super(user, Helper);
+  }
+}
 
 export { User };
