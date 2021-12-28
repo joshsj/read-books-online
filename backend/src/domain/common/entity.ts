@@ -1,6 +1,6 @@
 import { Runtype } from "runtypes";
 import { EntityValidationError } from "../error/entityValidationError";
-import { v4 as uuidv4, validate, version } from "uuid";
+import { v4 as uuid, validate, version } from "uuid";
 import { prop } from "@typegoose/typegoose";
 
 type Id = string;
@@ -9,14 +9,14 @@ type Id = string;
 
 abstract class Entity<T extends object = {}> {
   @prop()
-  id!: Id;
+  id: Id;
 
   constructor(obj: T, helper: Runtype<T>) {
     if (!helper.guard(obj)) {
       throw new EntityValidationError();
     }
 
-    Object.assign(this, { ...obj, id: Entity.newId() });
+    this.id = Entity.newId();
   }
 
   static isId(id: any): id is Id {
@@ -24,7 +24,7 @@ abstract class Entity<T extends object = {}> {
   }
 
   static newId(): Id {
-    return uuidv4();
+    return uuid();
   }
 }
 

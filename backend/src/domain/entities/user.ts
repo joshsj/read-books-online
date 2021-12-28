@@ -12,13 +12,16 @@ type IUser = Static<typeof Helper>;
 
 class User extends Entity<IUser> implements IUser {
   @prop()
-  name!: string;
+  name: string;
 
   @prop()
-  roles!: Role[];
+  roles: Role[];
 
   constructor(user: IUser) {
     super(user, Helper);
+
+    this.name = user.name;
+    this.roles = user.roles;
   }
 }
 
