@@ -2,8 +2,8 @@ import { Entity } from "@/domain/common/entity";
 import { EntityValidationError } from "@/domain/error/entityValidationError";
 import { expect } from "chai";
 import { describe } from "mocha";
+import { validate } from "uuid";
 import { TestEntity } from "./testEntity";
-import { v4 as uuid, validate } from "uuid";
 
 describe("Domain Entities", () => {
   describe("Construction", () => {
