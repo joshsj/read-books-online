@@ -33,7 +33,7 @@ describe("Mongo Repository", () => {
 
         const result = await repository.get(id);
 
-        expect(result).to.exist;
+        expect(result).not.to.be.undefined;
       });
 
       it("By multiple IDs", async () => {
@@ -52,7 +52,7 @@ describe("Mongo Repository", () => {
 
         const result = await model.findOne({ id: entity.id });
 
-        expect(result).to.exist;
+        expect(result).not.to.be.null;
         expect(result).to.have.property("value", "entity");
       });
     });
@@ -67,7 +67,7 @@ describe("Mongo Repository", () => {
         await repository.update(entity);
         const result = await model.findOne({ id: entity.id });
 
-        expect(result).to.exist;
+        expect(result).not.to.be.null;
         expect(result).to.have.property("value", "updated entity");
       });
     });
