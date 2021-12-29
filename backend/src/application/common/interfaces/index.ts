@@ -1,7 +1,4 @@
-import {
-  IRequest,
-  IRequestName,
-} from "@/application/common/interfaces/cqrs/types";
+import { IRequest, IRequestName } from "@/application/common/interfaces/cqrs";
 import { ILogger as _ILogger } from "@/common/dependency";
 
 type ILoggerContext = "general" | "init" | "server" | "cqrs";

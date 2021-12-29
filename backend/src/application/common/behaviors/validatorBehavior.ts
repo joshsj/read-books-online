@@ -2,7 +2,7 @@ import {
   IBehavior,
   IRequest,
   IRequestName,
-} from "@/application/common/interfaces/cqrs/types";
+} from "@/application/common/interfaces/cqrs";
 import { container } from "tsyringe";
 import { ILogger, IValidator } from "@/application/common/interfaces";
 import { Dependency } from "@/application/dependency";

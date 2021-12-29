@@ -1,6 +1,6 @@
 import { Dependency } from "@/application/dependency";
 import { TestRequest } from "@/application/test";
-import { ICQRS } from "@/application/common/interfaces/cqrs/types";
+import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { ApiError } from "@/web/error";
 import { handleAsync, ok } from "@/web/utilities";
 import { Router } from "express";

@@ -5,7 +5,7 @@ import {
   IRequest,
   IRequestName,
   IResponseReturnValue,
-} from "./types";
+} from "../application/common/interfaces/cqrs";
 
 class CQRS implements ICQRS {
   constructor(
