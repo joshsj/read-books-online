@@ -1,31 +1,8 @@
-import { Runtype } from "runtypes";
-import { EntityValidationError } from "../error/entityValidationError";
-import { v4 as uuid, validate, version } from "uuid";
-import { prop } from "@typegoose/typegoose";
+import { Record, Static } from "runtypes";
+import { Id } from "./id";
 
-type Id = string;
+const Entity = Record({ id: Id });
 
-// TODO: consider moving mongoose schema declarations into /infrastructure
+type Entity = Static<typeof Entity>;
 
-abstract class Entity<T extends object = {}> {
-  @prop()
-  id: Id;
-
-  constructor(obj: T, helper: Runtype<T>) {
-    if (!helper.guard(obj)) {
-      throw new EntityValidationError();
-    }
-
-    this.id = Entity.newId();
-  }
-
-  static isId(id: any): id is Id {
-    return validate(id) && version(id) === 4;
-  }
-
-  static newId(): Id {
-    return uuid();
-  }
-}
-
-export { Entity, Id };
+export { Entity };

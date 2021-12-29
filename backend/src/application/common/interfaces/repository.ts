@@ -1,4 +1,5 @@
-import { Entity, Id } from "@/domain/common/entity";
+import { Entity } from "@/domain/common/entity";
+import { Id } from "@/domain/common/id";
 
 type IWritableRepository<T extends Entity> = {
   insert(entity: T): Promise<void>;

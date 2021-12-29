@@ -1,24 +1,23 @@
 import { IRepository } from "@/application/common/interfaces/repository";
+import { newId } from "@/domain/common/id";
 import { MongoRepository } from "@/infrastructure/repository/mongo/mongoRepository";
-import { TestEntity, TestEntityModel } from "@/test/unit/domain/testEntity";
+import { TestEntity } from "@/test/unit/domain/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
+import { TestEntityModel } from "./testEntityModel";
 
 describe("Mongo Repository", () => {
   itUsesMongo();
-
-  const testEntityOne = new TestEntity({ value: "test entity one" });
-  const testEntityTwo = new TestEntity({ value: "test entity two" });
-  const model = TestEntityModel;
-  const repository: IRepository<TestEntity> = new MongoRepository(
-    TestEntity,
-    model
-  );
 
   beforeEach(async () => {
     await TestEntityModel.create(testEntityOne);
     await TestEntityModel.create(testEntityTwo);
   });
+
+  const testEntityOne: TestEntity = { id: newId(), min3: "test entity one" };
+  const testEntityTwo: TestEntity = { id: newId(), min3: "test entity two" };
+  const model = TestEntityModel;
+  const repository: IRepository<TestEntity> = new MongoRepository(model);
 
   describe("Operations", () => {
     describe("Get", () => {
@@ -46,29 +45,29 @@ describe("Mongo Repository", () => {
 
     describe("Insert", () => {
       it("An Entity", async () => {
-        const entity = new TestEntity({ value: "entity" });
+        const entity: TestEntity = { id: newId(), min3: "entity" };
 
         await repository.insert(entity);
 
         const result = await model.findOne({ id: entity.id });
 
         expect(result).not.to.be.null;
-        expect(result).to.have.property("value", "entity");
+        expect(result).to.have.property("min3", "entity");
       });
     });
 
     describe("Update", () => {
       it("An Entity", async () => {
-        const entity = new TestEntity({ value: "entity" });
+        const entity: TestEntity = { id: newId(), min3: "entity" };
         model.create(entity);
 
-        entity.value = "updated entity";
+        entity.min3 = "updated entity";
 
         await repository.update(entity);
         const result = await model.findOne({ id: entity.id });
 
         expect(result).not.to.be.null;
-        expect(result).to.have.property("value", "updated entity");
+        expect(result).to.have.property("min3", "updated entity");
       });
     });
 
@@ -90,17 +89,6 @@ describe("Mongo Repository", () => {
 
         expect(result).to.have.length(0);
       });
-    });
-  });
-
-  describe("Types", () => {
-    it("Returns Entity<> instances", async () => {
-      const entity = new TestEntity({ value: "entity" });
-      model.create(entity);
-
-      const result = await repository.get(entity.id);
-
-      expect(result).to.be.instanceOf(TestEntity);
     });
   });
 });
