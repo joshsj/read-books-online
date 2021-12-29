@@ -1,7 +1,11 @@
 import { requestLoggerBehavior } from "@/application/common/behaviors/requestLoggerBehavior";
 import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
-import { CQRS } from "@/common/cqrs";
-import { IBehavior, ICQRS, IHandler } from "@/common/cqrs/types";
+import { CQRS } from "@/application/common/interfaces/cqrs";
+import {
+  IBehavior,
+  ICQRS,
+  IHandler,
+} from "@/application/common/interfaces/cqrs/types";
 import { toDependencies } from "@/common/utilities";
 import { Dependency as CommonDependency } from "@/common/dependency";
 import { container } from "tsyringe";

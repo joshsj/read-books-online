@@ -1,4 +1,8 @@
-import { IBehavior, IRequest, IRequestName } from "@/common/cqrs/types";
+import {
+  IBehavior,
+  IRequest,
+  IRequestName,
+} from "@/application/common/interfaces/cqrs/types";
 import { container } from "tsyringe";
 import { ILogger, IValidator } from "@/application/common/interfaces";
 import { Dependency } from "@/application/dependency";
