@@ -1,7 +1,7 @@
 import { Entity, Id } from "@/domain/common/entity";
 
 type IWritableRepository<T extends Entity> = {
-  create(entity: T): Promise<void>;
+  insert(entity: T): Promise<void>;
   update(entity: T): Promise<void>;
   delete(id: Id): Promise<void>;
   delete(id: Id[]): Promise<void>;

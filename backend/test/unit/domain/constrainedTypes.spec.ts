@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { describe } from "mocha";
 import { String } from "runtypes";
 
-describe("Constrained Entities", () => {
+describe("Constrained Types", () => {
   describe("Length", () => {
     it("Applies a minimum", () => {
       const sut = Length(String, { min: 4 });

@@ -9,7 +9,7 @@ const arrayify = <T>(x: T | T[]): T[] => (Array.isArray(x) ? x : [x]);
 
 class MongoRepository<T extends Entity> implements IRepository<T> {
   constructor(
-    private readonly _class: Class<T>,
+    private readonly _class: Class<T, T>,
     private readonly entities: ModelType<T>
   ) {}
 
@@ -17,18 +17,17 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   get(id: Id): Promise<T | undefined>;
   get(id: Id[]): Promise<T[]>;
   async get(id?: Some<Id>): Promise<Some<T> | undefined> {
-    if (!id) {
-      return await this.entities.find();
+    if (Entity.isId(id)) {
+      const entity = await this.entities.findOne({ id });
+
+      return entity ? this.toInstance(entity) : undefined;
     }
 
-    if (Array.isArray(id)) {
-      return await this.entities.find({ id: { $in: id } });
-    }
-
-    return (await this.entities.findOne({ id })) ?? undefined;
+    const filter = id ? { id: { $in: id } } : {};
+    return (await this.entities.find(filter)).map((x) => this.toInstance(x));
   }
 
-  async create(entity: T): Promise<void> {
+  async insert(entity: T): Promise<void> {
     this.validateInstance(entity);
 
     await this.entities.create(entity);
@@ -44,10 +43,14 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
     await this.entities.deleteMany({ id: { $in: arrayify(id) } });
   }
 
-  validateInstance(entity: T) {
+  private validateInstance(entity: T) {
     if (!(entity instanceof this._class)) {
       throw new RepositoryEntityInstanceError();
     }
+  }
+
+  private toInstance(entity: T) {
+    return new this._class(entity);
   }
 }
 

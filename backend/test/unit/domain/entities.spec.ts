@@ -21,7 +21,7 @@ describe("Domain Entities", () => {
     });
 
     it("Throws when the construction object is invalid", () => {
-      expect(() => new TestEntity({ value: "abcde" })).to.throw(
+      expect(() => new TestEntity({ value: "" })).to.throw(
         EntityValidationError
       );
     });

@@ -8,6 +8,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@/test/*": ["./test/*"],
       "@/common/*": ["../common/*"]
     }
   }
