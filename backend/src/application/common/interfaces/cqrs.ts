@@ -41,6 +41,6 @@ export {
   IQueryHandler,
   ICommandHandler,
   IBehavior,
-  ICQRS as ICQRS,
+  ICQRS,
   IHandler,
 };
