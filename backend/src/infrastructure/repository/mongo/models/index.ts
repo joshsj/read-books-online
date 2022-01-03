@@ -1,5 +1,5 @@
 import { Entity } from "@/domain/common/entity";
-import { EntityValidationError } from "@/domain/error/entityValidationError";
+import { ValidationError } from "@/application/common/error/validationError";
 import {
   model as _model,
   Schema as _Schema,
@@ -28,7 +28,7 @@ const model = <T extends Entity>(
     if (!result.success) {
       const fields = result.details ? Object.keys(result.details) : [];
 
-      throw new EntityValidationError(fields);
+      throw new ValidationError(fields);
     }
 
     next();

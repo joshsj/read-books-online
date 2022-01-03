@@ -1,12 +1,12 @@
+import { ValidationError } from "@/application/common/error/validationError";
+import { ILogger, IValidator } from "@/application/common/interfaces";
 import {
   IBehavior,
   IRequest,
   IRequestName,
 } from "@/application/common/interfaces/cqrs";
-import { container } from "tsyringe";
-import { ILogger, IValidator } from "@/application/common/interfaces";
 import { Dependency } from "@/application/dependency";
-import { ApiError } from "@/web/error";
+import { container } from "tsyringe";
 
 const validatorBehavior: IBehavior = {
   handle: async (request, next) => {
@@ -32,12 +32,7 @@ const validatorBehavior: IBehavior = {
     const errors = validators.flatMap((v) => v.validate(request));
 
     if (errors.length) {
-      throw new ApiError(
-        "validation",
-        `Validation failed for request ${
-          request.requestName
-        } with errors ${errors.join(", ")}`
-      );
+      throw new ValidationError(errors);
     }
 
     log("cqrs", `Validation passed for request ${request.requestName}`);

@@ -1,5 +1,5 @@
 import { newId } from "@/domain/common/id";
-import { EntityValidationError } from "@/domain/error/entityValidationError";
+import { ValidationError } from "@/application/common/error/validationError";
 import { TestEntity } from "@/test/unit/domain/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
@@ -21,7 +21,7 @@ describe("Mongo Models", () => {
       const invalidEntity: TestEntity = { id: "invalid id", min3: "ab" };
 
       return expect(model.create(invalidEntity)).to.be.rejectedWith(
-        EntityValidationError
+        ValidationError
       );
     });
 
@@ -29,7 +29,7 @@ describe("Mongo Models", () => {
       const invalidEntity: TestEntity = { id: newId(), min3: "a" };
 
       return expect(model.create(invalidEntity)).to.be.rejectedWith(
-        EntityValidationError
+        ValidationError
       );
     });
   });

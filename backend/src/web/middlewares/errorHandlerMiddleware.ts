@@ -1,6 +1,6 @@
 import { ILogger } from "@/application/common/interfaces";
 import { Dependency } from "@/application/dependency";
-import { EntityValidationError } from "@/domain/error/entityValidationError";
+import { ValidationError } from "@/application/common/error/validationError";
 import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
 
@@ -8,7 +8,7 @@ import { container } from "tsyringe";
 const errorHandlerMiddleware: ErrorRequestHandler = (err, {}, res, {}) => {
   const log = container.resolve<ILogger>(Dependency.logger);
 
-  if (err instanceof EntityValidationError) {
+  if (err instanceof ValidationError) {
     res.status(400).send(err.message);
     log("server", "Entity Validation error occurred");
     return;

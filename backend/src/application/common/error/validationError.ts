@@ -1,4 +1,4 @@
-class EntityValidationError extends Error {
+class ValidationError extends Error {
   public readonly isEntityValidationError = true;
 
   constructor(public readonly fields: ReadonlyArray<string>) {
@@ -10,4 +10,4 @@ class EntityValidationError extends Error {
   }
 }
 
-export { EntityValidationError };
+export { ValidationError };

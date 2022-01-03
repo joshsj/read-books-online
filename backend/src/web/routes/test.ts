@@ -1,7 +1,6 @@
 import { Dependency } from "@/application/dependency";
 import { TestRequest } from "@/application/test";
 import { ICQRS } from "@/application/common/interfaces/cqrs";
-import { ApiError } from "@/web/error";
 import { handleAsync, ok } from "@/web/utilities";
 import { Router } from "express";
 import { container } from "tsyringe";
@@ -13,7 +12,7 @@ routes.get("/hello", (_req, res) => res.send("hello world"));
 routes.get(
   "/throw",
   handleAsync(async () => {
-    throw new ApiError("validation", "some validation failed");
+    throw new Error("something bad happened");
   })
 );
 
