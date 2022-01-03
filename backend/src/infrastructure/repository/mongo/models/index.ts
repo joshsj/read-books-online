@@ -1,27 +1,40 @@
-import { Class } from "@/common/utilities";
 import { Entity } from "@/domain/common/entity";
 import { EntityValidationError } from "@/domain/error/entityValidationError";
-import { getModelForClass, Ref } from "@typegoose/typegoose";
+import {
+  model as _model,
+  Schema as _Schema,
+  SchemaDefinition,
+  SchemaDefinitionType,
+} from "mongoose";
 import { Runtype } from "runtypes";
 
 const required = true;
 
-type MapToRef<T> = T extends object ? (T extends Array<any> ? T : Ref<T>) : T;
+type Schema<T extends Entity> = Required<
+  SchemaDefinition<SchemaDefinitionType<T>>
+>;
 
-type Schema<T extends object> = { [K in keyof T]: MapToRef<T[K]> };
+const model = <T extends Entity>(
+  name: string,
+  helper: Runtype<T>,
+  definition: Schema<T>
+) => {
+  // TODO: remove cast to any
+  const schema = new _Schema<T>(definition as any);
 
-const getModel = <T extends Entity>(schema: Class<T>, entity: Runtype<T>) => {
-  const model = getModelForClass(schema);
+  schema.pre("validate", function (next) {
+    const result = helper.validate(this);
 
-  model.schema.pre("create", async function () {
-    console.log("called pre");
+    if (!result.success) {
+      const fields = result.details ? Object.keys(result.details) : [];
 
-    if (!entity.guard(this)) {
-      throw new EntityValidationError();
+      throw new EntityValidationError(fields);
     }
+
+    next();
   });
 
-  return model;
+  return _model(name, schema);
 };
 
-export { Schema, required, getModel };
+export { required, Schema, model };

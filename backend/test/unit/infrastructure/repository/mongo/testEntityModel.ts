@@ -1,17 +1,20 @@
-import { EntityValidationError } from "@/domain/error/entityValidationError";
-import { getModel, Schema } from "@/infrastructure/repository/mongo/models";
+import {
+  model,
+  required,
+  Schema,
+} from "@/infrastructure/repository/mongo/models";
 import { EntitySchema } from "@/infrastructure/repository/mongo/models/entity";
 import { TestEntity } from "@/test/unit/domain/testEntity";
-import { pre, prop } from "@typegoose/typegoose";
 
-@pre("validate", function (next) {
-  next(TestEntity.guard(this) ? undefined : new EntityValidationError());
-})
-class TestEntitySchema extends EntitySchema implements Schema<TestEntity> {
-  @prop({ required: true })
-  min3!: string;
-}
+const TestEntitySchema: Schema<TestEntity> = {
+  ...EntitySchema,
+  min3: { type: String, required },
+};
 
-const TestEntityModel = getModel(TestEntitySchema, TestEntity);
+const TestEntityModel = model<TestEntity>(
+  "TestEntity",
+  TestEntity,
+  TestEntitySchema
+);
 
 export { TestEntitySchema, TestEntityModel };

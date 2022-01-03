@@ -1,17 +1,10 @@
 import { Entity } from "@/domain/common/entity";
-import { Id } from "@/domain/common/id";
-import { EntityValidationError } from "@/domain/error/entityValidationError";
-import { pre, prop } from "@typegoose/typegoose";
-import { getModel, required, Schema } from ".";
+import { model, Schema, required } from ".";
 
-@pre("validate", function (next) {
-  next(Entity.guard(this) ? undefined : new EntityValidationError());
-})
-class EntitySchema implements Schema<Entity> {
-  @prop({ type: String, unique: true, required })
-  id!: Id;
-}
+const EntitySchema: Schema<Entity> = {
+  id: { type: String, required },
+};
 
-const EntityModel = getModel(EntitySchema, Entity);
+const EntityModel = model<Entity>("Entity", Entity, EntitySchema);
 
 export { EntitySchema, EntityModel };
