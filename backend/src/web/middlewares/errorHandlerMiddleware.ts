@@ -5,7 +5,7 @@ import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
 
 // Function must be declared with all 4 arguments to be understood by Express
-const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
+const errorHandlerMiddleware: ErrorRequestHandler = (err, {}, res, {}) => {
   const log = container.resolve<ILogger>(Dependency.logger);
 
   if (err instanceof EntityValidationError) {
@@ -18,4 +18,4 @@ const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
   res.status(500).send("Internal error occurred");
 };
 
-export { errorHandler };
+export { errorHandlerMiddleware };

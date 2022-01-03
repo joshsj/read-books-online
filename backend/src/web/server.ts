@@ -1,7 +1,7 @@
 import { ILogger } from "@/application/common/interfaces";
 import { Dependency } from "@/application/dependency";
 import { Env, NodeEnv } from "@/env";
-import { errorHandler } from "@/web/middlewares/errorHandler";
+import { errorHandlerMiddleware } from "@/web/middlewares/errorHandlerMiddleware";
 import { testRoutes } from "@/web/routes/test";
 import express, { Express } from "express";
 import { container } from "tsyringe";
@@ -21,7 +21,7 @@ const startServer = () => {
   configureRoutes(app, NODE_ENV);
 
   app.use(express.json());
-  app.use(errorHandler);
+  app.use(errorHandlerMiddleware);
 
   const server = app.listen(SERVER_PORT, () =>
     log("server", `Listening on port ${SERVER_PORT}`)
