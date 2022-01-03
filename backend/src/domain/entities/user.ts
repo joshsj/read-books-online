@@ -10,4 +10,4 @@ const User = Entity.extend({
 
 type User = Static<typeof User>;
 
-export { User, User as UserHelper };
+export { User };
