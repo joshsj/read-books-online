@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "node -r module-alias/register -r dotenv/config -r reflect-metadata build/backend/src/index.js",
-    "test": "mocha -r module-alias/register -r dotenv/config build/backend/test/**/*.spec.js",
+    "test": "mocha -r module-alias/register -r dotenv/config -r test/setup.js build/backend/test/**/*.spec.js",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },
