@@ -22,6 +22,7 @@ const registerInitDependencies = (env: Env) => {
       useValue: {
         secret: env.JWT_SECRET,
         expiresIn: env.JWT_EXPIRES_IN,
+        algorithm: env.JWT_ALGORITHM,
       },
     });
 };
