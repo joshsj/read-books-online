@@ -5,7 +5,7 @@ import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { ensure } from "@/common/utilities";
 import { Dependency } from "@/infrastructure/dependency";
 import { AccountDto, JWTPayload, TokenDto } from "@/web/common/models/auth";
-import { handleAsync } from "@/web/common/utilities/http";
+import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { container } from "tsyringe";

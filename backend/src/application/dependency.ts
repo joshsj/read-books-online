@@ -11,6 +11,7 @@ const Dependency = toDependencies([
   "mode",
   "jwtConfiguration",
   "hashingService",
+  "currentUserService",
   // repository
   "userRepository",
   // cqrs

@@ -1,10 +1,10 @@
 import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
 import { TestRequest } from "@/application/test";
-import { handleAsync, ok } from "@/web/common/utilities/http";
 import { authenticator } from "@/web/middlewares/authenticator";
 import { Router } from "express";
 import { container } from "tsyringe";
+import { handleAsync } from "@/web/common/utilities/requestHelper";
 
 const router = Router();
 
@@ -19,13 +19,13 @@ router.get(
 
 router.get(
   "/handler",
-  handleAsync(async ({}, res) => {
+  handleAsync(async ({}, {}, {}, { ok }) => {
     const request: TestRequest = {
       requestName: "testRequest",
       name: "the name is bond",
     };
 
-    ok(res, (await container.resolve<ICQRS>(Dependency.cqrs).send(request)) ?? undefined);
+    ok((await container.resolve<ICQRS>(Dependency.cqrs).send(request)) ?? undefined);
   })
 );
 
