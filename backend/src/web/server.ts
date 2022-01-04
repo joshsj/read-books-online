@@ -1,30 +1,32 @@
-import { ILogger } from "@/application/common/interfaces";
-import { Dependency } from "@/application/dependency";
-import { Env, NodeEnv } from "@/env";
-import { errorHandlerMiddleware } from "@/web/middlewares/errorHandlerMiddleware";
+import { ILogger, Mode } from "@/application/common/interfaces";
+import { Dependency } from "@/infrastructure/dependency";
+import { errorHandler } from "@/web/middlewares/errorHandler";
 import { testRoutes } from "@/web/routes/test";
-import express, { Express } from "express";
+import { userRoutes } from "@/web/routes/user";
+import express, { Router } from "express";
 import { container } from "tsyringe";
 
-const configureRoutes = (app: Express, NODE_ENV: NodeEnv): void => {
-  if (NODE_ENV === "development") {
-    app.use("/test", testRoutes);
+const getRoutes = (mode: Mode) => {
+  const router = Router();
+
+  if (mode === "development") {
+    router.use("/test", testRoutes);
   }
+
+  router.use("/user", userRoutes);
+
+  return router;
 };
 
-const startServer = () => {
-  const { SERVER_PORT, NODE_ENV } = container.resolve<Env>(Dependency.env);
+const startServer = (port: number, mode: Mode) => {
   const log = container.resolve<ILogger>(Dependency.logger);
 
   const app = express();
 
-  configureRoutes(app, NODE_ENV);
+  app.use(express.json()).use("/api", getRoutes(mode)).use(errorHandler);
 
-  app.use(express.json());
-  app.use(errorHandlerMiddleware);
-
-  const server = app.listen(SERVER_PORT, () =>
-    log("server", `Listening on port ${SERVER_PORT}`)
+  const server = app.listen(port, () =>
+    log("server", `Listening on port ${port}`)
   );
 
   return { server };

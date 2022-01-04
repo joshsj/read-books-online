@@ -4,14 +4,12 @@ const Length = <T extends { length: number }>(
   type: Runtype<T>,
   { min, max }: { min?: number; max?: number }
 ): Runtype<T> => {
-  let value = type;
-
   typeof min !== "undefined" &&
-    (value = value.withConstraint((x) => x.length > min));
+    (type = type.withConstraint((x) => x.length >= min));
   typeof max !== "undefined" &&
-    (value = value.withConstraint((x) => x.length < max));
+    (type = type.withConstraint((x) => x.length <= max));
 
-  return value;
+  return type;
 };
 
 export { Length };

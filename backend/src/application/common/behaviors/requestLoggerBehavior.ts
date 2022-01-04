@@ -1,6 +1,6 @@
 import { ILogger } from "@/application/common/interfaces";
 import { IBehavior } from "@/application/common/interfaces/cqrs";
-import { Dependency } from "@/common/dependency";
+import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";
 
 const requestLoggerBehavior: IBehavior = {
@@ -11,7 +11,10 @@ const requestLoggerBehavior: IBehavior = {
 
     const result = await next();
 
-    log("cqrs", `Returning result for ${request.requestName}`);
+    log(
+      "cqrs",
+      `${result ? "Returning result" : "No result"} for ${request.requestName}`
+    );
 
     return result;
   },

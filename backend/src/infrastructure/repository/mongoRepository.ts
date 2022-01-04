@@ -2,12 +2,16 @@ import { IRepository } from "@/application/common/interfaces/repository";
 import { Entity } from "@/domain/common/entity";
 import { Id, isId } from "@/domain/common/id";
 import { Model } from "mongoose";
+import { Runtype } from "runtypes";
 
 type Some<T> = T | T[];
 const arrayify = <T>(x: T | T[]): T[] => (Array.isArray(x) ? x : [x]);
 
 class MongoRepository<T extends Entity> implements IRepository<T> {
-  constructor(private readonly model: Model<T>) {}
+  constructor(
+    protected readonly helper: Runtype<T>,
+    protected readonly model: Model<T>
+  ) {}
 
   get(): Promise<T[]>;
   get(id: Id): Promise<T | undefined>;

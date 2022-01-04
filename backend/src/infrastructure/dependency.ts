@@ -1,12 +1,27 @@
+import { ILogger } from "@/application/common/interfaces";
 import { ICQRS } from "@/application/common/interfaces/cqrs";
-import { Dependency } from "@/application/dependency";
+import { IUserRepository } from "@/application/common/interfaces/repository";
+import { Dependency as ApplicationDependency } from "@/application/dependency";
+import { toDependencies } from "@/common/utilities";
+import { CQRS } from "@/infrastructure/cqrs";
+import { logger } from "@/infrastructure/logger";
+import { UserRepository } from "@/infrastructure/repository/userRepository";
 import { container } from "tsyringe";
-import { CQRS } from "./cqrs";
+
+const Dependency = {
+  ...ApplicationDependency,
+  ...toDependencies(["mode"]),
+};
 
 const registerInfrastructureDependencies = () => {
-  container.register<ICQRS>(Dependency.requestSender, {
-    useFactory: (c) => new CQRS(c),
-  });
+  container
+    .register<ILogger>(Dependency.logger, { useValue: logger })
+    .register<ICQRS>(Dependency.cqrs, {
+      useFactory: (c) => new CQRS(c),
+    })
+    .register<IUserRepository>(Dependency.userRepository, {
+      useValue: new UserRepository(),
+    });
 };
 
 export { Dependency, registerInfrastructureDependencies };

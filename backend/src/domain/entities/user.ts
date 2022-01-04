@@ -4,8 +4,10 @@ import { Role } from "@/domain/constants/role";
 import { Entity } from "../common/entity";
 
 const User = Entity.extend({
-  name: Length(String, { min: 1 }),
+  username: Length(String, { min: 1 }),
   roles: Length(Array(Role), { min: 1 }),
+  passwordHash: String,
+  passwordSalt: String,
 });
 
 type User = Static<typeof User>;

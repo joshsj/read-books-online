@@ -11,7 +11,7 @@ const testRequestHandler: IQueryHandler<TestRequest, { testResponse: string }> =
 
 const testRequestValidator: IValidator<TestRequest> = {
   requestName: "testRequest",
-  validate: ({ name }) => (typeof name !== "string" ? ["Name is invalid"] : []),
+  validate: async () => {},
 };
 
 export { TestRequest, testRequestHandler, testRequestValidator };

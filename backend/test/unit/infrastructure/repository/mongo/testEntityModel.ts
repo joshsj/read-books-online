@@ -1,14 +1,10 @@
-import {
-  model,
-  required,
-  Schema,
-} from "@/infrastructure/repository/mongo/models";
-import { EntitySchema } from "@/infrastructure/repository/mongo/models/entity";
+import { model, Schema } from "@/infrastructure/repository/models";
+import { EntitySchema } from "@/infrastructure/repository/models/entity";
 import { TestEntity } from "@/test/unit/domain/testEntity";
 
 const TestEntitySchema: Schema<TestEntity> = {
   ...EntitySchema,
-  min3: { type: String, required },
+  min3: { type: String },
 };
 
 const TestEntityModel = model<TestEntity>(

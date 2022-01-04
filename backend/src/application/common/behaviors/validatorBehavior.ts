@@ -1,4 +1,3 @@
-import { ValidationError } from "@/application/common/error/validationError";
 import { ILogger, IValidator } from "@/application/common/interfaces";
 import {
   IBehavior,
@@ -29,10 +28,8 @@ const validatorBehavior: IBehavior = {
       `Resolved ${validators.length} validators for request ${request.requestName}`
     );
 
-    const errors = validators.flatMap((v) => v.validate(request));
-
-    if (errors.length) {
-      throw new ValidationError(errors);
+    for (const validator of validators) {
+      await validator.validate(request);
     }
 
     log("cqrs", `Validation passed for request ${request.requestName}`);

@@ -1,21 +1,23 @@
 import { requestLoggerBehavior } from "@/application/common/behaviors/requestLoggerBehavior";
 import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
 import { IBehavior } from "@/application/common/interfaces/cqrs";
-import { Dependency as CommonDependency } from "@/common/dependency";
+import {
+  createUserRequestHandler,
+  createUserRequestValidator,
+} from "@/application/user/createUser";
 import { toDependencies } from "@/common/utilities";
 import { container } from "tsyringe";
 import { testRequestHandler, testRequestValidator } from "./test";
 
-const Dependency = {
-  ...CommonDependency,
-  ...toDependencies([
-    "handler",
-    "behavior",
-    "requestSender",
-    "validator",
-    "userRepository",
-  ]),
-};
+const Dependency = toDependencies([
+  "logger",
+  "handler",
+  "behavior",
+  "cqrs",
+  "validator",
+  "userRepository",
+  "hashingService",
+]);
 
 // TODO: replace with directory scanning
 const registerApplicationDependencies = () => {
@@ -27,8 +29,11 @@ const registerApplicationDependencies = () => {
     validatorBehavior,
   ]);
 
-  register(Dependency.handler, [testRequestHandler]);
-  register(Dependency.validator, [testRequestValidator]);
+  register(Dependency.handler, [testRequestHandler, createUserRequestHandler]);
+  register(Dependency.validator, [
+    testRequestValidator,
+    createUserRequestValidator,
+  ]);
 };
 
 export { Dependency, registerApplicationDependencies };

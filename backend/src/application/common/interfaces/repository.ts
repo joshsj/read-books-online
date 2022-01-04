@@ -1,5 +1,6 @@
 import { Entity } from "@/domain/common/entity";
 import { Id } from "@/domain/common/id";
+import { User } from "@/domain/entities/user";
 
 type IWritableRepository<T extends Entity> = {
   insert(entity: T): Promise<void>;
@@ -17,4 +18,13 @@ type IReadableRepository<T extends Entity> = {
 type IRepository<T extends Entity> = IReadableRepository<T> &
   IWritableRepository<T>;
 
-export { IWritableRepository, IReadableRepository, IRepository };
+type IUserRepository = IRepository<User> & {
+  getByUsername(username: string): Promise<User | undefined>;
+};
+
+export {
+  IWritableRepository,
+  IReadableRepository,
+  IRepository,
+  IUserRepository,
+};

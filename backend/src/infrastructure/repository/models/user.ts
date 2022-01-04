@@ -1,11 +1,13 @@
-import { model, Schema, required } from ".";
+import { model, Schema } from ".";
 import { User } from "@/domain/entities/user";
 import { EntitySchema } from "./entity";
 
 const UserSchema: Schema<User> = {
   ...EntitySchema,
-  name: { type: String, required },
-  roles: { type: [String], required },
+  username: { type: String },
+  passwordHash: { type: String },
+  passwordSalt: { type: String },
+  roles: { type: [String] },
 };
 
 const UserModel = model<User>("User", User, UserSchema);

@@ -1,10 +1,14 @@
-class ValidationError extends Error {
-  public readonly isEntityValidationError = true;
+import { BaseError } from "./baseError";
 
-  constructor(public readonly fields: ReadonlyArray<string>) {
+class ValidationError extends BaseError<"validationError"> {
+  name: "validationError" = "validationError";
+
+  constructor(problem: string | ReadonlyArray<string>) {
     super(
-      fields.length
-        ? `Failed to validate fields: ${fields.join(", ")}`
+      typeof problem === "string"
+        ? problem
+        : problem.length
+        ? `Failed to validate fields: ${problem.join(", ")}`
         : undefined
     );
   }

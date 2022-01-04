@@ -5,7 +5,7 @@ import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
 
 // Function must be declared with all 4 arguments to be understood by Express
-const errorHandlerMiddleware: ErrorRequestHandler = (err, {}, res, {}) => {
+const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
   const log = container.resolve<ILogger>(Dependency.logger);
 
   if (err instanceof ValidationError) {
@@ -13,9 +13,14 @@ const errorHandlerMiddleware: ErrorRequestHandler = (err, {}, res, {}) => {
     log("server", "Entity Validation error occurred");
     return;
   }
+  // TODO: add BaseError handling
 
-  log("server", "Unknown error occurred");
+  log(
+    "server",
+    "Unknown error occurred",
+    err instanceof Error ? err.message : err
+  );
   res.status(500).send("Internal error occurred");
 };
 
-export { errorHandlerMiddleware };
+export { errorHandler };

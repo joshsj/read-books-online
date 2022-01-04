@@ -1,6 +1,6 @@
 import { IRepository } from "@/application/common/interfaces/repository";
 import { newId } from "@/domain/common/id";
-import { MongoRepository } from "@/infrastructure/repository/mongo/mongoRepository";
+import { MongoRepository } from "@/infrastructure/repository/mongoRepository";
 import { TestEntity } from "@/test/unit/domain/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
@@ -17,7 +17,10 @@ describe("Mongo Repository", () => {
   const testEntityOne: TestEntity = { id: newId(), min3: "test entity one" };
   const testEntityTwo: TestEntity = { id: newId(), min3: "test entity two" };
   const model = TestEntityModel;
-  const repository: IRepository<TestEntity> = new MongoRepository(model);
+  const repository: IRepository<TestEntity> = new MongoRepository(
+    TestEntity,
+    model
+  );
 
   describe("Operations", () => {
     describe("Get", () => {
