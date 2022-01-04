@@ -1,7 +1,7 @@
 import {
   IQueryHandler,
   IRequest,
-  IValidator,
+  IRequestValidator,
 } from "@/application/common/interfaces/cqrs";
 
 type TestRequest = IRequest<"testRequest"> & { name: string };
@@ -12,7 +12,7 @@ const testRequestHandler: IQueryHandler<TestRequest, { testResponse: string }> =
     handle: async () => ({ testResponse: "hello world" }),
   };
 
-const testRequestValidator: IValidator<TestRequest> = {
+const testRequestValidator: IRequestValidator<TestRequest> = {
   requestName: "testRequest",
   validate: async () => {},
 };

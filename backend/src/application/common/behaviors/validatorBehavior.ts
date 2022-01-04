@@ -2,7 +2,7 @@ import {
   IBehavior,
   IRequest,
   IRequestName,
-  IValidator,
+  IRequestValidator,
 } from "@/application/common/interfaces/cqrs";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
@@ -13,7 +13,9 @@ const validatorBehavior: IBehavior = {
     const log = container.resolve<ILogger>(Dependency.logger);
 
     const validators = container
-      .resolveAll<IValidator<IRequest<IRequestName>>>(Dependency.validator)
+      .resolveAll<IRequestValidator<IRequest<IRequestName>>>(
+        Dependency.requestValidator
+      )
       .filter((v) => v.requestName === request.requestName);
 
     if (!validators.length) {

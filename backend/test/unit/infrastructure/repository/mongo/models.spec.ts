@@ -1,9 +1,9 @@
 import { newId } from "@/domain/common/id";
 import { ValidationError } from "@/application/common/error/validationError";
-import { TestEntity } from "@/test/unit/domain/testEntity";
+import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
-import { TestEntityModel } from "./testEntityModel";
+import { TestEntityModel } from "../../../../utilities/testEntityModel";
 
 describe("Mongo Models", () => {
   itUsesMongo();

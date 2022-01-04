@@ -11,12 +11,15 @@ import { testRequestHandler, testRequestValidator } from "./test";
 
 const Dependency = toDependencies([
   "logger",
-  "handler",
-  "behavior",
-  "cqrs",
-  "validator",
-  "userRepository",
   "hashingService",
+  // repository
+  "userRepository",
+  // cqrs
+  "cqrs",
+  "requestHandler",
+  "requestBehavior",
+  "requestValidator",
+  "requestAuthorizer",
 ]);
 
 // TODO: replace with directory scanning
@@ -24,13 +27,16 @@ const registerApplicationDependencies = () => {
   const register = <T>(token: symbol, arr: T[]) =>
     arr.forEach((x) => container.register<T>(token, { useValue: x }));
 
-  register<IBehavior>(Dependency.behavior, [
+  register<IBehavior>(Dependency.requestBehavior, [
     requestLoggerBehavior,
     validatorBehavior,
   ]);
 
-  register(Dependency.handler, [testRequestHandler, createUserRequestHandler]);
-  register(Dependency.validator, [
+  register(Dependency.requestHandler, [
+    testRequestHandler,
+    createUserRequestHandler,
+  ]);
+  register(Dependency.requestValidator, [
     testRequestValidator,
     createUserRequestValidator,
   ]);

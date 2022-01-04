@@ -1,7 +1,7 @@
 import {
   IBehavior,
   ICQRS,
-  IHandler,
+  IRequestHandler,
   IRequest,
   IRequestName,
   IResponseReturnValue,
@@ -18,7 +18,7 @@ class CQRS implements ICQRS {
 
   async send<T extends IRequest<IRequestName>>(request: T) {
     const handlers = this.container
-      .resolveAll<IHandler>(Dependency.handler)
+      .resolveAll<IRequestHandler>(Dependency.requestHandler)
       .filter((h) => h.handles === request.requestName);
 
     if (handlers.length === 0) {
@@ -33,8 +33,8 @@ class CQRS implements ICQRS {
 
     const handler = handlers[0]!;
 
-    const behaviors = this.container.isRegistered(Dependency.behavior)
-      ? this.container.resolveAll<IBehavior>(Dependency.behavior)
+    const behaviors = this.container.isRegistered(Dependency.requestBehavior)
+      ? this.container.resolveAll<IBehavior>(Dependency.requestBehavior)
       : [];
 
     if (!behaviors.length) {

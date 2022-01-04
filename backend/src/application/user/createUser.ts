@@ -1,7 +1,7 @@
 import { ValidationError } from "@/application/common/error/validationError";
 import {
   ICommandHandler,
-  IValidator,
+  IRequestValidator,
 } from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
@@ -20,7 +20,7 @@ const CreateUserRequest = Request("createUserRequest")
   .And(Record({ password: Password }));
 type CreateUserRequest = Static<typeof CreateUserRequest>;
 
-const createUserRequestValidator: IValidator<CreateUserRequest> = {
+const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
   requestName: "createUserRequest",
   validate: async (request) => {
     if (!CreateUserRequest.guard(request)) {

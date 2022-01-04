@@ -1,10 +1,10 @@
 import { IRepository } from "@/application/common/interfaces/repository";
 import { newId } from "@/domain/common/id";
 import { MongoRepository } from "@/infrastructure/repository/mongoRepository";
-import { TestEntity } from "@/test/unit/domain/testEntity";
+import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
-import { TestEntityModel } from "./testEntityModel";
+import { TestEntityModel } from "../../../../utilities/testEntityModel";
 
 describe("Mongo Repository", () => {
   itUsesMongo();

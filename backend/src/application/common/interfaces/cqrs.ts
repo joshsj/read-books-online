@@ -18,7 +18,7 @@ type ICommandHandler<TRequest extends IRequest<IRequestName>> =
     handle: (request: TRequest) => Promise<void>;
   };
 
-type IHandler = IQueryHandler<any, any> | ICommandHandler<any>;
+type IRequestHandler = IQueryHandler<any, any> | ICommandHandler<any>;
 
 type IBehavior = {
   handle: <T extends IResponseReturnValue>(
@@ -33,9 +33,14 @@ type ICQRS = {
   ) => Promise<IResponseReturnValue>;
 };
 
-type IValidator<T extends IRequest<IRequestName>> = {
+type IRequestValidator<T extends IRequest<IRequestName>> = {
   requestName: T["requestName"];
   validate: (t: T) => Promise<void | never>;
+};
+
+type IRequestAuthorizer<T extends IRequest<IRequestName>> = {
+  requestName: T["requestName"];
+  authorize: (t: T) => Promise<void | never>;
 };
 
 export {
@@ -47,6 +52,7 @@ export {
   ICommandHandler,
   IBehavior,
   ICQRS,
-  IHandler,
-  IValidator,
+  IRequestHandler,
+  IRequestValidator,
+  IRequestAuthorizer,
 };
