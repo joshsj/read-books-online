@@ -28,9 +28,7 @@ const startServer = (port: number, mode: Mode) => {
 
   app.use(express.json()).use("/api", getRoutes(mode)).use(errorHandler);
 
-  const server = app.listen(port, () =>
-    log("server", `Listening on port ${port}`)
-  );
+  const server = app.listen(port, () => log("server", `Listening on port ${port}`));
 
   return { server };
 };

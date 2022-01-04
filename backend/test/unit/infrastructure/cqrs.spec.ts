@@ -1,14 +1,7 @@
-import {
-  IBehavior,
-  IRequestHandler,
-} from "@/application/common/interfaces/cqrs";
+import { IBehavior, IRequestHandler } from "@/application/common/interfaces/cqrs";
 import { CQRS } from "@/infrastructure/cqrs";
 import { Dependency } from "@/infrastructure/dependency";
-import {
-  createTestBehavior,
-  createTestHandler,
-  createTestRequest,
-} from "@/test/utilities/mocks";
+import { createTestBehavior, createTestHandler, createTestRequest } from "@/test/utilities/mocks";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { container } from "tsyringe";

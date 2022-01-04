@@ -20,17 +20,13 @@ describe("Mongo Models", () => {
     it("Triggers for invalid IDs", async () => {
       const invalidEntity: TestEntity = { id: "invalid id", min3: "ab" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(
-        ValidationError
-      );
+      return expect(model.create(invalidEntity)).to.be.rejectedWith(ValidationError);
     });
 
     it("Triggers for invalid fields", async () => {
       const invalidEntity: TestEntity = { id: newId(), min3: "a" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(
-        ValidationError
-      );
+      return expect(model.create(invalidEntity)).to.be.rejectedWith(ValidationError);
     });
   });
 });

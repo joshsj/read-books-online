@@ -1,7 +1,4 @@
-import {
-  IBehavior,
-  IRequestAuthorizer,
-} from "@/application/common/interfaces/cqrs";
+import { IBehavior, IRequestAuthorizer } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";
 import { ILogger } from "../interfaces/logger";
@@ -20,10 +17,7 @@ const authorizerBehavior: IBehavior = {
       return await next();
     }
 
-    log(
-      "cqrs",
-      `Resolved ${authorizers.length} authorizers for request ${request.requestName}`
-    );
+    log("cqrs", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
 
     for (const authorizer of authorizers) {
       await authorizer.authorize(request);

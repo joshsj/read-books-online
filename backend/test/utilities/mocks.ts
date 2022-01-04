@@ -27,9 +27,7 @@ const createTestBehavior = (outcome: Outcome): IBehavior => ({
   },
 });
 
-const createTestAuthorizer = (
-  outcome: Outcome
-): IRequestAuthorizer<TestRequest> => ({
+const createTestAuthorizer = (outcome: Outcome): IRequestAuthorizer<TestRequest> => ({
   requestName: "testRequest",
   authorize: async () => {
     if (outcome === "fails") {
@@ -38,9 +36,7 @@ const createTestAuthorizer = (
   },
 });
 
-const createTestValidator = (
-  outcome: Outcome
-): IRequestValidator<TestRequest> => ({
+const createTestValidator = (outcome: Outcome): IRequestValidator<TestRequest> => ({
   requestName: "testRequest",
   validate: async () => {
     if (outcome === "fails") {

@@ -25,11 +25,7 @@ router.get(
       name: "the name is bond",
     };
 
-    ok(
-      res,
-      (await container.resolve<ICQRS>(Dependency.cqrs).send(request)) ??
-        undefined
-    );
+    ok(res, (await container.resolve<ICQRS>(Dependency.cqrs).send(request)) ?? undefined);
   })
 );
 

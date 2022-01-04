@@ -14,11 +14,7 @@ class ValidationError extends BaseError<"validationError"> {
       return;
     }
 
-    super(
-      problem.length
-        ? `Failed to validate fields: ${problem.join(", ")}`
-        : undefined
-    );
+    super(problem.length ? `Failed to validate fields: ${problem.join(", ")}` : undefined);
   }
 }
 

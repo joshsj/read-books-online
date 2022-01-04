@@ -17,10 +17,7 @@ describe("Mongo Repository", () => {
   const testEntityOne: TestEntity = { id: newId(), min3: "test entity one" };
   const testEntityTwo: TestEntity = { id: newId(), min3: "test entity two" };
   const model = TestEntityModel;
-  const repository: IRepository<TestEntity> = new MongoRepository(
-    TestEntity,
-    model
-  );
+  const repository: IRepository<TestEntity> = new MongoRepository(TestEntity, model);
 
   describe("Operations", () => {
     describe("Get", () => {

@@ -7,10 +7,6 @@ const TestEntitySchema: Schema<TestEntity> = {
   min3: { type: String },
 };
 
-const TestEntityModel = model<TestEntity>(
-  "TestEntity",
-  TestEntity,
-  TestEntitySchema
-);
+const TestEntityModel = model<TestEntity>("TestEntity", TestEntity, TestEntitySchema);
 
 export { TestEntitySchema, TestEntityModel };

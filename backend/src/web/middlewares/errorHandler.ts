@@ -15,11 +15,7 @@ const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
   }
   // TODO: add BaseError handling
 
-  log(
-    "server",
-    "Unknown error occurred",
-    err instanceof Error ? err.message : err
-  );
+  log("server", "Unknown error occurred", err instanceof Error ? err.message : err);
   res.status(500).send("Internal error occurred");
 };
 

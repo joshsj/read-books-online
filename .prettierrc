@@ -1,5 +1,14 @@
 {
+  "endOfLine": "lf",
+
   "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 120
+      }
+    },
+
     {
       "files": "*.md",
       "options": {

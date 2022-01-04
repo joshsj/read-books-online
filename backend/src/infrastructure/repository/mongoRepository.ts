@@ -8,10 +8,7 @@ type Some<T> = T | T[];
 const arrayify = <T>(x: T | T[]): T[] => (Array.isArray(x) ? x : [x]);
 
 class MongoRepository<T extends Entity> implements IRepository<T> {
-  constructor(
-    protected readonly helper: Runtype<T>,
-    protected readonly model: Model<T>
-  ) {}
+  constructor(protected readonly helper: Runtype<T>, protected readonly model: Model<T>) {}
 
   get(): Promise<T[]>;
   get(id: Id): Promise<T | undefined>;

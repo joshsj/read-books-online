@@ -3,10 +3,7 @@ import { Mode } from "@/application/common/interfaces/mode";
 import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { registerApplicationDependencies } from "@/application/dependency";
 import { Env, getEnv } from "@/env";
-import {
-  Dependency,
-  registerInfrastructureDependencies,
-} from "@/infrastructure/dependency";
+import { Dependency, registerInfrastructureDependencies } from "@/infrastructure/dependency";
 import { HashingService } from "@/infrastructure/hashingService";
 import { logger } from "@/infrastructure/logger";
 import { createMongoConnection } from "@/infrastructure/repository/connection";

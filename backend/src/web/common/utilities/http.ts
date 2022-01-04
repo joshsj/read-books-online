@@ -6,9 +6,7 @@ type ResponseHelper = {
   noContent(): void;
 };
 
-type AsyncRequestHandler = (
-  ..._: [...Parameters<RequestHandler>, ResponseHelper]
-) => Promise<void>;
+type AsyncRequestHandler = (..._: [...Parameters<RequestHandler>, ResponseHelper]) => Promise<void>;
 
 const handleAsync =
   (handler: AsyncRequestHandler): RequestHandler =>

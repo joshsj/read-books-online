@@ -11,10 +11,7 @@ const requestLoggerBehavior: IBehavior = {
 
     const result = await next();
 
-    log(
-      "cqrs",
-      `Responding to ${request.requestName} with ${result ? result : "nothing"}`
-    );
+    log("cqrs", `Responding to ${request.requestName} with ${result ? result : "nothing"}`);
 
     return result;
   },

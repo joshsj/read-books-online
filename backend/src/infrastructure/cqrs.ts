@@ -26,9 +26,7 @@ class CQRS implements ICQRS {
     }
 
     if (handlers.length > 1) {
-      throw new Error(
-        `Multiple handlers registered for request ${request.requestName}`
-      );
+      throw new Error(`Multiple handlers registered for request ${request.requestName}`);
     }
 
     const handler = handlers[0]!;

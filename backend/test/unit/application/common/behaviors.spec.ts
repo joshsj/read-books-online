@@ -41,10 +41,7 @@ describe("Behaviors", () => {
     it("Passes for valid requests", async () => {
       const authorizer = createTestAuthorizer("passes");
 
-      container.register<IRequestAuthorizer<TestRequest>>(
-        Dependency.requestAuthorizer,
-        { useValue: authorizer }
-      );
+      container.register<IRequestAuthorizer<TestRequest>>(Dependency.requestAuthorizer, { useValue: authorizer });
 
       return expect(new CQRS().send(createTestRequest())).to.be.fulfilled;
     });
@@ -52,10 +49,7 @@ describe("Behaviors", () => {
     it("Fails for invalid requests", () => {
       const authorizer = createTestAuthorizer("fails");
 
-      container.register<IRequestAuthorizer<TestRequest>>(
-        Dependency.requestAuthorizer,
-        { useValue: authorizer }
-      );
+      container.register<IRequestAuthorizer<TestRequest>>(Dependency.requestAuthorizer, { useValue: authorizer });
 
       return expect(new CQRS().send(createTestRequest())).to.be.rejected;
     });
@@ -71,10 +65,7 @@ describe("Behaviors", () => {
     it("Passes for valid requests", async () => {
       const validator = createTestValidator("passes");
 
-      container.register<IRequestValidator<TestRequest>>(
-        Dependency.requestValidator,
-        { useValue: validator }
-      );
+      container.register<IRequestValidator<TestRequest>>(Dependency.requestValidator, { useValue: validator });
 
       return expect(new CQRS().send(createTestRequest())).to.be.fulfilled;
     });
@@ -82,10 +73,7 @@ describe("Behaviors", () => {
     it("Fails for invalid requests", () => {
       const validator = createTestValidator("fails");
 
-      container.register<IRequestValidator<TestRequest>>(
-        Dependency.requestValidator,
-        { useValue: validator }
-      );
+      container.register<IRequestValidator<TestRequest>>(Dependency.requestValidator, { useValue: validator });
 
       return expect(new CQRS().send(createTestRequest())).to.be.rejected;
     });

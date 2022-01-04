@@ -1,9 +1,4 @@
-import {
-  IBehavior,
-  IRequest,
-  IRequestName,
-  IRequestValidator,
-} from "@/application/common/interfaces/cqrs";
+import { IBehavior, IRequest, IRequestName, IRequestValidator } from "@/application/common/interfaces/cqrs";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";
@@ -13,23 +8,15 @@ const validatorBehavior: IBehavior = {
     const log = container.resolve<ILogger>(Dependency.logger);
 
     const validators = container
-      .resolveAll<IRequestValidator<IRequest<IRequestName>>>(
-        Dependency.requestValidator
-      )
+      .resolveAll<IRequestValidator<IRequest<IRequestName>>>(Dependency.requestValidator)
       .filter((v) => v.requestName === request.requestName);
 
     if (!validators.length) {
-      log(
-        "cqrs",
-        `Skipping validation for request ${request.requestName}, no validators were resolved`
-      );
+      log("cqrs", `Skipping validation for request ${request.requestName}, no validators were resolved`);
       return await next();
     }
 
-    log(
-      "cqrs",
-      `Resolved ${validators.length} validators for request ${request.requestName}`
-    );
+    log("cqrs", `Resolved ${validators.length} validators for request ${request.requestName}`);
 
     for (const validator of validators) {
       await validator.validate(request);

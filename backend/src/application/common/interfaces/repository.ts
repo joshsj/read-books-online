@@ -15,16 +15,10 @@ type IReadableRepository<T extends Entity> = {
   get(id: Id[]): Promise<T[]>;
 };
 
-type IRepository<T extends Entity> = IReadableRepository<T> &
-  IWritableRepository<T>;
+type IRepository<T extends Entity> = IReadableRepository<T> & IWritableRepository<T>;
 
 type IUserRepository = IRepository<User> & {
   getByUsername(username: string): Promise<User | undefined>;
 };
 
-export {
-  IWritableRepository,
-  IReadableRepository,
-  IRepository,
-  IUserRepository,
-};
+export { IWritableRepository, IReadableRepository, IRepository, IUserRepository };

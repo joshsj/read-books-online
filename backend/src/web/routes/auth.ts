@@ -19,22 +19,14 @@ routes.post(
       throw new ValidationError();
     }
 
-    const userRepository = container.resolve<IUserRepository>(
-      Dependency.userRepository
-    );
-    const hashingService = container.resolve<IHashingService>(
-      Dependency.hashingService
-    );
-    const jwtConfiguration = container.resolve<JWTConfiguration>(
-      Dependency.jwtConfiguration
-    );
+    const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
+    const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
+    const jwtConfiguration = container.resolve<JWTConfiguration>(Dependency.jwtConfiguration);
 
     const user = await userRepository.getByUsername(accountDto.username);
 
     ensure(!!user);
-    ensure(
-      await hashingService.compare(accountDto.password, user.passwordHash)
-    );
+    ensure(await hashingService.compare(accountDto.password, user.passwordHash));
 
     const payload: JWTPayload = { sub: user.id };
     const dto: TokenDto = {

@@ -12,9 +12,7 @@ const authenticator: Handler = handleAsync(async (req, {}, next) => {
   // TODO: add error message
   ensure(!!token);
 
-  const jwtConfiguration = container.resolve<JWTConfiguration>(
-    Dependency.jwtConfiguration
-  );
+  const jwtConfiguration = container.resolve<JWTConfiguration>(Dependency.jwtConfiguration);
 
   jwt.verify(token, jwtConfiguration.secret, {
     algorithms: [jwtConfiguration.algorithm],

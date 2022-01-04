@@ -1,8 +1,5 @@
 import { ValidationError } from "@/application/common/error/validationError";
-import {
-  ICommandHandler,
-  IRequestValidator,
-} from "@/application/common/interfaces/cqrs";
+import { ICommandHandler, IRequestValidator } from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { Request } from "@/application/common/models/request";
@@ -28,16 +25,12 @@ const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
       throw new ValidationError();
     }
 
-    const userRepository = container.resolve<IUserRepository>(
-      Dependency.userRepository
-    );
+    const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
     const currentUser = await userRepository.getByUsername(request.username);
 
     ensure(
       typeof currentUser === "undefined",
-      new ValidationError(
-        `User already exists with username ${request.username}`
-      )
+      new ValidationError(`User already exists with username ${request.username}`)
     );
   },
 };
@@ -45,12 +38,8 @@ const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
 const createUserRequestHandler: ICommandHandler<CreateUserRequest> = {
   handles: "createUserRequest",
   handle: async ({ username, password }) => {
-    const hashingService = container.resolve<IHashingService>(
-      Dependency.hashingService
-    );
-    const userRepository = container.resolve<UserRepository>(
-      Dependency.userRepository
-    );
+    const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
+    const userRepository = container.resolve<UserRepository>(Dependency.userRepository);
 
     const passwordSalt = await hashingService.salt();
     const passwordHash = await hashingService.hash(password, passwordSalt);
@@ -67,8 +56,4 @@ const createUserRequestHandler: ICommandHandler<CreateUserRequest> = {
   },
 };
 
-export {
-  CreateUserRequest,
-  createUserRequestValidator,
-  createUserRequestHandler,
-};
+export { CreateUserRequest, createUserRequestValidator, createUserRequestHandler };
