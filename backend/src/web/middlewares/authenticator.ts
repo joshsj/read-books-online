@@ -6,7 +6,7 @@ import { Handler } from "express";
 import jwt from "jsonwebtoken";
 import { container } from "tsyringe";
 
-const authentication: Handler = handleAsync(async (req, {}, next) => {
+const authenticator: Handler = handleAsync(async (req, {}, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   // TODO: add error message
@@ -23,4 +23,4 @@ const authentication: Handler = handleAsync(async (req, {}, next) => {
   next();
 });
 
-export { authentication };
+export { authenticator };

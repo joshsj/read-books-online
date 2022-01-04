@@ -1,10 +1,10 @@
+import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
 import { TestRequest } from "@/application/test";
-import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { handleAsync, ok } from "@/web/common/utilities/http";
+import { authenticator } from "@/web/middlewares/authenticator";
 import { Router } from "express";
 import { container } from "tsyringe";
-import { authentication } from "../middlewares/authentication";
 
 const router = Router();
 
@@ -35,7 +35,7 @@ router.get(
 
 router.get(
   "/auth",
-  authentication,
+  authenticator,
   handleAsync(async ({}, {}, {}, { ok }) => {
     ok({ authenticated: "yup" });
   })
