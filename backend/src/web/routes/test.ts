@@ -1,7 +1,7 @@
 import { Dependency } from "@/application/dependency";
 import { TestRequest } from "@/application/test";
 import { ICQRS } from "@/application/common/interfaces/cqrs";
-import { handleAsync, ok } from "@/web/utilities";
+import { handleAsync, ok } from "@/web/common/utilities/http";
 import { Router } from "express";
 import { container } from "tsyringe";
 

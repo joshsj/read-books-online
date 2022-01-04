@@ -10,7 +10,7 @@ import { container } from "tsyringe";
 
 const Dependency = {
   ...ApplicationDependency,
-  ...toDependencies(["mode"]),
+  ...toDependencies(["mode", "jwtConfiguration"]),
 };
 
 const registerInfrastructureDependencies = () => {

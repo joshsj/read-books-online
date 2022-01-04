@@ -1,4 +1,4 @@
-import { Runtype } from "runtypes";
+import { Runtype, String } from "runtypes";
 
 const Length = <T extends { length: number }>(
   type: Runtype<T>,
@@ -12,4 +12,7 @@ const Length = <T extends { length: number }>(
   return type;
 };
 
-export { Length };
+const Username = Length(String, { min: 3 });
+const Password = Length(String, { min: 8 });
+
+export { Length, Username, Password };

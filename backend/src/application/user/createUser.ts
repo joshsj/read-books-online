@@ -5,17 +5,17 @@ import { IHashingService } from "@/application/common/interfaces/hashingService"
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { Request } from "@/application/common/models/request";
 import { Dependency } from "@/application/dependency";
-import { guard } from "@/common/utilities";
-import { Length } from "@/domain/common/constrainedTypes";
+import { ensure } from "@/common/utilities";
+import { Password } from "@/domain/common/constrainedTypes";
 import { newId } from "@/domain/common/id";
 import { User } from "@/domain/entities/user";
 import { UserRepository } from "@/infrastructure/repository/userRepository";
-import { Record, Static, String } from "runtypes";
+import { Record, Static } from "runtypes";
 import { container } from "tsyringe";
 
 const CreateUserRequest = Request("createUserRequest")
   .And(User.pick("username"))
-  .And(Record({ password: Length(String, { min: 8 }) }));
+  .And(Record({ password: Password }));
 type CreateUserRequest = Static<typeof CreateUserRequest>;
 
 const createUserRequestValidator: IValidator<CreateUserRequest> = {
@@ -23,7 +23,7 @@ const createUserRequestValidator: IValidator<CreateUserRequest> = {
   validate: async (request) => {
     if (!CreateUserRequest.guard(request)) {
       // TODO: better error message
-      throw new ValidationError("Invalid request");
+      throw new ValidationError();
     }
 
     const userRepository = container.resolve<IUserRepository>(
@@ -31,8 +31,8 @@ const createUserRequestValidator: IValidator<CreateUserRequest> = {
     );
     const currentUser = await userRepository.getByUsername(request.username);
 
-    guard(
-      typeof currentUser !== "undefined",
+    ensure(
+      typeof currentUser === "undefined",
       new ValidationError(
         `User already exists with username ${request.username}`
       )

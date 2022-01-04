@@ -10,4 +10,9 @@ type IValidator<T extends IRequest<IRequestName>> = {
 
 type Mode = "development" | "production";
 
-export { Mode, ILoggerContext, ILogger, IValidator };
+type JWTConfiguration = {
+  secret: string;
+  expiresIn: string;
+};
+
+export { Mode, ILoggerContext, ILogger, IValidator, JWTConfiguration };

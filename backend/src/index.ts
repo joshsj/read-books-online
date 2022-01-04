@@ -1,5 +1,4 @@
-import { startServer } from "@/web/server";
-import { Mode } from "@/application/common/interfaces";
+import { JWTConfiguration, Mode } from "@/application/common/interfaces";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { registerApplicationDependencies } from "@/application/dependency";
 import { Env, getEnv } from "@/env";
@@ -9,14 +8,21 @@ import {
 } from "@/infrastructure/dependency";
 import { logger } from "@/infrastructure/logger";
 import { createMongoConnection } from "@/infrastructure/repository/connection";
+import { startServer } from "@/web/server";
 import { container } from "tsyringe";
 import { HashingService } from "./infrastructure/hashingService";
 
-const registerInitDependencies = ({ NODE_ENV, SALT_ROUNDS }: Env) => {
+const registerInitDependencies = (env: Env) => {
   container
-    .register<Mode>(Dependency.mode, { useValue: NODE_ENV })
+    .register<Mode>(Dependency.mode, { useValue: env.NODE_ENV })
     .register<IHashingService>(Dependency.hashingService, {
-      useValue: new HashingService(SALT_ROUNDS),
+      useValue: new HashingService(env.HASHING_SALT_ROUNDS),
+    })
+    .register<JWTConfiguration>(Dependency.jwtConfiguration, {
+      useValue: {
+        secret: env.JWT_SECRET,
+        expiresIn: env.JWT_EXPIRES_IN,
+      },
     });
 };
 

@@ -7,13 +7,13 @@ const toDependencies = <T extends string>(
     Object.assign({}, ...names.map((n) => ({ [n]: Symbol.for(n) })))
   );
 
-type Guard = (condition: boolean, error?: string | Error) => asserts condition;
+type Ensure = (condition: boolean, error?: string | Error) => asserts condition;
 
-const guard: Guard = (
+const ensure: Ensure = (
   condition: boolean,
   error?: string | Error
 ): asserts condition => {
-  if (condition) {
+  if (!condition) {
     throw typeof error === "string" ? new Error(error) : error;
   }
 };
@@ -22,4 +22,4 @@ type Class<T, TParam = any> = {
   new (...params: TParam[]): T;
 };
 
-export { Dependencies, toDependencies, guard, Guard, Class };
+export { Dependencies, toDependencies, ensure, Ensure, Class };
