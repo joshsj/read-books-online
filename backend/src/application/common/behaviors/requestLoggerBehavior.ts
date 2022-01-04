@@ -7,13 +7,13 @@ const requestLoggerBehavior: IBehavior = {
   handle: async (request, next) => {
     const log = container.resolve<ILogger>(Dependency.logger);
 
-    log("cqrs", `Received ${request.requestName}`);
+    log("cqrs", `Received ${request}`);
 
     const result = await next();
 
     log(
       "cqrs",
-      `${result ? "Returning result" : "No result"} for ${request.requestName}`
+      `Responding to ${request.requestName} with ${result ? result : "nothing"}`
     );
 
     return result;
