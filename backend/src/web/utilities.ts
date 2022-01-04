@@ -18,7 +18,7 @@ const handleAsync =
 const ok = (res: Response, result?: object) => {
   res.status(200);
 
-  result ? res.send(result) : res.end();
+  result ? res.json(result) : res.end();
 };
 const created = (res: Response) => res.status(201).end();
 const noContent = (res: Response) => res.status(204).end();
