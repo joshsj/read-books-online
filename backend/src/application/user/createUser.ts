@@ -1,6 +1,8 @@
 import { ValidationError } from "@/application/common/error/validationError";
-import { IValidator } from "@/application/common/interfaces";
-import { ICommandHandler } from "@/application/common/interfaces/cqrs";
+import {
+  ICommandHandler,
+  IValidator,
+} from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { Request } from "@/application/common/models/request";

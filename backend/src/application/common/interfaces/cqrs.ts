@@ -33,6 +33,11 @@ type ICQRS = {
   ) => Promise<IResponseReturnValue>;
 };
 
+type IValidator<T extends IRequest<IRequestName>> = {
+  requestName: T["requestName"];
+  validate: (t: T) => Promise<void | never>;
+};
+
 export {
   IRequestName,
   IResponseReturnValue,
@@ -43,4 +48,5 @@ export {
   IBehavior,
   ICQRS,
   IHandler,
+  IValidator,
 };

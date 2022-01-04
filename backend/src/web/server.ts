@@ -1,4 +1,5 @@
-import { ILogger, Mode } from "@/application/common/interfaces";
+import { ILogger } from "@/application/common/interfaces/logger";
+import { Mode } from "@/application/common/interfaces/mode";
 import { Dependency } from "@/infrastructure/dependency";
 import { errorHandler } from "@/web/middlewares/errorHandler";
 import { authRoutes } from "@/web/routes/auth";
@@ -25,11 +26,7 @@ const startServer = (port: number, mode: Mode) => {
 
   const app = express();
 
-  app
-    .use(express.json())
-
-    .use("/api", getRoutes(mode))
-    .use(errorHandler);
+  app.use(express.json()).use("/api", getRoutes(mode)).use(errorHandler);
 
   const server = app.listen(port, () =>
     log("server", `Listening on port ${port}`)

@@ -1,4 +1,4 @@
-import { ILogger } from "@/application/common/interfaces";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { IBehavior } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";

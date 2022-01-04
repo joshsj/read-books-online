@@ -1,4 +1,4 @@
-import { Mode } from "@/application/common/interfaces";
+import { Mode } from "@/application/common/interfaces/mode";
 import { Algorithm } from "jsonwebtoken";
 
 type Env = Readonly<{

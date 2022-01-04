@@ -1,7 +1,7 @@
 import { ValidationError } from "@/application/common/error/validationError";
-import { JWTConfiguration } from "@/application/common/interfaces";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
+import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { ensure } from "@/common/utilities";
 import { Dependency } from "@/infrastructure/dependency";
 import { AccountDto, JWTPayload, TokenDto } from "@/web/common/models/auth";

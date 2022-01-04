@@ -1,4 +1,4 @@
-import { ILogger } from "@/application/common/interfaces";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { Dependency as ApplicationDependency } from "@/application/dependency";

@@ -1,16 +1,17 @@
-import { JWTConfiguration, Mode } from "@/application/common/interfaces";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
+import { Mode } from "@/application/common/interfaces/mode";
+import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { registerApplicationDependencies } from "@/application/dependency";
 import { Env, getEnv } from "@/env";
 import {
   Dependency,
   registerInfrastructureDependencies,
 } from "@/infrastructure/dependency";
+import { HashingService } from "@/infrastructure/hashingService";
 import { logger } from "@/infrastructure/logger";
 import { createMongoConnection } from "@/infrastructure/repository/connection";
 import { startServer } from "@/web/server";
 import { container } from "tsyringe";
-import { HashingService } from "./infrastructure/hashingService";
 
 const registerInitDependencies = (env: Env) => {
   container

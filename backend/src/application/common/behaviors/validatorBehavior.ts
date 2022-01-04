@@ -1,9 +1,10 @@
-import { ILogger, IValidator } from "@/application/common/interfaces";
 import {
   IBehavior,
   IRequest,
   IRequestName,
+  IValidator,
 } from "@/application/common/interfaces/cqrs";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";
 

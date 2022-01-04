@@ -1,4 +1,4 @@
-import { ILogger } from "@/application/common/interfaces";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { EOL } from "os";
 
 const pretty = (data: any) => (data ? JSON.stringify(data) : "");

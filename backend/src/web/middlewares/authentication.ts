@@ -1,4 +1,4 @@
-import { JWTConfiguration } from "@/application/common/interfaces";
+import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { ensure } from "@/common/utilities";
 import { Dependency } from "@/infrastructure/dependency";
 import { handleAsync } from "@/web/common/utilities/http";
