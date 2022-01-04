@@ -1,7 +1,7 @@
 import { ValidationError } from "@/application/common/error/validationError";
+import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
-import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { ensure } from "@/common/utilities";
 import { Dependency } from "@/infrastructure/dependency";
 import { AccountDto, JWTPayload, TokenDto } from "@/web/common/models/auth";
@@ -14,14 +14,16 @@ const routes = Router();
 
 routes.post(
   "",
-  handleAsync(async ({ body: accountDto }, {}, {}, { ok }) => {
+  handleAsync(async ({ body: accountDto }, {}, { ok }) => {
     if (!AccountDto.guard(accountDto)) {
       throw new ValidationError();
     }
 
     const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
     const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
-    const jwtConfiguration = container.resolve<JWTConfiguration>(Dependency.jwtConfiguration);
+    const {
+      jwt: { secret, expiresIn, algorithm },
+    } = container.resolve<IConfiguration>(Dependency.configuration);
 
     const user = await userRepository.getByUsername(accountDto.username);
 
@@ -30,9 +32,9 @@ routes.post(
 
     const payload: JWTPayload = { sub: user.id };
     const dto: TokenDto = {
-      token: jwt.sign(payload, jwtConfiguration.secret, {
-        algorithm: jwtConfiguration.algorithm,
-        expiresIn: jwtConfiguration.expiresIn,
+      token: jwt.sign(payload, secret, {
+        algorithm: algorithm,
+        expiresIn: expiresIn,
       }),
     };
 

@@ -19,11 +19,15 @@ const createRequestHelper = (req: Request, res: Response) => ({
 });
 
 type RequestHelper = ReturnType<typeof createRequestHelper>;
-type AsyncRequestHandler = (..._: [...Parameters<RequestHandler>, RequestHelper]) => Promise<void>;
+type AsyncRequestHandler = (
+  ...args: [Parameters<RequestHandler>[0], Parameters<RequestHandler>[1], RequestHelper]
+) => Promise<void>;
 
 const handleAsync =
   (handler: AsyncRequestHandler): RequestHandler =>
   (req, res, next) =>
-    handler(req, res, next, createRequestHelper(req, res)).catch(next);
+    handler(req, res, createRequestHelper(req, res))
+      .then(() => next())
+      .catch((e) => next(e ?? new Error()));
 
 export { RequestHelper, AsyncRequestHandler, handleAsync };

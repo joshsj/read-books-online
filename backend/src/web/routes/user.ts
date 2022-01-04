@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
   "",
-  handleAsync(async ({ body }, {}, {}, { created }) => {
+  handleAsync(async ({ body }, {}, { created }) => {
     await container.resolve<ICQRS>(Dependency.cqrs).send(body);
 
     created();

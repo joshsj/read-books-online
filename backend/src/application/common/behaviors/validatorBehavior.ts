@@ -12,17 +12,17 @@ const validatorBehavior: IBehavior = {
       .filter((v) => v.requestName === request.requestName);
 
     if (!validators.length) {
-      log("cqrs", `Skipping validation for request ${request.requestName}, no validators were resolved`);
+      log("validation", `Skipping validation for request ${request.requestName}, no validators were resolved`);
       return await next();
     }
 
-    log("cqrs", `Resolved ${validators.length} validators for request ${request.requestName}`);
+    log("validation", `Resolved ${validators.length} validators for request ${request.requestName}`);
 
     for (const validator of validators) {
       await validator.validate(request);
     }
 
-    log("cqrs", `Validation passed for request ${request.requestName}`);
+    log("validation", `Validation passed for request ${request.requestName}`);
 
     return await next();
   },

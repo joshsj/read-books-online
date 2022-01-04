@@ -1,4 +1,5 @@
 import { ICurrentUserService } from "@/application/common/interfaces/currentUserService";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { Dependency } from "@/application/dependency";
 import { ensure } from "@/common/utilities";
@@ -12,12 +13,14 @@ const configureContainer = async (container: DependencyContainer, { sub: id }: J
   const currentUser = await container.resolve<IUserRepository>(Dependency.userRepository).getByUsername(id);
   ensure(!!currentUser);
 
+  container.resolve<ILogger>(Dependency.logger)("prcp", `Providing current user ${currentUser.username}`);
+
   container.register<ICurrentUserService>(Dependency.currentUserService, {
     useValue: { id, user: currentUser },
   });
 };
 
-const perRequestContainerProvider: Handler = handleAsync(async ({}, {}, next, { getToken, setPerRequestContainer }) => {
+const perRequestContainerProvider: Handler = handleAsync(async ({}, {}, { getToken, setPerRequestContainer }) => {
   const token = getToken();
   ensure(!!token);
 
@@ -28,7 +31,5 @@ const perRequestContainerProvider: Handler = handleAsync(async ({}, {}, next, { 
   await configureContainer(requestContainer, payload);
 
   setPerRequestContainer(requestContainer);
-
-  next();
 });
 export { perRequestContainerProvider };

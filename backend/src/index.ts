@@ -1,6 +1,6 @@
+import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { Mode } from "@/application/common/interfaces/mode";
-import { JWTConfiguration } from "@/application/common/models/jwtConfiguration";
 import { registerApplicationDependencies } from "@/application/dependency";
 import { Env, getEnv } from "@/env";
 import { Dependency, registerInfrastructureDependencies } from "@/infrastructure/dependency";
@@ -16,11 +16,15 @@ const registerInitDependencies = (env: Env) => {
     .register<IHashingService>(Dependency.hashingService, {
       useValue: new HashingService(env.HASHING_SALT_ROUNDS),
     })
-    .register<JWTConfiguration>(Dependency.jwtConfiguration, {
+    .register<IConfiguration>(Dependency.configuration, {
       useValue: {
-        secret: env.JWT_SECRET,
-        expiresIn: env.JWT_EXPIRES_IN,
-        algorithm: env.JWT_ALGORITHM,
+        jwt: {
+          secret: env.JWT_SECRET,
+          expiresIn: env.JWT_EXPIRES_IN,
+          algorithm: env.JWT_ALGORITHM,
+        },
+        hashing: { saltRounds: env.HASHING_SALT_ROUNDS },
+        mode: env.NODE_ENV,
       },
     });
 };

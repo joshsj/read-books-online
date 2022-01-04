@@ -13,17 +13,17 @@ const authorizerBehavior: IBehavior = {
       : [];
 
     if (!authorizers.length) {
-      log("cqrs", `No authorizers found for request ${request.requestName}`);
+      log("authorization", `No authorizers found for request ${request.requestName}`);
       return await next();
     }
 
-    log("cqrs", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
+    log("authorization", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
 
     for (const authorizer of authorizers) {
       await authorizer.authorize(request);
     }
 
-    log("cqrs", `Authorized request ${request.requestName}`);
+    log("authorization", `Passed for request ${request.requestName}`);
 
     return await next();
   },

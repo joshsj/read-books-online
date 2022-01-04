@@ -1,20 +1,24 @@
 import { Mode } from "@/application/common/interfaces/mode";
+import { JWTAlgorithm } from "@/domain/common/constrainedTypes";
 import { Algorithm } from "jsonwebtoken";
+import { Number, Record, Static, String } from "runtypes";
 
-type Env = Readonly<{
-  SERVER_PORT: number;
+const Env = Record({
+  SERVER_PORT: Number,
 
-  NODE_ENV: Mode;
+  NODE_ENV: Mode,
 
-  MONGO_URI: string;
-  MONGO_DB_NAME: string;
+  MONGO_URI: String,
+  MONGO_DB_NAME: String,
 
-  HASHING_SALT_ROUNDS: number;
+  HASHING_SALT_ROUNDS: Number,
 
-  JWT_SECRET: string;
-  JWT_EXPIRES_IN: string;
-  JWT_ALGORITHM: Algorithm;
-}>;
+  JWT_SECRET: String,
+  JWT_EXPIRES_IN: String,
+  JWT_ALGORITHM: JWTAlgorithm,
+}).asReadonly();
+
+type Env = Static<typeof Env>;
 
 type FileEnv = { [K in keyof Env]: string };
 
@@ -30,16 +34,26 @@ const getEnv = (): Env => {
     JWT_ALGORITHM,
   } = process.env as FileEnv;
 
-  return Object.freeze({
+  const env: Env = {
+    SERVER_PORT: parseInt(SERVER_PORT),
+    NODE_ENV: NODE_ENV as Mode,
     MONGO_URI,
     MONGO_DB_NAME,
     JWT_SECRET,
     JWT_EXPIRES_IN,
-    SERVER_PORT: parseInt(SERVER_PORT),
-    NODE_ENV: NODE_ENV as Mode,
     JWT_ALGORITHM: JWT_ALGORITHM as Algorithm,
     HASHING_SALT_ROUNDS: parseInt(HASHING_SALT_ROUNDS),
-  });
+  };
+
+  const validation = Env.validate(env);
+
+  if (!validation.success) {
+    console.log("Invalid environment variables");
+    console.log(validation.details);
+    process.exit(1);
+  }
+
+  return Object.freeze(env);
 };
 
 export { Env, getEnv };

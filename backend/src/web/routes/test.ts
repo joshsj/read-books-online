@@ -19,7 +19,7 @@ router.get(
 
 router.get(
   "/handler",
-  handleAsync(async ({}, {}, {}, { ok }) => {
+  handleAsync(async ({}, {}, { ok }) => {
     const request: TestRequest = {
       requestName: "testRequest",
       name: "the name is bond",
@@ -32,7 +32,7 @@ router.get(
 router.get(
   "/auth",
   authenticator,
-  handleAsync(async ({}, {}, {}, { ok }) => {
+  handleAsync(async ({}, {}, { ok }) => {
     ok({ authenticated: "yup" });
   })
 );
