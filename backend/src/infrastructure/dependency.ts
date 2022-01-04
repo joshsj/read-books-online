@@ -1,17 +1,11 @@
-import { ILogger } from "@/application/common/interfaces/logger";
 import { ICQRS } from "@/application/common/interfaces/cqrs";
+import { ILogger } from "@/application/common/interfaces/logger";
 import { IUserRepository } from "@/application/common/interfaces/repository";
-import { Dependency as ApplicationDependency } from "@/application/dependency";
-import { toDependencies } from "@/common/utilities";
+import { Dependency } from "@/application/dependency";
 import { CQRS } from "@/infrastructure/cqrs";
 import { logger } from "@/infrastructure/logger";
 import { UserRepository } from "@/infrastructure/repository/userRepository";
 import { container } from "tsyringe";
-
-const Dependency = {
-  ...ApplicationDependency,
-  ...toDependencies(["mode", "jwtConfiguration"]),
-};
 
 const registerInfrastructureDependencies = () => {
   container

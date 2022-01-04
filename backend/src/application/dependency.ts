@@ -11,6 +11,8 @@ import { testRequestHandler, testRequestValidator } from "./test";
 
 const Dependency = toDependencies([
   "logger",
+  "mode",
+  "jwtConfiguration",
   "hashingService",
   // repository
   "userRepository",
