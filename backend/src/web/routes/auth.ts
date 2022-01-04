@@ -4,7 +4,7 @@ import { IHashingService } from "@/application/common/interfaces/hashingService"
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { ensure } from "@/common/utilities";
 import { Dependency } from "@/infrastructure/dependency";
-import { AccountDto, JWTPayload } from "@/web/common/models/auth";
+import { AccountDto, JWTPayload, TokenDto } from "@/web/common/models/auth";
 import { handleAsync } from "@/web/common/utilities/http";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ const routes = Router();
 
 routes.post(
   "",
-  handleAsync(async ({ body: accountDto }, res, {}, { ok }) => {
+  handleAsync(async ({ body: accountDto }, {}, {}, { ok }) => {
     if (!AccountDto.guard(accountDto)) {
       throw new ValidationError();
     }
@@ -37,14 +37,14 @@ routes.post(
     );
 
     const payload: JWTPayload = { sub: user.id };
-    const token = jwt.sign(payload, jwtConfiguration.secret, {
-      algorithm: jwtConfiguration.algorithm,
-      expiresIn: jwtConfiguration.expiresIn,
-    });
+    const dto: TokenDto = {
+      token: jwt.sign(payload, jwtConfiguration.secret, {
+        algorithm: jwtConfiguration.algorithm,
+        expiresIn: jwtConfiguration.expiresIn,
+      }),
+    };
 
-    res.setHeader("Authorization", `Bearer ${token}`);
-
-    ok();
+    ok(dto);
   })
 );
 
