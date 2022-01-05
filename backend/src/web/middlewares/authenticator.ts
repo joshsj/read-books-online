@@ -1,25 +1,22 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { ensure } from "@/common/utilities";
 import { Dependency } from "@/application/dependency";
+import { ensure } from "@/common/utilities";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Handler } from "express";
-import jwt from "jsonwebtoken";
 import { container } from "tsyringe";
 
-const authenticator: Handler = handleAsync(async ({}, {}, { getToken, setAuthenticated }) => {
+const authenticator: Handler = handleAsync(async ({}, {}, { getToken, setAuthenticated, verifyToken }) => {
   const log = container.resolve<ILogger>(Dependency.logger);
+  const configuration = container.resolve<IConfiguration>(Dependency.configuration);
 
   const token = getToken();
   ensure(!!token);
+  ``;
 
   log("authentication", `Attempting with token ${token}`);
 
-  const {
-    jwt: { secret, algorithm },
-  } = container.resolve<IConfiguration>(Dependency.configuration);
-
-  jwt.verify(token, secret, { algorithms: [algorithm] });
+  verifyToken(token, configuration);
 
   log("authentication", "Passed");
 
