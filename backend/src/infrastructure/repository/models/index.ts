@@ -1,4 +1,4 @@
-import { throwApiError } from "@/application/common/error";
+import { ApiError } from "@/application/common/error";
 import { Entity } from "@/domain/common/entity";
 import { model as _model, Schema as _Schema, SchemaDefinition, SchemaDefinitionType } from "mongoose";
 import { Runtype } from "runtypes";
@@ -14,11 +14,12 @@ const model = <T extends Entity>(name: string, helper: Runtype<T>, definition: S
   schema.pre("validate", function (next) {
     const validation = helper.validate(this);
 
-    !validation.success &&
-      throwApiError(
+    if (!validation.success) {
+      throw new ApiError(
         "validation",
         "Validation failed" + (validation.details ? ` fields ${Object.keys(validation.details).join(", ")}` : "")
       );
+    }
 
     next();
   });

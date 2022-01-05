@@ -1,1 +1,1 @@
-export { ApiError as ApiErrorDto } from "@/application/common/error";
+export { IApiError as ApiErrorDto } from "@/application/common/error";
