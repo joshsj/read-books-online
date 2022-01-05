@@ -6,8 +6,11 @@ import { toDependencies } from "@/common/utilities";
 import { container } from "tsyringe";
 
 const Dependency = toDependencies([
+  // general
   "logger",
   "configuration",
+  // services
+  "tokenService",
   "hashingService",
   "currentUserService",
   // repository

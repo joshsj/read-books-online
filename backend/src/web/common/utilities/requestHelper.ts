@@ -1,16 +1,13 @@
-import { getToken, isAuthenticated, setAuthenticated, signToken, verifyToken } from "@/web/common/utilities/auth";
+import { getToken, isAuthenticated, setAuthenticated } from "@/web/common/utilities/auth";
 import { getPerRequestContainer, setPerRequestContainer } from "@/web/common/utilities/container";
 import { created, noContent, ok } from "@/web/common/utilities/http";
 import { Request, RequestHandler, Response } from "express";
 import { DependencyContainer } from "tsyringe";
 
 const createRequestHelper = (req: Request, res: Response) => ({
-  verifyToken,
-  signToken,
   getToken: () => getToken(req),
 
   isAuthenticated: () => isAuthenticated(res),
-
   setAuthenticated: () => setAuthenticated(res),
 
   getPerRequestContainer: () => getPerRequestContainer(res),

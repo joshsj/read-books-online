@@ -1,8 +1,8 @@
 import { ApiError } from "@/application/common/error/apiError";
-import { failedToCreateAuthToken, incorrectPassword, userNotFound } from "@/application/common/error/messages";
-import { IConfiguration } from "@/application/common/interfaces/configuration";
+import { incorrectPassword, userNotFound } from "@/application/common/error/messages";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
+import { ITokenService } from "@/application/common/interfaces/tokenService";
 import { Dependency } from "@/application/dependency";
 import { ensure } from "@/common/utilities";
 import { AccountDto, TokenDto } from "@/web/common/models/auth";
@@ -14,11 +14,11 @@ const routes = Router();
 
 routes.post(
   "",
-  handleAsync(async ({ body: accountDto }, {}, { ok, signToken }) => {
+  handleAsync(async ({ body: accountDto }, {}, { ok }) => {
     ensure(AccountDto.guard(accountDto), new ApiError("validation"));
 
-    const configuration = container.resolve<IConfiguration>(Dependency.configuration);
     const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
+    const tokenService = container.resolve<ITokenService>(Dependency.tokenService);
     const user = await container.resolve<IUserRepository>(Dependency.userRepository).getByUsername(accountDto.username);
 
     ensure(!!user, new ApiError("missing", userNotFound(accountDto.username)));
@@ -27,9 +27,7 @@ routes.post(
       new ApiError("authentication", incorrectPassword(accountDto.username))
     );
 
-    const token = await signToken({ sub: user.id }, configuration);
-    ensure(token !== false, new ApiError("authentication", failedToCreateAuthToken));
-
+    const token = await tokenService.create({ sub: user.id });
     const tokenDto: TokenDto = { token };
 
     ok(tokenDto);

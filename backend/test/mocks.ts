@@ -6,13 +6,17 @@ import {
   IRequestValidator,
 } from "@/application/common/interfaces/cqrs";
 import { ILogger } from "@/application/common/interfaces/logger";
+import { ITokenService } from "@/application/common/interfaces/tokenService";
 
 type Outcome = "passes" | "fails";
+
+const createPromise = (outcome: Outcome = "passes"): Promise<any> =>
+  Promise[outcome === "passes" ? "resolve" : "reject"]();
 
 type TestRequest = IRequest<"testRequest">;
 const createTestRequest = (): TestRequest => ({ requestName: "testRequest" });
 
-const createTestHandler = (): ICommandHandler<TestRequest> => ({
+const createTestRequestHandler = (): ICommandHandler<TestRequest> => ({
   handles: "testRequest",
   handle: async () => {},
 });
@@ -47,12 +51,23 @@ const createTestValidator = (outcome: Outcome): IRequestValidator<TestRequest> =
 
 const createLogger = (): ILogger => () => void 0;
 
+const createTokenService = (outcome?: { create?: Outcome; validate?: Outcome; payload?: Outcome }): ITokenService => ({
+  create: () => createPromise(outcome?.create),
+  validate: () => createPromise(outcome?.validate),
+  payload: () => createPromise(outcome?.payload),
+});
+
+const createAuthorizationHeader = (token: string) => "Bearer " + token;
+
 export {
+  Outcome,
   TestRequest,
   createTestRequest,
   createTestBehavior,
-  createTestHandler,
+  createTestRequestHandler,
   createTestAuthorizer,
   createTestValidator,
   createLogger,
+  createTokenService,
+  createAuthorizationHeader,
 };

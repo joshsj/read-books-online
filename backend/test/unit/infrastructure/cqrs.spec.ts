@@ -1,17 +1,30 @@
 import { IBehavior, IRequestHandler } from "@/application/common/interfaces/cqrs";
 import { CQRS } from "@/infrastructure/cqrs";
 import { Dependency } from "@/application/dependency";
-import { createTestBehavior, createTestHandler, createTestRequest } from "@/test/utilities/mocks";
+import { createTestBehavior, createTestRequestHandler, createTestRequest } from "@/test/mocks";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { container } from "tsyringe";
 
 describe("CQRS", () => {
-  afterEach(() => container.clearInstances());
+  beforeEach(() => container.clearInstances());
 
   describe("Dependencies", () => {
+    it("Defaults without a constructor value", async () => {
+      const handler = createTestRequestHandler();
+      const handlerSut = spy(handler, "handle");
+
+      container.register<IRequestHandler>(Dependency.requestHandler, {
+        useValue: handler,
+      });
+
+      await new CQRS(undefined).send(createTestRequest());
+
+      expect(handlerSut.called).to.be.true;
+    });
+
     it("Uses the constructor container when provided", async () => {
-      const handler = createTestHandler();
+      const handler = createTestRequestHandler();
       const handlerSut = spy(handler, "handle");
 
       const childContainer = container.createChildContainer();
@@ -23,24 +36,11 @@ describe("CQRS", () => {
 
       expect(handlerSut.called).to.be.true;
     });
-
-    it("Defaults without a constructor value", async () => {
-      const handler = createTestHandler();
-      const handlerSut = spy(handler, "handle");
-
-      container.register<IRequestHandler>(Dependency.requestHandler, {
-        useValue: handler,
-      });
-
-      await new CQRS(undefined).send(createTestRequest());
-
-      expect(handlerSut.called).to.be.true;
-    });
   });
 
   describe("Handlers", () => {
     it("Invokes the request handler", async () => {
-      const handler = createTestHandler();
+      const handler = createTestRequestHandler();
       const handlerSpy = spy(handler, "handle");
       container.register<IRequestHandler>(Dependency.requestHandler, {
         useValue: handler,
@@ -58,10 +58,10 @@ describe("CQRS", () => {
     it("Throws when multiple handlers are provided", () => {
       container
         .register<IRequestHandler>(Dependency.requestHandler, {
-          useValue: createTestHandler(),
+          useValue: createTestRequestHandler(),
         })
         .register<IRequestHandler>(Dependency.requestHandler, {
-          useValue: createTestHandler(),
+          useValue: createTestRequestHandler(),
         });
 
       expect(new CQRS().send(createTestRequest())).to.be.rejected;
@@ -72,7 +72,7 @@ describe("CQRS", () => {
     it("Invokes behaviors in-order", async () => {
       const behavior1 = createTestBehavior("passes");
       const behavior2 = createTestBehavior("passes");
-      const handler = createTestHandler();
+      const handler = createTestRequestHandler();
 
       container
         .register<IBehavior>(Dependency.requestBehavior, {

@@ -22,8 +22,12 @@ class CQRS implements ICQRS {
       .resolveAll<IRequestHandler>(Dependency.requestHandler)
       .filter((h) => h.handles === request.requestName);
 
-    ensure(handlers.length === 0, new Error(`No handler found for ${request.requestName}`));
-    ensure(handlers.length > 1, new Error(`Multiple handlers registered for request ${request.requestName}`));
+    ensure(
+      handlers.length === 1,
+      handlers.length > 1
+        ? new Error(`Multiple handlers registered for request ${request.requestName}`)
+        : new Error(`No handler found for ${request.requestName}`)
+    );
 
     const handler = handlers[0]!;
 

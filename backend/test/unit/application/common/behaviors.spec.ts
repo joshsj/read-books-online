@@ -12,11 +12,11 @@ import { CQRS } from "@/infrastructure/cqrs";
 import {
   createLogger,
   createTestAuthorizer,
-  createTestHandler,
+  createTestRequestHandler,
   createTestRequest,
   createTestValidator,
   TestRequest,
-} from "@/test/utilities/mocks";
+} from "@/test/mocks";
 import { expect } from "chai";
 import { container } from "tsyringe";
 
@@ -26,7 +26,7 @@ describe("Behaviors", () => {
 
     container
       .register<IRequestHandler>(Dependency.requestHandler, {
-        useValue: createTestHandler(),
+        useValue: createTestRequestHandler(),
       })
       .register<ILogger>(Dependency.logger, { useValue: createLogger() });
   });
