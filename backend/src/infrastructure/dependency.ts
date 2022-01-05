@@ -18,4 +18,4 @@ const registerInfrastructureDependencies = () => {
     });
 };
 
-export { Dependency, registerInfrastructureDependencies };
+export { registerInfrastructureDependencies };

@@ -1,32 +1,21 @@
+import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { Mode } from "@/application/common/interfaces/mode";
-import { Dependency } from "@/infrastructure/dependency";
+import { Dependency } from "@/application/dependency";
 import { errorHandler } from "@/web/middlewares/errorHandler";
 import { authRoutes } from "@/web/routes/auth";
-import { testRoutes } from "@/web/routes/test";
 import { userRoutes } from "@/web/routes/user";
-import express, { Router } from "express";
+import express from "express";
 import { container } from "tsyringe";
 
-const getRoutes = (mode: Mode) => {
-  const router = Router();
-
-  if (mode === "development") {
-    router.use("/test", testRoutes);
-  }
-
-  router.use("/user", userRoutes);
-  router.use("/auth", authRoutes);
-
-  return router;
-};
-
-const startServer = (port: number, mode: Mode) => {
+const startServer = () => {
   const log = container.resolve<ILogger>(Dependency.logger);
+  const {
+    server: { port },
+  } = container.resolve<IConfiguration>(Dependency.configuration);
 
   const app = express();
 
-  app.use(express.json()).use("/api", getRoutes(mode)).use(errorHandler);
+  app.use(express.json()).use("/user", userRoutes).use("/auth", authRoutes).use(errorHandler);
 
   const server = app.listen(port, () => log("server", `Listening on port ${port}`));
 

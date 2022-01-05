@@ -1,7 +1,7 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { ensure } from "@/common/utilities";
-import { Dependency } from "@/infrastructure/dependency";
+import { Dependency } from "@/application/dependency";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Handler } from "express";
 import jwt from "jsonwebtoken";

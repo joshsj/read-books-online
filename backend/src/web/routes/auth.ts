@@ -3,7 +3,7 @@ import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
 import { ensure } from "@/common/utilities";
-import { Dependency } from "@/infrastructure/dependency";
+import { Dependency } from "@/application/dependency";
 import { AccountDto, JWTPayload, TokenDto } from "@/web/common/models/auth";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Router } from "express";

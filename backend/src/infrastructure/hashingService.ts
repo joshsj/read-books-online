@@ -1,11 +1,13 @@
+import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
+import { Dependency } from "@/application/dependency";
 import bcrypt from "bcrypt";
+import { container } from "tsyringe";
 
 class HashingService implements IHashingService {
-  constructor(private readonly saltRounds: number) {}
-
   async salt() {
-    return await bcrypt.genSalt(this.saltRounds);
+    const { hashing } = container.resolve<IConfiguration>(Dependency.configuration);
+    return await bcrypt.genSalt(hashing.saltRounds);
   }
 
   async hash(value: string, salt: string) {
