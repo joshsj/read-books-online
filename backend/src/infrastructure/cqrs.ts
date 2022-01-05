@@ -7,6 +7,7 @@ import {
   IResponseReturnValue,
 } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
+import { ensure } from "@/common/utilities";
 import { container as defaultContainer, DependencyContainer } from "tsyringe";
 
 class CQRS implements ICQRS {
@@ -21,13 +22,8 @@ class CQRS implements ICQRS {
       .resolveAll<IRequestHandler>(Dependency.requestHandler)
       .filter((h) => h.handles === request.requestName);
 
-    if (handlers.length === 0) {
-      throw new Error(`No handler found for ${request.requestName}`);
-    }
-
-    if (handlers.length > 1) {
-      throw new Error(`Multiple handlers registered for request ${request.requestName}`);
-    }
+    ensure(handlers.length === 0, new Error(`No handler found for ${request.requestName}`));
+    ensure(handlers.length > 1, new Error(`Multiple handlers registered for request ${request.requestName}`));
 
     const handler = handlers[0]!;
 

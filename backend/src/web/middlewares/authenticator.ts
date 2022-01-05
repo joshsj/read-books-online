@@ -1,3 +1,5 @@
+import { ApiError } from "@/application/common/error/apiError";
+import { invalidToken } from "@/application/common/error/messages";
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
@@ -11,11 +13,12 @@ const authenticator: Handler = handleAsync(async ({}, {}, { getToken, setAuthent
   const configuration = container.resolve<IConfiguration>(Dependency.configuration);
 
   const token = getToken();
-  ensure(!!token);
+  ensure(!!token, new ApiError("authorization", invalidToken));
 
   log("authentication", `Attempting with token ${token}`);
 
-  verifyToken(token, configuration);
+  const verified = await verifyToken(token, configuration);
+  ensure(verified !== false, new ApiError("authentication", invalidToken));
 
   log("authentication", "Passed");
 

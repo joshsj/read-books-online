@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error";
+import { ApiError } from "@/application/common/error/apiError";
 import { ICommandHandler, IRequestValidator } from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
@@ -20,9 +20,7 @@ type CreateUserRequest = Static<typeof CreateUserRequest>;
 const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
   requestName: "createUserRequest",
   validate: async (request) => {
-    if (!CreateUserRequest.guard(request)) {
-      throw new ApiError("validation");
-    }
+    ensure(CreateUserRequest.guard(request), new ApiError("validation"));
 
     const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
     const currentUser = await userRepository.getByUsername(request.username);

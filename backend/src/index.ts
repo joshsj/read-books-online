@@ -1,6 +1,8 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
+import { Mode } from "@/application/common/interfaces/mode";
 import { Dependency, registerApplicationDependencies } from "@/application/dependency";
+import { ensure } from "@/common/utilities";
 import { Env, getEnv } from "@/env";
 import { registerInfrastructureDependencies } from "@/infrastructure/dependency";
 import { HashingService } from "@/infrastructure/hashingService";
@@ -9,7 +11,6 @@ import { createMongoConnection } from "@/infrastructure/repository/connection";
 import { startServer } from "@/web/server";
 import { Algorithm } from "jsonwebtoken";
 import { container } from "tsyringe";
-import { Mode } from "./application/common/interfaces/mode";
 
 const registerInitDependencies = (env: Env) => {
   const configuration: IConfiguration = {
@@ -33,9 +34,7 @@ const registerInitDependencies = (env: Env) => {
     },
   };
 
-  if (!IConfiguration.guard(configuration)) {
-    throw new Error("Invalid configuration");
-  }
+  ensure(IConfiguration.guard(configuration), new Error("Invalid configuration"));
 
   container
     .register<IHashingService>(Dependency.hashingService, {

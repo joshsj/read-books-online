@@ -1,4 +1,6 @@
-type ApiErrorType = "validation";
+import { defaults } from "@/application/common/error/messages";
+
+type ApiErrorType = "missing" | "validation" | "authentication" | "authorization";
 
 type IApiError = {
   type: ApiErrorType;
@@ -7,7 +9,7 @@ type IApiError = {
 
 class ApiError extends Error implements IApiError {
   constructor(public readonly type: ApiErrorType, message?: string) {
-    super(message);
+    super(message ?? defaults[type]);
   }
 }
 

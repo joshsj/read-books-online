@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error";
+import { ApiError } from "@/application/common/error/apiError";
 import { Entity } from "@/domain/common/entity";
 import { model as _model, Schema as _Schema, SchemaDefinition, SchemaDefinitionType } from "mongoose";
 import { Runtype } from "runtypes";

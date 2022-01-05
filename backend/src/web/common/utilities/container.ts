@@ -9,7 +9,7 @@ const setPerRequestContainer = (res: Response, container: DependencyContainer) =
 
 const getPerRequestContainer = (res: Response) => {
   const container = res.locals[containerKey];
-  ensure(!!container);
+  ensure(!!container, undefined);
   return container;
 };
 

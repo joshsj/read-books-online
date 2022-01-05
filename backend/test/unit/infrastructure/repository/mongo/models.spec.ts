@@ -1,4 +1,4 @@
-import { ApiError, IApiError } from "@/application/common/error";
+import { ApiError, IApiError } from "@/application/common/error/apiError";
 import { newId } from "@/domain/common/id";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { TestEntity } from "@/test/utilities/testEntity";

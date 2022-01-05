@@ -22,6 +22,7 @@ const createRequestHelper = (req: Request, res: Response) => ({
 });
 
 type RequestHelper = ReturnType<typeof createRequestHelper>;
+
 type AsyncRequestHandler = (
   ...args: [Parameters<RequestHandler>[0], Parameters<RequestHandler>[1], RequestHelper]
 ) => Promise<void>;
