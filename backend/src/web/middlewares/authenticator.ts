@@ -12,7 +12,6 @@ const authenticator: Handler = handleAsync(async ({}, {}, { getToken, setAuthent
 
   const token = getToken();
   ensure(!!token);
-  ``;
 
   log("authentication", `Attempting with token ${token}`);
 
