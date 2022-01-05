@@ -1,20 +1,13 @@
 type Dependencies<T extends string> = { [K in T]: symbol };
 
-const toDependencies = <T extends string>(
-  names: T[]
-): Readonly<Dependencies<T>> =>
-  Object.freeze(
-    Object.assign({}, ...names.map((n) => ({ [n]: Symbol.for(n) })))
-  );
+const toDependencies = <T extends string>(names: T[]): Readonly<Dependencies<T>> =>
+  Object.freeze(Object.assign({}, ...names.map((n) => ({ [n]: Symbol.for(n) }))));
 
-type Ensure = (condition: boolean, error?: string | Error) => asserts condition;
+type Ensure = (condition: boolean, error?: any) => asserts condition;
 
-const ensure: Ensure = (
-  condition: boolean,
-  error?: string | Error
-): asserts condition => {
+const ensure: Ensure = (condition: boolean, error?: any): asserts condition => {
   if (!condition) {
-    throw typeof error === "string" ? new Error(error) : error;
+    throw error;
   }
 };
 

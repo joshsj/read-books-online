@@ -1,14 +1,15 @@
+import { ApiError } from "@/application/common/error";
 import { newId } from "@/domain/common/id";
-import { ValidationError } from "@/application/common/error/validationError";
-import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
+import { TestEntity } from "@/test/utilities/testEntity";
+import { TestEntityModel } from "@/test/utilities/testEntityModel";
 import { expect } from "chai";
-import { TestEntityModel } from "../../../../utilities/testEntityModel";
+
+const model = TestEntityModel;
+const expectedError: ApiError = { type: "validation" };
 
 describe("Mongo Models", () => {
   itUsesMongo();
-
-  const model = TestEntityModel;
 
   describe("Validation", () => {
     it("Passes for valid entities", async () => {
@@ -20,13 +21,13 @@ describe("Mongo Models", () => {
     it("Triggers for invalid IDs", async () => {
       const invalidEntity: TestEntity = { id: "invalid id", min3: "ab" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(ValidationError);
+      return expect(model.create(invalidEntity)).to.be.rejected.and.eventually.include(expectedError);
     });
 
     it("Triggers for invalid fields", async () => {
       const invalidEntity: TestEntity = { id: newId(), min3: "a" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(ValidationError);
+      return expect(model.create(invalidEntity)).to.be.rejected.and.eventually.include(expectedError);
     });
   });
 });

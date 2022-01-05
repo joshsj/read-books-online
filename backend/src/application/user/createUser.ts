@@ -1,4 +1,3 @@
-import { ValidationError } from "@/application/common/error/validationError";
 import { ICommandHandler, IRequestValidator } from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
@@ -11,6 +10,7 @@ import { User } from "@/domain/entities/user";
 import { UserRepository } from "@/infrastructure/repository/userRepository";
 import { Record, Static } from "runtypes";
 import { container } from "tsyringe";
+import { createApiError, throwApiError } from "@/application/common/error";
 
 const CreateUserRequest = Request("createUserRequest")
   .And(User.pick("username"))
@@ -20,17 +20,14 @@ type CreateUserRequest = Static<typeof CreateUserRequest>;
 const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
   requestName: "createUserRequest",
   validate: async (request) => {
-    if (!CreateUserRequest.guard(request)) {
-      // TODO: better error message
-      throw new ValidationError();
-    }
+    !CreateUserRequest.guard(request) && throwApiError("validation");
 
     const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
     const currentUser = await userRepository.getByUsername(request.username);
 
     ensure(
       typeof currentUser === "undefined",
-      new ValidationError(`User already exists with username ${request.username}`)
+      createApiError("validation", `User already exists with username ${request.username}`)
     );
   },
 };

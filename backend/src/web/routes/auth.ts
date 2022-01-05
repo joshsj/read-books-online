@@ -1,4 +1,4 @@
-import { ValidationError } from "@/application/common/error/validationError";
+import { throwApiError } from "@/application/common/error";
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
@@ -14,9 +14,7 @@ const routes = Router();
 routes.post(
   "",
   handleAsync(async ({ body: accountDto }, {}, { ok, signToken }) => {
-    if (!AccountDto.guard(accountDto)) {
-      throw new ValidationError();
-    }
+    !AccountDto.guard(accountDto) && throwApiError("validation");
 
     const configuration = container.resolve<IConfiguration>(Dependency.configuration);
     const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
