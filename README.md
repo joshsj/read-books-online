@@ -2,6 +2,27 @@
 
 A university project, built with a full JS stack.
 
+## Libraries and Frameworks
+
+| Name                  | For                   |
+| --------------------- | --------------------- |
+| module-alias          | Import path aliasing  |
+| tsyringe              | Dependency Injection  |
+| **Backend**           |
+| express               | API server            |
+| dotenv                | Environment variables |
+| bcrypt                | Password encryption   |
+| jsonwebtoken          | JWTs                  |
+| uuid                  | Unique IDs            |
+| mongoose              | MongoDB interaction   |
+| runtypes              |
+| **Testing**           |
+| mocha                 | Unit testing          |
+| chai                  | Assertions            |
+| chai-as-promised      | Async assertions      |
+| sinon                 | Method spies          |
+| mongodb-memory-server | Mock database         |
+
 ## Resources
 
 - [Project Board](https://b8022626.atlassian.net/jira/software/c/projects/RBO/issues)
