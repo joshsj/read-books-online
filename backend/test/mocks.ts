@@ -1,3 +1,4 @@
+import { IConfiguration } from "@/application/common/interfaces/configuration";
 import {
   IBehavior,
   ICommandHandler,
@@ -6,12 +7,36 @@ import {
   IRequestValidator,
 } from "@/application/common/interfaces/cqrs";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { ITokenService } from "@/application/common/interfaces/tokenService";
 
 type Outcome = "passes" | "fails";
 
 const createPromise = (outcome: Outcome = "passes"): Promise<any> =>
   Promise[outcome === "passes" ? "resolve" : "reject"]();
+
+const createConfiguration = (): IConfiguration => ({
+  mode: "development",
+  server: {
+    port: 1,
+    cookie: {
+      secret: "secret",
+      refreshTokenKey: "refreshTokenKey",
+    },
+  },
+  hashing: {
+    saltRounds: 1,
+  },
+  mongo: {
+    uri: "uri",
+    databaseName: "databaseName",
+  },
+  jwt: {
+    algorithm: "HS256",
+    audience: "audience",
+    secret: "secret",
+    issuer: "issuer",
+    expiresIn: "expiresIn",
+  },
+});
 
 type TestRequest = IRequest<"testRequest">;
 const createTestRequest = (): TestRequest => ({ requestName: "testRequest" });
@@ -51,23 +76,18 @@ const createTestValidator = (outcome: Outcome): IRequestValidator<TestRequest> =
 
 const createLogger = (): ILogger => () => void 0;
 
-const createTokenService = (outcome?: { create?: Outcome; validate?: Outcome; payload?: Outcome }): ITokenService => ({
-  create: () => createPromise(outcome?.create),
-  validate: () => createPromise(outcome?.validate),
-  payload: () => createPromise(outcome?.payload),
-});
-
 const createAuthorizationHeader = (token: string) => "Bearer " + token;
 
 export {
   Outcome,
   TestRequest,
+  createPromise,
   createTestRequest,
   createTestBehavior,
   createTestRequestHandler,
   createTestAuthorizer,
   createTestValidator,
   createLogger,
-  createTokenService,
   createAuthorizationHeader,
+  createConfiguration,
 };

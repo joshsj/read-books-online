@@ -1,7 +1,7 @@
 import { ApiError, ApiErrorType } from "@/application/common/error/apiError";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
-import { ApiErrorDto } from "@/web/common/models/error";
+import { ErrorDto } from "@/web/common/models/error";
 import { ErrorRequestHandler } from "express";
 import { container } from "tsyringe";
 
@@ -16,20 +16,16 @@ const statusCode: { [K in ApiErrorType]: number } = {
 const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
   const log = container.resolve<ILogger>(Dependency.logger);
 
-  if (!(err instanceof ApiError)) {
-    log("server", "Unknown error occurred", err);
-    res.status(500).end();
-    return;
-  }
+  const [type, message, code, logMessage, extra] =
+    err instanceof ApiError
+      ? [err.type, err.message, statusCode[err.type], `${err.type} error occurred`]
+      : (["internal", "Internal error occurred", 500, "Unknown error occurred", err] as const);
 
-  // must be explicit to ensure properties are extracted
-  const dto: ApiErrorDto = {
-    type: err.type,
-    message: err.message,
-  };
+  log("server", logMessage, extra);
 
-  res.status(statusCode[err.type]).json(dto);
-  log("server", `${err.type} error occurred`, err.message);
+  const dto: ErrorDto = { error: true, type, message };
+
+  res.status(code).json(dto).end();
 };
 
 export { errorHandler };

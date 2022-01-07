@@ -1,23 +1,37 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency } from "@/application/dependency";
 import { errorHandler } from "@/web/middlewares/errorHandler";
+import { httpContextServiceProvider } from "@/web/middlewares/httpContextServiceProvider";
+import { missingRouteHandler } from "@/web/middlewares/missingRouteHandler";
 import { authRoutes } from "@/web/routes/auth";
 import { userRoutes } from "@/web/routes/user";
+import cookieParser from "cookie-parser";
 import express, { Router } from "express";
-import { container } from "tsyringe";
 
-const startServer = () => {
-  const log = container.resolve<ILogger>(Dependency.logger);
-  const {
-    server: { port },
-  } = container.resolve<IConfiguration>(Dependency.configuration);
+class Server {
+  constructor(private readonly log: ILogger, private readonly configuration: IConfiguration) {}
 
-  const routes = Router().use("/user", userRoutes).use("/auth", authRoutes);
-  const app = express().use(express.json()).use("/api", routes).use(errorHandler);
-  const server = app.listen(port, () => log("server", `Listening on port ${port}`));
+  start() {
+    const routes = Router().use("/user", userRoutes).use("/auth", authRoutes);
 
-  return { server };
-};
+    if (this.configuration.mode === "development") {
+      import("@/web/routes/test").then(({ testRoutes }) => routes.use("/test", testRoutes));
+    }
 
-export { startServer };
+    const app = express()
+      .use(express.json())
+      .use(cookieParser())
+      .use(httpContextServiceProvider)
+      .use("/api", routes)
+      .use(missingRouteHandler)
+      .use(errorHandler);
+
+    const { port } = this.configuration.server;
+
+    const server = app.listen(port, () => this.log("server", `Listening on port ${port}`));
+
+    return { server };
+  }
+}
+
+export { Server };

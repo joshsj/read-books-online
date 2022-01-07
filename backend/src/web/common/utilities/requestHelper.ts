@@ -1,15 +1,9 @@
-import { getToken, isAuthenticated, setAuthenticated } from "@/web/common/utilities/auth";
 import { getPerRequestContainer, setPerRequestContainer } from "@/web/common/utilities/container";
 import { created, noContent, ok } from "@/web/common/utilities/http";
-import { Request, RequestHandler, Response } from "express";
+import { RequestHandler, Response } from "express";
 import { DependencyContainer } from "tsyringe";
 
-const createRequestHelper = (req: Request, res: Response) => ({
-  getToken: () => getToken(req),
-
-  isAuthenticated: () => isAuthenticated(res),
-  setAuthenticated: () => setAuthenticated(res),
-
+const createRequestHelper = (res: Response) => ({
   getPerRequestContainer: () => getPerRequestContainer(res),
   setPerRequestContainer: (container: DependencyContainer) => setPerRequestContainer(res, container),
 
@@ -27,7 +21,7 @@ type AsyncRequestHandler = (
 const handleAsync =
   (handler: AsyncRequestHandler): RequestHandler =>
   (req, res, next) =>
-    handler(req, res, createRequestHelper(req, res))
+    handler(req, res, createRequestHelper(res))
       .then(() => next())
       .catch((e) => next(e ?? new Error()));
 

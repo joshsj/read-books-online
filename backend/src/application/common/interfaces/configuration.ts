@@ -7,16 +7,12 @@ const IConfiguration = Record({
 
   server: Record({
     port: Number,
+    cookie: Record({ secret: String, refreshTokenKey: String }),
   }),
 
-  hashing: Record({
-    saltRounds: PositiveNumber,
-  }),
+  hashing: Record({ saltRounds: PositiveNumber }),
 
-  mongo: Record({
-    uri: String,
-    databaseName: String,
-  }),
+  mongo: Record({ uri: String, databaseName: String }),
 
   jwt: Record({
     secret: String,

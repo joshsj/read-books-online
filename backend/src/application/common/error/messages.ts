@@ -11,7 +11,7 @@ export const defaults: { [K in ApiErrorType]: string } = {
 
 export const incorrectPassword = (username: string) => `Incorrect password for user ${q(username)}`;
 
-export const userNotFound = (username: string) => `User with username ${q(username)} not found`;
+export const userNotFound = (username?: string) => "User not found" + (username ? ` with username ${q(username)}` : "");
 
 export const failedToCreateAuthToken = "Failed to create authentication token";
 

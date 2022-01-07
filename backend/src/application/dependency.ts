@@ -10,9 +10,9 @@ const Dependency = toDependencies([
   "logger",
   "configuration",
   // services
-  "tokenService",
   "hashingService",
-  "currentUserService",
+  "identityService",
+  "httpContextService",
   // repository
   "userRepository",
   // cqrs

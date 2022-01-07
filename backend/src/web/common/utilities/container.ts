@@ -2,12 +2,13 @@ import { ensure } from "@/common/utilities";
 import { Response } from "express";
 import { DependencyContainer } from "tsyringe";
 
-const containerKey = "container";
+const containerKey = "perRequestContainer";
 
-const setPerRequestContainer = (res: Response, container: DependencyContainer) =>
-  (res.locals[containerKey] = container);
+const setPerRequestContainer = (res: Response, container: DependencyContainer): void => {
+  res.locals[containerKey] = container;
+};
 
-const getPerRequestContainer = (res: Response) => {
+const getPerRequestContainer = (res: Response): DependencyContainer => {
   const container = res.locals[containerKey];
   ensure(!!container, undefined);
   return container;

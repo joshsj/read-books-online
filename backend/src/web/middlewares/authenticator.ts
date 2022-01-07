@@ -1,27 +1,18 @@
-import { ApiError } from "@/application/common/error/apiError";
-import { invalidToken } from "@/application/common/error/messages";
+import { IIdentityService } from "@/application/common/interfaces/identityService";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { ITokenService } from "@/application/common/interfaces/tokenService";
 import { Dependency } from "@/application/dependency";
-import { ensure } from "@/common/utilities";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Handler } from "express";
-import { container } from "tsyringe";
 
-const authenticator: Handler = handleAsync(async ({}, {}, { getToken, setAuthenticated }) => {
+const authenticator: Handler = handleAsync(async ({}, {}, { getPerRequestContainer }) => {
+  const container = getPerRequestContainer();
+
   const log = container.resolve<ILogger>(Dependency.logger);
-  const tokenService = container.resolve<ITokenService>(Dependency.tokenService);
+  const identityService = container.resolve<IIdentityService>(Dependency.identityService);
 
-  const token = getToken();
-  ensure(!!token, new ApiError("authorization", invalidToken));
-
-  log("authentication", `Attempting with token ${token}`);
-
-  await tokenService.validate(token);
+  await identityService.authenticate();
 
   log("authentication", "Passed");
-
-  setAuthenticated();
 });
 
 export { authenticator };

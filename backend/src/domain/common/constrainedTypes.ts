@@ -1,4 +1,4 @@
-import { Number, Runtype, String } from "runtypes";
+import { Number, Runtype, Static, String } from "runtypes";
 import { Algorithm } from "jsonwebtoken";
 
 const Length = <T extends { length: number }>(
@@ -14,7 +14,10 @@ const Length = <T extends { length: number }>(
 const PositiveNumber = Number.withConstraint((x) => x > 0);
 
 const Username = Length(String, { min: 3 });
+type Username = Static<typeof Username>;
+
 const Password = Length(String, { min: 8 });
+type Password = Static<typeof Password>;
 
 // library offers no validation for algorithm values, length is the best we can do
 const JWTAlgorithm = String.withConstraint<Algorithm>((x) => x.length === 5);
