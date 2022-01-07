@@ -1,7 +1,7 @@
 import { Array, Static, String } from "runtypes";
 import { Length } from "@/domain/common/constrainedTypes";
 import { Role } from "@/domain/constants/role";
-import { Entity } from "../common/entity";
+import { Entity } from "@/domain/common/entity";
 
 const User = Entity.extend({
   username: Length(String, { min: 1 }),

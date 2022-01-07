@@ -16,7 +16,7 @@ import {
   createTestRequest,
   createTestValidator,
   TestRequest,
-} from "@/test/mocks";
+} from "@/test/utilities/mocks";
 import { expect } from "chai";
 import { container } from "tsyringe";
 

@@ -1,8 +1,8 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { errorHandler } from "@/web/middlewares/errorHandler";
-import { httpContextServiceProvider } from "@/web/middlewares/httpContextServiceProvider";
-import { missingRouteHandler } from "@/web/middlewares/missingRouteHandler";
+import { errorHandler } from "@/web/common/middlewares/errorHandler";
+import { httpContextServiceProvider } from "@/web/common/middlewares/httpContextServiceProvider";
+import { missingRouteHandler } from "@/web/common/middlewares/missingRouteHandler";
 import { authRoutes } from "@/web/routes/auth";
 import { userRoutes } from "@/web/routes/user";
 import cookieParser from "cookie-parser";

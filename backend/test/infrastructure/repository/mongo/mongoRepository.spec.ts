@@ -4,7 +4,7 @@ import { MongoRepository } from "@/infrastructure/repository/mongoRepository";
 import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
-import { TestEntityModel } from "../../../../utilities/testEntityModel";
+import { TestEntityModel } from "@/test/utilities/testEntityModel";
 
 describe("Mongo Repository", () => {
   itUsesMongo();
