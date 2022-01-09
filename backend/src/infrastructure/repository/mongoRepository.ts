@@ -19,7 +19,11 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
     }
 
     const filter = id ? { id: { $in: id } } : {};
-    return await this.model.find(filter);
+    return this.model.find(filter);
+  }
+
+  async exists(id: Id): Promise<boolean> {
+    return this.model.exists({ id });
   }
 
   async insert(entity: T): Promise<void> {

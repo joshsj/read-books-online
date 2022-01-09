@@ -15,6 +15,18 @@ const createPromise = (outcome: Outcome = "passes"): Promise<any> =>
 
 const createConfiguration = (): IConfiguration => ({
   mode: "development",
+
+  auth: {
+    expiresInMs: 60_000,
+
+    jwt: {
+      algorithm: "HS256",
+      audience: "audience",
+      secret: "secret",
+      issuer: "issuer",
+    },
+  },
+
   server: {
     port: 1,
     cookie: {
@@ -22,19 +34,14 @@ const createConfiguration = (): IConfiguration => ({
       refreshTokenKey: "refreshTokenKey",
     },
   },
+
   hashing: {
     saltRounds: 1,
   },
+
   mongo: {
     uri: "uri",
     databaseName: "databaseName",
-  },
-  jwt: {
-    algorithm: "HS256",
-    audience: "audience",
-    secret: "secret",
-    issuer: "issuer",
-    expiresIn: "expiresIn",
   },
 });
 
@@ -74,7 +81,7 @@ const createTestValidator = (outcome: Outcome): IRequestValidator<TestRequest> =
   },
 });
 
-const createLogger = (): ILogger => () => void 0;
+const createLogger = (): ILogger => ({ log: () => void 0 });
 
 const createAuthorizationHeader = (token: string) => "Bearer " + token;
 

@@ -12,8 +12,8 @@ import { CQRS } from "@/infrastructure/cqrs";
 import {
   createLogger,
   createTestAuthorizer,
-  createTestRequestHandler,
   createTestRequest,
+  createTestRequestHandler,
   createTestValidator,
   TestRequest,
 } from "@/test/utilities/mocks";

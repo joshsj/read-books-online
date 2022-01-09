@@ -43,6 +43,22 @@ describe("Mongo Repository", () => {
       });
     });
 
+    describe("Exists", () => {
+      it("Finds an entity", async () => {
+        const entity: TestEntity = { id: newId(), min3: "entity" };
+
+        await model.create(entity);
+
+        const result = await repository.exists(entity.id);
+
+        expect(result).to.be.true;
+      });
+
+      it("Throws when updating a missing entity", () => {
+        expect.fail();
+      });
+    });
+
     describe("Insert", () => {
       it("An Entity", async () => {
         const entity: TestEntity = { id: newId(), min3: "entity" };

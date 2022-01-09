@@ -1,5 +1,9 @@
-import { IApiError } from "@/application/common/error/apiError";
+import { ApiErrorType } from "@/application/common/error/apiError";
 
-type ErrorDto = (IApiError | { type: "internal" | "invalidRoute" }) & { error: true };
+type ErrorDto = {
+  error: true;
+  type: ApiErrorType | "internal" | "invalidRoute";
+  message?: string;
+};
 
 export { ErrorDto };

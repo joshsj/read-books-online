@@ -1,15 +1,10 @@
 import { IHttpContext, IHttpContextService } from "@/application/common/interfaces/httpContextService";
-import { Request, Response } from "express";
 
 class HttpContextService implements IHttpContextService {
-  current: Readonly<IHttpContext>;
-
-  constructor(req: Request, res: Response) {
-    this.current = { req, res };
-  }
+  constructor(private readonly httpContext: IHttpContext) {}
 
   getCurrent(): IHttpContext {
-    return this.current;
+    return this.httpContext;
   }
 }
 

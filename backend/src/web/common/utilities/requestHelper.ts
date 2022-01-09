@@ -16,13 +16,13 @@ type RequestHelper = ReturnType<typeof createRequestHelper>;
 
 type AsyncRequestHandler = (
   ...args: [Parameters<RequestHandler>[0], Parameters<RequestHandler>[1], RequestHelper]
-) => Promise<void>;
+) => Promise<void | "next">;
 
 const handleAsync =
   (handler: AsyncRequestHandler): RequestHandler =>
   (req, res, next) =>
     handler(req, res, createRequestHelper(res))
-      .then(() => next())
+      .then((x) => x === "next" && next())
       .catch((e) => next(e ?? new Error()));
 
 export { RequestHelper, AsyncRequestHandler, handleAsync };

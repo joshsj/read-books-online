@@ -5,7 +5,7 @@ import { ILogger } from "@/application/common/interfaces/logger";
 
 const authorizerBehavior: IBehavior = {
   handle: async (request, next) => {
-    const log = container.resolve<ILogger>(Dependency.logger);
+    const logger = container.resolve<ILogger>(Dependency.logger);
     const authorizers = container.isRegistered(Dependency.requestAuthorizer)
       ? container
           .resolveAll<IRequestAuthorizer<any>>(Dependency.requestAuthorizer)
@@ -13,17 +13,17 @@ const authorizerBehavior: IBehavior = {
       : [];
 
     if (!authorizers.length) {
-      log("authorization", `No authorizers found for request ${request.requestName}`);
+      logger.log("authorization", `No authorizers found for request ${request.requestName}`);
       return await next();
     }
 
-    log("authorization", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
+    logger.log("authorization", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
 
     for (const authorizer of authorizers) {
       await authorizer.authorize(request);
     }
 
-    log("authorization", `Passed for request ${request.requestName}`);
+    logger.log("authorization", `Passed for request ${request.requestName}`);
 
     return await next();
   },

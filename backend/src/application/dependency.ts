@@ -15,6 +15,7 @@ const Dependency = toDependencies([
   "httpContextService",
   // repository
   "userRepository",
+  "refreshTokenRepository",
   // cqrs
   "cqrs",
   "requestHandler",

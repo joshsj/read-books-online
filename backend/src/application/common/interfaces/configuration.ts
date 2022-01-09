@@ -1,25 +1,30 @@
 import { JWTAlgorithm, PositiveNumber } from "@/domain/common/constrainedTypes";
-import { Number, Record, Static, String } from "runtypes";
+import { Record, Static, String } from "runtypes";
 import { Mode } from "./mode";
 
 const IConfiguration = Record({
   mode: Mode,
-
-  server: Record({
-    port: Number,
-    cookie: Record({ secret: String, refreshTokenKey: String }),
-  }),
-
   hashing: Record({ saltRounds: PositiveNumber }),
-
   mongo: Record({ uri: String, databaseName: String }),
 
-  jwt: Record({
-    secret: String,
-    expiresIn: String,
-    algorithm: JWTAlgorithm,
-    issuer: String,
-    audience: String,
+  auth: Record({
+    expiresInMs: PositiveNumber,
+
+    jwt: Record({
+      secret: String,
+      algorithm: JWTAlgorithm,
+      issuer: String,
+      audience: String,
+    }),
+  }),
+
+  server: Record({
+    port: PositiveNumber,
+
+    cookie: Record({
+      secret: String,
+      refreshTokenKey: String,
+    }),
   }),
 });
 

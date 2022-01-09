@@ -1,6 +1,6 @@
 import { defaults } from "@/application/common/error/messages";
 
-type ApiErrorType = "missing" | "validation" | "authentication" | "authorization";
+type ApiErrorType = "missing" | "validation" | "authentication" | "authorization" | "fatal";
 
 type IApiError = {
   type: ApiErrorType;

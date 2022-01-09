@@ -3,6 +3,7 @@ import { ApiErrorType } from "./apiError";
 const q = (s: string) => `'${s}'`;
 
 export const defaults: { [K in ApiErrorType]: string } = {
+  fatal: "Internal error occurred",
   validation: "Invalid request",
   authentication: "Failed to authenticate",
   authorization: "Failed to authorize",
@@ -15,4 +16,8 @@ export const userNotFound = (username?: string) => "User not found" + (username 
 
 export const failedToCreateAuthToken = "Failed to create authentication token";
 
-export const invalidToken = "Invalid authorization token provided";
+export const invalidAuthToken = "Invalid authorization token provided";
+
+export const noRefreshToken = "Refresh token not provided";
+export const invalidRefreshToken = "Invalid refresh token";
+export const expiredRefreshToken = "Refresh token has expired";

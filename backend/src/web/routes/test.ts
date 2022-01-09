@@ -8,7 +8,7 @@ routes.get(
   "/auth",
   authenticator,
   handleAsync(async ({}, res) => {
-    res.send(200).json({ authenticated: true });
+    res.status(200).json({ authenticated: true });
   })
 );
 

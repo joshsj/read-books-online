@@ -5,13 +5,13 @@ import { container } from "tsyringe";
 
 const requestLoggerBehavior: IBehavior = {
   handle: async (request, next) => {
-    const log = container.resolve<ILogger>(Dependency.logger);
+    const logger = container.resolve<ILogger>(Dependency.logger);
 
-    log("cqrs", `Received ${request}`);
+    logger.log("cqrs", `Received ${request}`);
 
     const result = await next();
 
-    log("cqrs", `Responding to ${request.requestName} with ${result ? result : "nothing"}`);
+    logger.log("cqrs", `Responding to ${request.requestName} with ${result ? result : "nothing"}`);
 
     return result;
   },

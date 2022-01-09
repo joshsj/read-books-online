@@ -2,30 +2,55 @@ import { ApiError, ApiErrorType } from "@/application/common/error/apiError";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
 import { ErrorDto } from "@/web/common/models/error";
+import { getPerRequestContainer } from "@/web/common/utilities/container";
 import { ErrorRequestHandler } from "express";
-import { container } from "tsyringe";
+
+type ErrorData = ErrorDto & { code: number; logData: any; logRest: any[] };
 
 const statusCode: { [K in ApiErrorType]: number } = {
+  fatal: 500,
   validation: 400,
   authentication: 401,
   authorization: 403,
   missing: 404,
 };
 
+const getApiErrorData = ({ type, message }: ApiError): ErrorData => ({
+  error: true,
+  type,
+  message,
+  code: statusCode[type],
+  logData: `${type} error occurred`,
+  logRest: [message],
+});
+
+const getErrorData = (err: any): ErrorData => {
+  const [logData, logRest] = err instanceof Error ? ["Unknown error occurred", err.message] : [err];
+
+  return {
+    error: true,
+    type: "internal",
+    code: 500,
+    logData,
+    logRest: [logRest],
+  };
+};
+
 // Function must be declared with all 4 arguments to be understood by Express
 const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
-  const log = container.resolve<ILogger>(Dependency.logger);
+  const data = err instanceof ApiError ? getApiErrorData(err) : getErrorData(err);
 
-  const [type, message, code, logMessage, extra] =
-    err instanceof ApiError
-      ? [err.type, err.message, statusCode[err.type], `${err.type} error occurred`]
-      : (["internal", "Internal error occurred", 500, "Unknown error occurred", err] as const);
+  getPerRequestContainer(res)
+    .resolve<ILogger>(Dependency.logger)
+    .log("server", data.logData, ...data.logRest);
 
-  log("server", logMessage, extra);
+  const dto: ErrorDto = {
+    error: true,
+    type: data.type,
+    message: data.message,
+  };
 
-  const dto: ErrorDto = { error: true, type, message };
-
-  res.status(code).json(dto).end();
+  res.status(data.code).json(dto).end();
 };
 
 export { errorHandler };

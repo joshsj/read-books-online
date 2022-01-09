@@ -8,6 +8,8 @@ type ILoggerContext =
   | "cqrs"
   | "validation";
 
-type ILogger = (context: ILoggerContext, data: any, ...rest: any[]) => void;
+type ILogger = {
+  log: (context: ILoggerContext, data: any, ...rest: any[]) => void;
+};
 
 export { ILogger, ILoggerContext };

@@ -7,12 +7,14 @@ import { Handler } from "express";
 const authenticator: Handler = handleAsync(async ({}, {}, { getPerRequestContainer }) => {
   const container = getPerRequestContainer();
 
-  const log = container.resolve<ILogger>(Dependency.logger);
+  const logger = container.resolve<ILogger>(Dependency.logger);
   const identityService = container.resolve<IIdentityService>(Dependency.identityService);
 
   await identityService.authenticate();
 
-  log("authentication", "Passed");
+  logger.log("authentication", "Passed");
+
+  return "next";
 });
 
 export { authenticator };

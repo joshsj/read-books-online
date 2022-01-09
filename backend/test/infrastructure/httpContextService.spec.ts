@@ -8,7 +8,7 @@ describe("Http Context Service", () => {
       const req = {} as Request;
       const res = {} as Response;
 
-      const sut = new HttpContextService(req, res);
+      const sut = new HttpContextService({ id: 0, req, res });
       const result = sut.getCurrent();
 
       expect(result.req).to.equal(req);

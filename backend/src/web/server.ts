@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import express, { Router } from "express";
 
 class Server {
-  constructor(private readonly log: ILogger, private readonly configuration: IConfiguration) {}
+  constructor(private readonly logger: ILogger, private readonly configuration: IConfiguration) {}
 
   start() {
     const routes = Router().use("/user", userRoutes).use("/auth", authRoutes);
@@ -20,7 +20,7 @@ class Server {
 
     const app = express()
       .use(express.json())
-      .use(cookieParser())
+      .use(cookieParser(this.configuration.server.cookie.secret))
       .use(httpContextServiceProvider)
       .use("/api", routes)
       .use(missingRouteHandler)
@@ -28,7 +28,7 @@ class Server {
 
     const { port } = this.configuration.server;
 
-    const server = app.listen(port, () => this.log("server", `Listening on port ${port}`));
+    const server = app.listen(port, () => this.logger.log("server", `Listening on port ${port}`));
 
     return { server };
   }
