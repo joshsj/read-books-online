@@ -1,12 +1,12 @@
 import { IRepository } from "@/application/common/interfaces/repository";
 import { newId } from "@/domain/common/id";
 import { MongoRepository } from "@/infrastructure/repository/mongoRepository";
-import { TestEntity } from "@/test/utilities/testEntity";
-import { itUsesMongo } from "@/test/utilities/mongo";
+import { TestEntity } from "@/test/unit/utilities/testEntity";
+import { itUsesMongo } from "@/test/unit/utilities/mongo";
 import { expect } from "chai";
-import { TestEntityModel } from "@/test/utilities/testEntityModel";
+import { TestEntityModel } from "@/test/unit/utilities/testEntityModel";
 import { RBOError } from "@/application/common/error/rboError";
-import { ExpectedError } from "@/test/utilities";
+import { ExpectedError } from "@/test/unit/utilities";
 
 describe("Mongo Repository", () => {
   itUsesMongo();

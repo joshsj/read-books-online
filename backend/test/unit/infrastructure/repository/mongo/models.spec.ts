@@ -1,8 +1,8 @@
 import { RBOError, IRBOError } from "@/application/common/error/rboError";
 import { newId } from "@/domain/common/id";
-import { itUsesMongo } from "@/test/utilities/mongo";
-import { TestEntity } from "@/test/utilities/testEntity";
-import { TestEntityModel } from "@/test/utilities/testEntityModel";
+import { itUsesMongo } from "@/test/unit/utilities/mongo";
+import { TestEntity } from "@/test/unit/utilities/testEntity";
+import { TestEntityModel } from "@/test/unit/utilities/testEntityModel";
 import { expect } from "chai";
 
 const model = TestEntityModel;

@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - integration-tests
 jobs:
   Backend:
     runs-on: ubuntu-latest
@@ -30,4 +31,4 @@ jobs:
 
       - name: Run Tests via script
         working-directory: ./backend/
-        run: npm run test
+        run: npm run test:unit

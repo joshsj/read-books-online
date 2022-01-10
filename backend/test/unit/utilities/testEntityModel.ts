@@ -1,6 +1,6 @@
 import { model, Schema } from "@/infrastructure/repository/models";
 import { EntitySchema } from "@/infrastructure/repository/models/entity";
-import { TestEntity } from "@/test/utilities/testEntity";
+import { TestEntity } from "@/test/unit/utilities/testEntity";
 
 const TestEntitySchema: Schema<TestEntity> = {
   ...EntitySchema,
