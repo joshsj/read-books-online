@@ -4,6 +4,9 @@ on:
     branches:
       - master
       - integration-tests
+
+# TODO cache npm, dependencies, build
+
 jobs:
   backend-unit:
     runs-on: ubuntu-latest
@@ -32,6 +35,63 @@ jobs:
           npm install
           npm run build
 
-      - name: Run Tests via script
+      - name: Run Unit tests
         working-directory: ./backend/
         run: "npm run test:unit"
+
+  backend-integration:
+    runs-on: ubuntu-latest
+
+    env:
+      REPO: "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+      BRANCH: "${{github.ref_name}}"
+
+      NODE_ENV: development
+      HASHING_SALT_ROUNDS: 10
+      SERVER_PORT: 443
+      AUTH_EXPIRES_IN_MS: 86400000
+
+      MONGO_URI: mongodb://127.0.0.1:27017
+      MONGO_DB_NAME: readBooksOnline
+
+      COOKIE_SECRET: 3C38C635A086D1DD741D475E2D5AB40475E1BAD02FA4E558B2EF60F5FB39E236
+      COOKIE_REFRESH_TOKEN_KEY: readBooksOnlineRefreshToken
+
+      JWT_SECRET: C70AD2E04D34865F2DE5129000A68DBA48D5D4A0C3E211A01B791F5472A2726A
+      JWT_ALGORITHM: HS256
+      JWT_ISSUER: readBooksOnlineLocalDevBackend
+      JWT_AUDIENCE: readBooksOnlineLoadDevFrontend
+
+      BASE_URL: http://127.0.0.1:443/api
+
+      USER_USERNAME: "testUser"
+      USER_PASSWORD: "password123"
+
+    steps:
+      - name: Echo variables
+        run: |
+          echo "repository url: $REPO"
+          echo "current branch: $BRANCH"
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: Setup repository
+        run: |
+          git clone $REPO .
+          git checkout $BRANCH
+
+      - name: Build
+        working-directory: ./backend/
+        run: |
+          npm install
+          npm run build
+
+       - name: Create MongoDB Instance
+         uses: supercharge/mongodb-github-action@1.7.0
+         with:
+          mongodb-version: latest
+
+      - name: Run Integration tests
+        working-directory: ./backend/
+        run: "npm run test:integration"
