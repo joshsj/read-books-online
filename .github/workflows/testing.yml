@@ -1,0 +1,33 @@
+name: Testing
+on:
+  push:
+    branches:
+      - master
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    env:
+      REPO: "${{github.server_url}}/${{ github.repository }}"
+
+    steps:
+      - name: Echo variables
+        run: |
+          echo "repository url: $REPO"
+          echo "deployment branch: $BRANCH"
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: Clone
+        run: git clone $REPO .
+
+      - name: Build
+        working-directory: ./backend/
+        run: |
+          npm install
+          npm run build
+
+      - name: Run Tests via script
+        working-directory: ./backend/
+        run: npm run test
