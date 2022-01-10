@@ -1,10 +1,10 @@
-name: Testing
+name: Tests
 on:
   push:
     branches:
       - master
 jobs:
-  backend:
+  Backend:
     runs-on: ubuntu-latest
 
     env:
