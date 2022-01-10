@@ -59,8 +59,8 @@ jobs:
 
       JWT_SECRET: C70AD2E04D34865F2DE5129000A68DBA48D5D4A0C3E211A01B791F5472A2726A
       JWT_ALGORITHM: HS256
-      JWT_ISSUER: readBooksOnlineLocalDevBackend
-      JWT_AUDIENCE: readBooksOnlineLoadDevFrontend
+      JWT_ISSUER: readBooksOnlineIntegrationTestingBackend
+      JWT_AUDIENCE: readBooksOnlineIntegrationTestingFrontend
 
       BASE_URL: http://127.0.0.1:443/api
       USER_USERNAME: testUser
@@ -90,6 +90,9 @@ jobs:
         uses: supercharge/mongodb-github-action@1.7.0
         with:
           mongodb-version: latest
+
+      - name: Start application
+        run: npm run start
 
       - name: Run Integration tests
         working-directory: ./backend/
