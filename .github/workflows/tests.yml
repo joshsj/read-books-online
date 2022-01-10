@@ -5,7 +5,7 @@ on:
       - master
       - integration-tests
 jobs:
-  backend-unit:
+  Backend Unit:
     runs-on: ubuntu-latest
 
     env:
@@ -16,7 +16,7 @@ jobs:
       - name: Echo variables
         run: |
           echo "repository url: $REPO"
-          echo "deployment branch: $BRANCH"
+          echo "current branch: $BRANCH"
 
       - name: Setup Node
         uses: actions/setup-node@v2
