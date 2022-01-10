@@ -1,8 +1,8 @@
-import { ApiErrorType } from "@/application/common/error/apiError";
+import { IRBOErrorType } from "@/application/common/error/rboError";
 
 type ErrorDto = {
   error: true;
-  type: ApiErrorType | "internal" | "invalidRoute";
+  type: IRBOErrorType | "internal" | "invalidRoute";
   message?: string;
 };
 

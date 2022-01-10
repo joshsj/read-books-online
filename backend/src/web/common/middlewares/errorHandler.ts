@@ -1,4 +1,4 @@
-import { ApiError, ApiErrorType } from "@/application/common/error/apiError";
+import { RBOError, IRBOErrorType } from "@/application/common/error/rboError";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
 import { ErrorDto } from "@/web/common/models/error";
@@ -7,7 +7,7 @@ import { ErrorRequestHandler } from "express";
 
 type ErrorData = ErrorDto & { code: number; logData: any; logRest: any[] };
 
-const statusCode: { [K in ApiErrorType]: number } = {
+const statusCode: { [K in IRBOErrorType]: number } = {
   fatal: 500,
   validation: 400,
   authentication: 401,
@@ -15,7 +15,7 @@ const statusCode: { [K in ApiErrorType]: number } = {
   missing: 404,
 };
 
-const getApiErrorData = ({ type, message }: ApiError): ErrorData => ({
+const getRBOErrorData = ({ type, message }: RBOError): ErrorData => ({
   error: true,
   type,
   message,
@@ -38,7 +38,7 @@ const getErrorData = (err: any): ErrorData => {
 
 // Function must be declared with all 4 arguments to be understood by Express
 const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
-  const data = err instanceof ApiError ? getApiErrorData(err) : getErrorData(err);
+  const data = err instanceof RBOError ? getRBOErrorData(err) : getErrorData(err);
 
   getPerRequestContainer(res)
     .resolve<ILogger>(Dependency.logger)

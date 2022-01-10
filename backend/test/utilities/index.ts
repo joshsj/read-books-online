@@ -1,5 +1,5 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 
-type ExpectedError = Pick<ApiError, "type"> & Pick<Partial<ApiError>, "message">;
+type ExpectedError = Pick<RBOError, "type"> & Pick<Partial<RBOError>, "message">;
 
 export { ExpectedError };

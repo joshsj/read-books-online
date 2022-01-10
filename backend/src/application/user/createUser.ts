@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import { ICommandHandler, IRequestValidator } from "@/application/common/interfaces/cqrs";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IUserRepository } from "@/application/common/interfaces/repository";
@@ -20,14 +20,14 @@ type CreateUserRequest = Static<typeof CreateUserRequest>;
 const createUserRequestValidator: IRequestValidator<CreateUserRequest> = {
   requestName: "createUserRequest",
   validate: async (request) => {
-    ensure(CreateUserRequest.guard(request), new ApiError("validation"));
+    ensure(CreateUserRequest.guard(request), new RBOError("validation"));
 
     const userRepository = container.resolve<IUserRepository>(Dependency.userRepository);
     const currentUser = await userRepository.getByUsername(request.username);
 
     ensure(
       typeof currentUser === "undefined",
-      new ApiError("validation", `User already exists with username ${request.username}`)
+      new RBOError("validation", `User already exists with username ${request.username}`)
     );
   },
 };

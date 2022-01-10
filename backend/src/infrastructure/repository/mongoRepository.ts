@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import { entityNotFound } from "@/application/common/error/messages";
 import { IRepository } from "@/application/common/interfaces/repository";
 import { ensure } from "@/common/utilities";
@@ -36,7 +36,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   async update(entity: T): Promise<void> {
     ensure(
       !!(await this.model.findOneAndUpdate({ id: entity.id }, { $set: entity })),
-      new ApiError("missing", entityNotFound(entity.id))
+      new RBOError("missing", entityNotFound(entity.id))
     );
   }
 

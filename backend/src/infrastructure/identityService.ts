@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import {
   expiredRefreshToken,
   incorrectPassword,
@@ -35,7 +35,7 @@ class IdentityService implements IIdentityService {
 
     return new Promise((resolve, reject) =>
       jwt.verify(value, secret, { audience, issuer, algorithms: [algorithm] }, (err) =>
-        err ? reject(new ApiError("authentication", invalidAuthToken)) : resolve()
+        err ? reject(new RBOError("authentication", invalidAuthToken)) : resolve()
       )
     );
   }
@@ -49,10 +49,10 @@ class IdentityService implements IIdentityService {
   private async loginFromDetails(username: Username, password: Password): Promise<AuthTokenValue> {
     const user = await this.userRepository.getByUsername(username);
 
-    ensure(!!user, new ApiError("missing", userNotFound(username)));
+    ensure(!!user, new RBOError("missing", userNotFound(username)));
     ensure(
       await this.hashingService.compare(password, user.passwordHash),
-      new ApiError("authentication", incorrectPassword(username))
+      new RBOError("authentication", incorrectPassword(username))
     );
 
     return this.configureTokens(user);
@@ -65,18 +65,18 @@ class IdentityService implements IIdentityService {
     const currentRefreshTokenValue = req.signedCookies[refreshTokenKey];
     ensure(
       typeof currentRefreshTokenValue === "string" && !!currentRefreshTokenValue.length,
-      new ApiError("authentication", noRefreshToken)
+      new RBOError("authentication", noRefreshToken)
     );
 
     const currentRefreshToken = await this.refreshTokenRepository.getByValue(currentRefreshTokenValue);
-    ensure(!!currentRefreshToken, new ApiError("authentication", invalidRefreshToken));
-    ensure(new Date() < currentRefreshToken.expires, new ApiError("authentication", expiredRefreshToken));
+    ensure(!!currentRefreshToken, new RBOError("authentication", invalidRefreshToken));
+    ensure(new Date() < currentRefreshToken.expires, new RBOError("authentication", expiredRefreshToken));
 
     const user = await this.userRepository.get(currentRefreshToken.userId);
     if (!user) {
       await this.refreshTokenRepository.delete(currentRefreshToken.id);
 
-      throw new ApiError(
+      throw new RBOError(
         "fatal",
         `Invalid userId value (${currentRefreshToken.userId}) for Refresh Token (${currentRefreshToken.id})`
       );
@@ -121,7 +121,7 @@ class IdentityService implements IIdentityService {
 
     return new Promise((resolve, reject) =>
       jwt.sign(payload, secret, { expiresIn: expiresInMs, audience, issuer, algorithm }, (_, token) =>
-        token ? resolve(token) : reject(new ApiError("authentication"))
+        token ? resolve(token) : reject(new RBOError("authentication"))
       )
     );
   }
@@ -130,7 +130,7 @@ class IdentityService implements IIdentityService {
     const { req } = this.httpContextService.getCurrent();
 
     const value = req.headers.authorization?.split(" ")[1];
-    ensure(!!value, new ApiError("authorization", invalidAuthToken));
+    ensure(!!value, new RBOError("authorization", invalidAuthToken));
 
     return value;
   }
@@ -142,7 +142,7 @@ class IdentityService implements IIdentityService {
       });
 
       if (!JWTPayload.guard(payload)) {
-        return reject(new ApiError("authentication", invalidAuthToken));
+        return reject(new RBOError("authentication", invalidAuthToken));
       }
 
       resolve(payload.sub);
@@ -152,7 +152,7 @@ class IdentityService implements IIdentityService {
   async getCurrentUser(): Promise<User> {
     const currentUser = await this.userRepository.get(await this.getCurrentUserId());
 
-    ensure(!!currentUser, new ApiError("missing", userNotFound()));
+    ensure(!!currentUser, new RBOError("missing", userNotFound()));
 
     return currentUser;
   }

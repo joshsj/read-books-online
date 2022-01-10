@@ -1,4 +1,4 @@
-import { ApiError, IApiError } from "@/application/common/error/apiError";
+import { RBOError, IRBOError } from "@/application/common/error/rboError";
 import { newId } from "@/domain/common/id";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { TestEntity } from "@/test/utilities/testEntity";
@@ -6,7 +6,7 @@ import { TestEntityModel } from "@/test/utilities/testEntityModel";
 import { expect } from "chai";
 
 const model = TestEntityModel;
-const expectedError: IApiError = { type: "validation" };
+const expectedError: IRBOError = { type: "validation" };
 
 describe("Mongo Models", () => {
   itUsesMongo();
@@ -25,7 +25,7 @@ describe("Mongo Models", () => {
 
       const result = model.create(invalidEntity);
 
-      return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
+      return expect(result).to.be.rejectedWith(RBOError).and.eventually.include(expectedError);
     });
 
     it("Triggers for invalid fields", async () => {
@@ -33,7 +33,7 @@ describe("Mongo Models", () => {
 
       const result = model.create(invalidEntity);
 
-      return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
+      return expect(result).to.be.rejectedWith(RBOError).and.eventually.include(expectedError);
     });
   });
 });

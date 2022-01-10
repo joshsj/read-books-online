@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import { Entity } from "@/domain/common/entity";
 import { model as _model, Schema as _Schema, SchemaDefinition, SchemaDefinitionType } from "mongoose";
 import { Runtype } from "runtypes";
@@ -15,7 +15,7 @@ const model = <T extends Entity>(name: string, helper: Runtype<T>, definition: S
     const validation = helper.validate(this);
 
     if (!validation.success) {
-      throw new ApiError(
+      throw new RBOError(
         "validation",
         "Validation failed" + (validation.details ? ` fields ${Object.keys(validation.details).join(", ")}` : "")
       );

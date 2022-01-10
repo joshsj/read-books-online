@@ -1,4 +1,4 @@
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import { IIdentityService } from "@/application/common/interfaces/identityService";
 import { Dependency } from "@/application/dependency";
 import { ensure } from "@/common/utilities";
@@ -23,7 +23,7 @@ routes.get(
 routes.post(
   "",
   handleAsync(async ({ body: accountDto }, {}, { ok, getPerRequestContainer }) => {
-    ensure(AccountDto.guard(accountDto), new ApiError("validation"));
+    ensure(AccountDto.guard(accountDto), new RBOError("validation"));
 
     const container = getPerRequestContainer();
 

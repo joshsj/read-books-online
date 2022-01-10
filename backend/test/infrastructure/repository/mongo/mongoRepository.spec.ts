@@ -5,7 +5,7 @@ import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
 import { TestEntityModel } from "@/test/utilities/testEntityModel";
-import { ApiError } from "@/application/common/error/apiError";
+import { RBOError } from "@/application/common/error/rboError";
 import { ExpectedError } from "@/test/utilities";
 
 describe("Mongo Repository", () => {
@@ -87,7 +87,7 @@ describe("Mongo Repository", () => {
         const result = repository.update(entity);
         const expectedError: ExpectedError = { type: "missing" };
 
-        return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
+        return expect(result).to.be.rejectedWith(RBOError).and.eventually.include(expectedError);
       });
     });
 

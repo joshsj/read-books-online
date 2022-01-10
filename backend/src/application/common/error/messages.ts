@@ -1,9 +1,9 @@
 import { Id } from "@/domain/common/id";
-import { ApiErrorType } from "./apiError";
+import { IRBOErrorType } from "./rboError";
 
 const q = (s: string) => `'${s}'`;
 
-export const defaults: { [K in ApiErrorType]: string } = {
+export const defaults: { [K in IRBOErrorType]: string } = {
   fatal: "Internal error occurred",
   validation: "Invalid request",
   authentication: "Failed to authenticate",
