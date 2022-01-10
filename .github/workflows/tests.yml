@@ -44,7 +44,7 @@ jobs:
 
     env:
       REPO: "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-      BRANCH: "${{github.ref_name}}"
+      BRANCH: ${{github.ref_name}}
 
       NODE_ENV: development
       HASHING_SALT_ROUNDS: 10
@@ -63,9 +63,8 @@ jobs:
       JWT_AUDIENCE: readBooksOnlineLoadDevFrontend
 
       BASE_URL: http://127.0.0.1:443/api
-
-      USER_USERNAME: "testUser"
-      USER_PASSWORD: "password123"
+      USER_USERNAME: testUser
+      USER_PASSWORD: password123
 
     steps:
       - name: Echo variables
@@ -87,9 +86,9 @@ jobs:
           npm install
           npm run build
 
-       - name: Create MongoDB Instance
-         uses: supercharge/mongodb-github-action@1.7.0
-         with:
+      - name: Create MongoDB Instance
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
           mongodb-version: latest
 
       - name: Run Integration tests
