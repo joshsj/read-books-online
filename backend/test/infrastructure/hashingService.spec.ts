@@ -20,8 +20,9 @@ describe("Hashing Service", () => {
 
       const toBeHashed = "toBeHashed";
       const salt = await sut.salt();
+      const result = sut.hash(toBeHashed, salt);
 
-      return expect(sut.hash(toBeHashed, salt)).eventually.satisfies((x: any) => typeof x === "string" && x.length > 0);
+      return expect(result).eventually.satisfies((x: any) => typeof x === "string" && x.length > 0);
     });
   });
 
@@ -31,8 +32,9 @@ describe("Hashing Service", () => {
 
       const plain = "plain";
       const hash = await sut.hash(plain, await sut.salt());
+      const result = sut.compare(plain, hash);
 
-      return expect(sut.compare(plain, hash)).eventually.to.be.true;
+      return expect(result).eventually.to.be.true;
     });
 
     it("Correctly compares a plain string and an incorrect hash", async () => {
@@ -40,8 +42,9 @@ describe("Hashing Service", () => {
 
       const plain = "plain";
       const hash = "hash";
+      const result = sut.compare(plain, hash);
 
-      return expect(sut.compare(plain, hash)).eventually.to.be.false;
+      return expect(result).eventually.to.be.false;
     });
   });
 });

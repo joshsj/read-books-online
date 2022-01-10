@@ -52,7 +52,9 @@ describe("CQRS", () => {
     });
 
     it("Throws when no handler is provided", () => {
-      expect(new CQRS().send(createTestRequest())).to.be.rejected;
+      const result = new CQRS().send(createTestRequest());
+
+      return expect(result).to.be.rejectedWith(Error);
     });
 
     it("Throws when multiple handlers are provided", () => {
@@ -64,7 +66,9 @@ describe("CQRS", () => {
           useValue: createTestRequestHandler(),
         });
 
-      expect(new CQRS().send(createTestRequest())).to.be.rejected;
+      const result = new CQRS().send(createTestRequest());
+
+      return expect(result).to.be.rejectedWith(Error);
     });
   });
 

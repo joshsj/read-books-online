@@ -15,19 +15,25 @@ describe("Mongo Models", () => {
     it("Passes for valid entities", async () => {
       const validEntity: TestEntity = { id: newId(), min3: "abcde" };
 
-      return expect(model.create(validEntity)).to.be.fulfilled;
+      const result = model.create(validEntity);
+
+      return expect(result).to.be.fulfilled;
     });
 
     it("Triggers for invalid IDs", async () => {
       const invalidEntity: TestEntity = { id: "invalid id", min3: "ab" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
+      const result = model.create(invalidEntity);
+
+      return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
     });
 
     it("Triggers for invalid fields", async () => {
       const invalidEntity: TestEntity = { id: newId(), min3: "a" };
 
-      return expect(model.create(invalidEntity)).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
+      const result = model.create(invalidEntity);
+
+      return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
     });
   });
 });

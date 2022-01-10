@@ -22,93 +22,91 @@ describe("Mongo Repository", () => {
   const repository: IRepository<TestEntity> = new MongoRepository(TestEntity, model);
 
   describe("Operations", () => {
-    describe("Get", () => {
-      it("All", async () => {
-        const result = await repository.get();
+    describe("get()", () => {
+      it("Returns all entities", () => {
+        const result = repository.get();
 
-        expect(result).to.have.length(2);
+        return expect(result).to.have.eventually.have.length(2);
       });
 
-      it("By ID", async () => {
-        const id = testEntityOne.id;
+      it("Returns an entity by ID ", () => {
+        const result = repository.get(testEntityOne.id);
 
-        const result = await repository.get(id);
-
-        expect(result).not.to.be.undefined;
+        return expect(result).eventually.to.include(testEntityOne);
       });
 
-      it("By multiple IDs", async () => {
-        const ids = [testEntityOne.id, testEntityTwo.id];
-        const result = await repository.get(ids);
+      it("Returns an entity by multiple IDs", async () => {
+        const ids = [testEntityTwo.id];
+        const result = repository.get(ids);
 
-        expect(result).to.have.length(2);
+        return expect(result).eventually.to.have.length(1);
       });
     });
 
-    describe("Exists", () => {
+    describe("exists()", () => {
       it("Finds an entity", async () => {
         const entity: TestEntity = { id: newId(), min3: "entity" };
-
         await model.create(entity);
 
-        return expect(repository.exists(entity.id)).to.be.eventually.true;
+        const result = repository.exists(entity.id);
+
+        return expect(result).to.be.eventually.true;
       });
     });
 
-    describe("Insert", () => {
+    describe("insert()", () => {
       it("An Entity", async () => {
         const entity: TestEntity = { id: newId(), min3: "entity" };
 
         await repository.insert(entity);
 
-        const result = await model.findOne({ id: entity.id });
+        const result = model.findOne({ id: entity.id });
+        const expected = { min3: "entity" };
 
-        expect(result).not.to.be.null;
-        expect(result).to.have.property("min3", "entity");
+        return expect(result).eventually.include(expected).and.be.not.null;
       });
     });
 
-    describe("Update", () => {
+    describe("update()", () => {
       it("An Entity", async () => {
         const entity: TestEntity = { id: newId(), min3: "entity" };
-        model.create(entity);
+        await model.create(entity);
 
         entity.min3 = "updated entity";
-
         await repository.update(entity);
-        const result = await model.findOne({ id: entity.id });
 
-        expect(result).not.to.be.null;
-        expect(result).to.have.property("min3", "updated entity");
+        const result = model.findOne({ id: entity.id });
+        const expected = { min3: "updated entity" };
+
+        return expect(result).eventually.to.include(expected).and.be.not.null;
       });
 
       it("Throws when updating a missing entity", () => {
         const entity: TestEntity = { id: newId(), min3: "entity" };
 
-        const expectedError: ExpectedError = { type: "missing" };
         const result = repository.update(entity);
+        const expectedError: ExpectedError = { type: "missing" };
 
         return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
       });
     });
 
-    describe("Delete", () => {
-      it("By Id", async () => {
+    describe("delete()", () => {
+      it("By ID", async () => {
         await repository.delete(testEntityOne.id);
 
-        const result = await model.find();
+        const result = model.find();
 
-        expect(result).to.have.length(1);
-        expect(result[0]).to.have.property("id", testEntityTwo.id);
+        return expect(result).eventually.to.have.length(1);
       });
 
       it("By multiple IDs", async () => {
         const ids = [testEntityOne.id, testEntityTwo.id];
         await repository.delete(ids);
 
-        const result = await model.find();
+        const result = model.find();
 
-        expect(result).to.have.length(0);
+        return expect(result).eventually.to.have.length(0);
       });
     });
   });

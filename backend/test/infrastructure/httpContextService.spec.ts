@@ -2,7 +2,7 @@ import { HttpContextService } from "@/infrastructure/httpContextService";
 import { expect } from "chai";
 import { Request, Response } from "express";
 
-describe("Http Context Service", () => {
+describe("HTTP Context Service", () => {
   describe("getCurrent()", () => {
     it("Provides the correct values", () => {
       const req = {} as Request;
