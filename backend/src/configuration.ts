@@ -59,4 +59,4 @@ const getConfiguration = (): IConfiguration => {
   return configuration;
 };
 
-export { getConfiguration };
+export { EnvKeys, getConfiguration };

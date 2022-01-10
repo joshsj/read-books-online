@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 describe("HTTP Context Service", () => {
   describe("getCurrent()", () => {
-    it("Provides the correct values", () => {
+    it("Provides the correct values", async () => {
       const req = {} as Request;
       const res = {} as Response;
 

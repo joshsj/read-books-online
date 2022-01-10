@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node -r module-alias/register -r dotenv/config -r reflect-metadata build/backend/src/index.js",
-    "test:unit": "mocha -r module-alias/register -r dotenv/config -r reflect-metadata -r test/setup.js  build/backend/test/unit/**/*.spec.js",
-    "test:integration": "mocha -r module-alias/register -r dotenv/config -r test/setup.js build/backend/test/integration/**/*.spec.js",
+    "test:unit": "node        -r module-alias/register -r dotenv/config -r reflect-metadata -r ./build/backend/test/plugins.js ./build/backend/test/unit/index.js",
+    "test:integration": "node -r module-alias/register -r dotenv/config                     -r ./build/backend/test/plugins.js ./build/backend/test/integration/index.js",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },
@@ -37,6 +37,7 @@
     "@types/uuid": "^8.3.3",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "fast-glob": "^3.2.10",
     "mocha": "^9.1.3",
     "mongodb-memory-server": "^8.1.0",
     "node-fetch": "^2.6.6",
