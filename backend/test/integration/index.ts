@@ -10,7 +10,7 @@ const main = async () => {
 
   testFilePaths.forEach((p) => mocha.addFile(path.join(__dirname, p)));
 
-  mocha.run();
+  mocha.run((failures) => (process.exitCode = failures ? 1 : 0));
 };
 
 main();
