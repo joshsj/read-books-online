@@ -5,11 +5,12 @@ on:
       - master
       - integration-tests
 jobs:
-  Backend:
+  backend-unit:
     runs-on: ubuntu-latest
 
     env:
       REPO: "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+      BRANCH: "${{github.ref_name}}"
 
     steps:
       - name: Echo variables
@@ -20,8 +21,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
 
-      - name: Clone
-        run: git clone $REPO .
+      - name: Setup repository
+        run: |
+          git clone $REPO .
+          git checkout $BRANCH
 
       - name: Build
         working-directory: ./backend/
@@ -31,4 +34,4 @@ jobs:
 
       - name: Run Tests via script
         working-directory: ./backend/
-        run: npm run test:unit
+        run: "npm run test:unit"
