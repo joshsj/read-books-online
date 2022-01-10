@@ -1,3 +1,4 @@
+import { Id } from "@/domain/common/id";
 import { ApiErrorType } from "./apiError";
 
 const q = (s: string) => `'${s}'`;
@@ -21,3 +22,5 @@ export const invalidAuthToken = "Invalid authorization token provided";
 export const noRefreshToken = "Refresh token not provided";
 export const invalidRefreshToken = "Invalid refresh token";
 export const expiredRefreshToken = "Refresh token has expired";
+
+export const entityNotFound = (id: Id) => `Entity with ID ${q(id)} was not found`;

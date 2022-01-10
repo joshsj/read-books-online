@@ -5,6 +5,8 @@ import { TestEntity } from "@/test/utilities/testEntity";
 import { itUsesMongo } from "@/test/utilities/mongo";
 import { expect } from "chai";
 import { TestEntityModel } from "@/test/utilities/testEntityModel";
+import { ApiError } from "@/application/common/error/apiError";
+import { ExpectedError } from "@/test/utilities";
 
 describe("Mongo Repository", () => {
   itUsesMongo();
@@ -49,13 +51,7 @@ describe("Mongo Repository", () => {
 
         await model.create(entity);
 
-        const result = await repository.exists(entity.id);
-
-        expect(result).to.be.true;
-      });
-
-      it("Throws when updating a missing entity", () => {
-        expect.fail();
+        return expect(repository.exists(entity.id)).to.be.eventually.true;
       });
     });
 
@@ -84,6 +80,15 @@ describe("Mongo Repository", () => {
 
         expect(result).not.to.be.null;
         expect(result).to.have.property("min3", "updated entity");
+      });
+
+      it("Throws when updating a missing entity", () => {
+        const entity: TestEntity = { id: newId(), min3: "entity" };
+
+        const expectedError: ExpectedError = { type: "missing" };
+        const result = repository.update(entity);
+
+        return expect(result).to.be.rejectedWith(ApiError).and.eventually.include(expectedError);
       });
     });
 

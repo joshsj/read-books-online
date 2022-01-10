@@ -1,4 +1,7 @@
+import { ApiError } from "@/application/common/error/apiError";
+import { entityNotFound } from "@/application/common/error/messages";
 import { IRepository } from "@/application/common/interfaces/repository";
+import { ensure } from "@/common/utilities";
 import { Entity } from "@/domain/common/entity";
 import { Id, isId } from "@/domain/common/id";
 import { Model } from "mongoose";
@@ -31,7 +34,10 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   }
 
   async update(entity: T): Promise<void> {
-    await this.model.findOneAndUpdate({ id: entity.id }, { $set: entity });
+    ensure(
+      !!(await this.model.findOneAndUpdate({ id: entity.id }, { $set: entity })),
+      new ApiError("missing", entityNotFound(entity.id))
+    );
   }
 
   async delete(id: Some<Id>): Promise<void> {
