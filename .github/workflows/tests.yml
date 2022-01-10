@@ -92,6 +92,7 @@ jobs:
           mongodb-version: latest
 
       - name: Start application
+        working-directory: ./backend/
         run: npm run start
 
       - name: Run Integration tests
