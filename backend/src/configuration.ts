@@ -1,6 +1,6 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { Mode } from "@/application/common/interfaces/mode";
-import { ensure } from "@/common/utilities";
+import { ensure, getEnv } from "@/common/utilities";
 import { Algorithm } from "jsonwebtoken";
 
 const EnvKeys = [
@@ -18,14 +18,8 @@ const EnvKeys = [
   "JWT_AUDIENCE",
 ] as const;
 
-type EnvKey = typeof EnvKeys[number];
-type Env = { [K in EnvKey]: string };
-
-const getEnv = () =>
-  EnvKeys.reduce<Partial<Env>>((env, key) => Object.assign(env, { [key]: process.env[key] }), {}) as Env;
-
 const getConfiguration = (): IConfiguration => {
-  const env = getEnv();
+  const env = getEnv(EnvKeys, process.env);
 
   const expiresInMs = parseInt(env.AUTH_EXPIRES_IN_MS);
 
@@ -65,4 +59,4 @@ const getConfiguration = (): IConfiguration => {
   return configuration;
 };
 
-export { Env, getEnv, getConfiguration };
+export { getConfiguration };
