@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      REPO: "${{github.server_url}}/${{ github.repository }}"
+      REPO: "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
     steps:
       - name: Echo variables
