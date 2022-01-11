@@ -1,10 +1,11 @@
 import { ensure } from "@/common/utilities";
-import { toUrlParams } from "@/web/common/utilities/http";
-import { AuthClient } from "@/web/routes/auth";
+import { isId } from "@/domain/common/id";
+import { EndpointName, RequestData } from "@/web/client/types";
+import { toUrlParams } from "../common/utilities/http";
 
-type Fetch = typeof fetch;
+type RBOMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-const methods = {
+const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
   get: "GET",
 
   post: "POST",
@@ -14,74 +15,87 @@ const methods = {
   update: "PUT",
 
   delete: "DELETE",
-} as const;
-
-const convertSegment = (segment: string, key: string): string | undefined => {
-  const temp = segment.replace(key, "");
-
-  return temp ? temp[0]!.toLowerCase() + temp.slice(1) : undefined;
 };
 
-const getMethod = (segment: string) => {
-  const key = Object.keys(methods).find((m) => segment.startsWith(m));
+const getRequestData = (
+  data: RequestData,
+  segments: string[],
+  { baseUrl, authenticationToken }: IRBOClientConfig
+): { url: string; method: string; body: string | undefined; headers: Record<string, string> | undefined } => {
+  const finalSegment = segments.pop()!;
+  const method = endpointNameMethods[finalSegment as EndpointName];
+  const endpoint = baseUrl + "/" + segments.join("/");
+  const headers = authenticationToken ? { authentication: `Bearer ${authenticationToken}` } : undefined;
 
-  ensure(!!key, new Error(`Method could not be found for segment ${segment}`));
+  if (!data) {
+    return {
+      url: endpoint,
+      body: undefined,
+      method,
+      headers,
+    };
+  }
+
+  if (isId(data)) {
+    return {
+      url: endpoint + "/" + data,
+      body: undefined,
+      method,
+      headers,
+    };
+  }
+
+  const [url, body] = method === "GET" ? [endpoint + "?" + toUrlParams(data)] : [endpoint, JSON.stringify(data)];
 
   return {
-    newSegment: convertSegment(segment, key),
-    method: methods[key as keyof typeof methods],
+    url,
+    body,
+    method,
+    headers,
   };
 };
 
-const callEndpoint = (segments: string[], args: any[], _fetch: Fetch) => {
+const callEndpoint = async (segments: string[], args: any[], config: IRBOClientConfig) => {
   ensure(segments.length > 1, new Error("Invalid segments, at least two segments are required to form an endpoint"));
 
-  const { method, newSegment } = getMethod(segments.pop()!);
+  const { url, method, body, headers } = getRequestData(args[0] as RequestData, segments, config);
 
-  newSegment && segments.push(newSegment);
-
-  const data = args[0];
-  const endpoint = "/" + segments.join("/") + (data && method === "GET" ? toUrlParams(data) : "");
-  const body = data && method !== "GET" ? data : undefined;
-
-  // TODO fetch
-
-  console.log(method);
-  console.log(endpoint);
-  console.log(body);
-
-  return;
+  return config
+    .fetch(url, {
+      method,
+      body,
+      headers,
+    })
+    .then((res) => res.json());
 };
 
 // allows apply, construct proxy methods
 const dummy = Object.assign(class {}, () => void 0);
 
-const createSegmentProxy = (segments: string[], fetch: Fetch | undefined): any =>
+const createClientProxy = (segments: string[], config: IRBOClientConfig): any =>
   new Proxy(dummy, {
     get({}, segment) {
       if (typeof segment !== "string") {
         return undefined;
       }
 
-      return createSegmentProxy([...segments, segment], fetch);
+      return createClientProxy([...segments, segment], config);
     },
 
-    apply: ({}, {}, args) => {
-      ensure(!!fetch, new Error("fetch parameter required when constructing"));
-
-      callEndpoint(segments, args, fetch);
-    },
-
-    construct: ({}, args) => createSegmentProxy([], args[0]),
+    apply: ({}, {}, args) => callEndpoint(segments, args, config),
+    construct: ({}, args) => createClientProxy([], args[0]),
   });
 
-type Clients = { auth: AuthClient };
+type Clients = {};
 
-type IRBOClient = {
-  // TODO add base url
-  new (fetch: Fetch): Clients;
-} & Clients;
+type IRBOClientConfig = {
+  fetch: typeof fetch;
+  baseUrl: string;
+  authenticationToken?: string;
+};
 
-const RBOClient: IRBOClient = createSegmentProxy([], undefined);
+type IRBOClient = { new (config: IRBOClientConfig): Clients } & Clients;
 
-export { IRBOClient, RBOClient };
+const RBOClient: IRBOClient = createClientProxy([], {} as IRBOClientConfig);
+
+export { IRBOClient, IRBOClientConfig, RBOClient, createClientProxy, RBOMethod };

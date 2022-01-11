@@ -1,9 +1,15 @@
 import { RBOError } from "@/application/common/error/rboError";
+import { Id } from "@/domain/common/id";
+
+type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
 type EndpointRes<T> = T extends void ? Promise<RBOError> : Promise<T | RBOError>;
 
-type Endpoint<TReq extends object | void = void, TRes extends object | void = void> = TReq extends void
-  ? () => EndpointRes<TRes>
-  : (req: TReq) => EndpointRes<TRes>;
+type ResponseData = object | void;
+type RequestData<T extends EndpointName = "get"> = ResponseData | (T extends "get" ? Id : never);
 
-export { Endpoint, EndpointRes };
+type Endpoint<TName extends EndpointName, TReq extends RequestData<TName> = void, TRes extends ResponseData = void> = {
+  [K in TName]: (req: TReq) => EndpointRes<TRes>;
+};
+
+export { Endpoint, EndpointName, EndpointRes, RequestData, ResponseData };

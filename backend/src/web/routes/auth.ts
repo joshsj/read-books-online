@@ -5,17 +5,6 @@ import { ensure } from "@/common/utilities";
 import { AccountDto, TokenDto } from "@/web/common/models/auth";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Router } from "express";
-import { Endpoint } from "@/web/client/types";
-
-type AuthClient = {
-  refresh: {
-    get: Endpoint<void, TokenDto>;
-  };
-
-  login: {
-    post: Endpoint<AccountDto, TokenDto>;
-  };
-};
 
 const routes = Router();
 
@@ -48,4 +37,4 @@ routes.post(
   })
 );
 
-export { routes as authRoutes, AuthClient };
+export { routes as authRoutes };
