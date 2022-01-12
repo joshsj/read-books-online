@@ -1,7 +1,12 @@
 {
-  "extends": "../tsconfig.target.json",
+  "extends": "../tsconfig.strict.json",
 
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "outDir": "build",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
