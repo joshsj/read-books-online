@@ -1,8 +1,8 @@
 import { ICQRS } from "@/application/common/interfaces/cqrs";
 import { Dependency } from "@/application/dependency";
+import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Router } from "express";
 import { container } from "tsyringe";
-import { handleAsync } from "@/web/common/utilities/requestHelper";
 
 const router = Router();
 
