@@ -4,7 +4,10 @@ import { IHashingService } from "@/application/common/interfaces/hashingService"
 import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
 import { IIdentityService } from "@/application/common/interfaces/identityService";
 import { ILogger } from "@/application/common/interfaces/logger";
-import { IRefreshTokenRepository, IUserRepository } from "@/application/common/interfaces/repository";
+import {
+  IRefreshTokenRepository,
+  IUserRepository,
+} from "@/application/common/interfaces/repository";
 import { Dependency } from "@/application/dependency";
 import { CQRS } from "@/infrastructure/cqrs";
 import { IdentityService } from "@/infrastructure/identityService";
@@ -34,7 +37,9 @@ const registerInfrastructureDependencies = () => {
         ),
     })
     .register<IUserRepository>(Dependency.userRepository, { useValue: new UserRepository() })
-    .register<IRefreshTokenRepository>(Dependency.refreshTokenRepository, { useValue: new RefreshTokenRepository() })
+    .register<IRefreshTokenRepository>(Dependency.refreshTokenRepository, {
+      useValue: new RefreshTokenRepository(),
+    })
     .register<ICQRS>(Dependency.cqrs, { useFactory: (c) => new CQRS(c) });
 };
 

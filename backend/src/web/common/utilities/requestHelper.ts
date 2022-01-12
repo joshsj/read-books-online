@@ -5,7 +5,8 @@ import { DependencyContainer } from "tsyringe";
 
 const createRequestHelper = (res: Response) => ({
   getPerRequestContainer: () => getPerRequestContainer(res),
-  setPerRequestContainer: (container: DependencyContainer) => setPerRequestContainer(res, container),
+  setPerRequestContainer: (container: DependencyContainer) =>
+    setPerRequestContainer(res, container),
 
   ok: (result?: object) => ok(res, result),
   created: () => created(res),

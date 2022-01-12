@@ -13,7 +13,9 @@ routes.get(
   handleAsync(async ({}, {}, { getPerRequestContainer, ok }) => {
     const container = getPerRequestContainer();
 
-    const token = await container.resolve<IIdentityService>(Dependency.identityService).login("refresh");
+    const token = await container
+      .resolve<IIdentityService>(Dependency.identityService)
+      .login("refresh");
     const tokenDto: TokenDto = { token };
 
     ok(tokenDto);

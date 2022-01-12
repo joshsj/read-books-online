@@ -9,6 +9,8 @@ describe("Configuration", () => {
 
     return expect(result)
       .eventually.to.be.fulfilled.and.include(ok)
-      .and.satisfy((res: Response) => res.headers.get("Content-Type")?.startsWith("application/json") ?? false);
+      .and.satisfy(
+        (res: Response) => res.headers.get("Content-Type")?.startsWith("application/json") ?? false
+      );
   });
 });

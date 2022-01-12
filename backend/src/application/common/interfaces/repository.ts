@@ -28,4 +28,10 @@ type IRefreshTokenRepository = IRepository<RefreshToken> & {
   getByValue(value: RefreshTokenValue): Promise<RefreshToken | undefined>;
 };
 
-export { IWritableRepository, IReadableRepository, IRepository, IUserRepository, IRefreshTokenRepository };
+export {
+  IWritableRepository,
+  IReadableRepository,
+  IRepository,
+  IUserRepository,
+  IRefreshTokenRepository,
+};

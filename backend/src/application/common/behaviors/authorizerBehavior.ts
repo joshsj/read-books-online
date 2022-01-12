@@ -17,7 +17,10 @@ const authorizerBehavior: IBehavior = {
       return await next();
     }
 
-    logger.log("authorization", `Resolved ${authorizers.length} authorizers for request ${request.requestName}`);
+    logger.log(
+      "authorization",
+      `Resolved ${authorizers.length} authorizers for request ${request.requestName}`
+    );
 
     for (const authorizer of authorizers) {
       await authorizer.authorize(request);

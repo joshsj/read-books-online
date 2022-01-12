@@ -11,7 +11,10 @@ import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
 import { AuthTokenValue, IIdentityService } from "@/application/common/interfaces/identityService";
-import { IRefreshTokenRepository, IUserRepository } from "@/application/common/interfaces/repository";
+import {
+  IRefreshTokenRepository,
+  IUserRepository,
+} from "@/application/common/interfaces/repository";
 import { ensure } from "@/common/utilities";
 import { Password, Username } from "@/domain/common/constrainedTypes";
 import { Id, newId } from "@/domain/common/id";
@@ -68,9 +71,14 @@ class IdentityService implements IIdentityService {
       new RBOError("authentication", noRefreshToken)
     );
 
-    const currentRefreshToken = await this.refreshTokenRepository.getByValue(currentRefreshTokenValue);
+    const currentRefreshToken = await this.refreshTokenRepository.getByValue(
+      currentRefreshTokenValue
+    );
     ensure(!!currentRefreshToken, new RBOError("authentication", invalidRefreshToken));
-    ensure(new Date() < currentRefreshToken.expires, new RBOError("authentication", expiredRefreshToken));
+    ensure(
+      new Date() < currentRefreshToken.expires,
+      new RBOError("authentication", expiredRefreshToken)
+    );
 
     const user = await this.userRepository.get(currentRefreshToken.userId);
     if (!user) {
@@ -120,8 +128,11 @@ class IdentityService implements IIdentityService {
     const payload: JWTPayload = { sub: userId };
 
     return new Promise((resolve, reject) =>
-      jwt.sign(payload, secret, { expiresIn: expiresInMs, audience, issuer, algorithm }, (_, token) =>
-        token ? resolve(token) : reject(new RBOError("authentication"))
+      jwt.sign(
+        payload,
+        secret,
+        { expiresIn: expiresInMs, audience, issuer, algorithm },
+        (_, token) => (token ? resolve(token) : reject(new RBOError("authentication")))
       )
     );
   }

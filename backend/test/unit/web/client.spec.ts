@@ -11,7 +11,8 @@ const config: IRBOClientConfig = {
 };
 
 const fetchSpy = spy(config, "fetch");
-const newSut = <T>(c: Partial<IRBOClientConfig> = {}): T => createClientProxy([], { ...config, ...c });
+const newSut = <T>(c: Partial<IRBOClientConfig> = {}): T =>
+  createClientProxy([], { ...config, ...c });
 const getResult = (call = 0) => {
   const [url, init] = fetchSpy.getCall(call).args;
 

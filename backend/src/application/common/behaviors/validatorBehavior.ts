@@ -1,4 +1,9 @@
-import { IBehavior, IRequest, IRequestName, IRequestValidator } from "@/application/common/interfaces/cqrs";
+import {
+  IBehavior,
+  IRequest,
+  IRequestName,
+  IRequestValidator,
+} from "@/application/common/interfaces/cqrs";
 import { ILogger } from "@/application/common/interfaces/logger";
 import { Dependency } from "@/application/dependency";
 import { container } from "tsyringe";
@@ -12,11 +17,17 @@ const validatorBehavior: IBehavior = {
       .filter((v) => v.requestName === request.requestName);
 
     if (!validators.length) {
-      logger.log("validation", `Skipping validation for request ${request.requestName}, no validators were resolved`);
+      logger.log(
+        "validation",
+        `Skipping validation for request ${request.requestName}, no validators were resolved`
+      );
       return await next();
     }
 
-    logger.log("validation", `Resolved ${validators.length} validators for request ${request.requestName}`);
+    logger.log(
+      "validation",
+      `Resolved ${validators.length} validators for request ${request.requestName}`
+    );
 
     for (const validator of validators) {
       await validator.validate(request);

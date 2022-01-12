@@ -4,7 +4,10 @@ import { RefreshToken, RefreshTokenValue } from "@/domain/entities/refreshToken"
 import { RefreshTokenModel } from "@/infrastructure/repository/models/refreshToken";
 import { MongoRepository } from "@/infrastructure/repository/mongoRepository";
 
-class RefreshTokenRepository extends MongoRepository<RefreshToken> implements IRefreshTokenRepository {
+class RefreshTokenRepository
+  extends MongoRepository<RefreshToken>
+  implements IRefreshTokenRepository
+{
   constructor() {
     super(RefreshToken, RefreshTokenModel);
   }

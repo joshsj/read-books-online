@@ -10,7 +10,9 @@ describe("Hashing Service", () => {
     it("Returns a value", () => {
       const sut = newSut();
 
-      return expect(sut.salt()).eventually.satisfies((x: any) => typeof x === "string" && x.length > 0);
+      return expect(sut.salt()).eventually.satisfies(
+        (x: any) => typeof x === "string" && x.length > 0
+      );
     });
   });
 

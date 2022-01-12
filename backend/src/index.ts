@@ -18,7 +18,9 @@ const registerInitDependencies = () => {
     })
     .register<IConfiguration>(Dependency.configuration, { useValue: configuration });
 
-  container.resolve<ILogger>(Dependency.logger).log("init", "Configuration", ...Object.entries(configuration));
+  container
+    .resolve<ILogger>(Dependency.logger)
+    .log("init", "Configuration", ...Object.entries(configuration));
 };
 
 const main = async () => {

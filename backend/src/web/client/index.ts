@@ -21,11 +21,18 @@ const getRequestData = (
   data: RequestData,
   segments: string[],
   { baseUrl, authenticationToken }: IRBOClientConfig
-): { url: string; method: string; body: string | undefined; headers: Record<string, string> | undefined } => {
+): {
+  url: string;
+  method: string;
+  body: string | undefined;
+  headers: Record<string, string> | undefined;
+} => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = baseUrl + "/" + segments.join("/");
-  const headers = authenticationToken ? { authentication: `Bearer ${authenticationToken}` } : undefined;
+  const headers = authenticationToken
+    ? { authentication: `Bearer ${authenticationToken}` }
+    : undefined;
 
   if (!data) {
     return {
@@ -45,7 +52,8 @@ const getRequestData = (
     };
   }
 
-  const [url, body] = method === "GET" ? [endpoint + "?" + toUrlParams(data)] : [endpoint, JSON.stringify(data)];
+  const [url, body] =
+    method === "GET" ? [endpoint + "?" + toUrlParams(data)] : [endpoint, JSON.stringify(data)];
 
   return {
     url,
@@ -56,7 +64,10 @@ const getRequestData = (
 };
 
 const callEndpoint = async (segments: string[], args: any[], config: IRBOClientConfig) => {
-  ensure(segments.length > 1, new Error("Invalid segments, at least two segments are required to form an endpoint"));
+  ensure(
+    segments.length > 1,
+    new Error("Invalid segments, at least two segments are required to form an endpoint")
+  );
 
   const { url, method, body, headers } = getRequestData(args[0] as RequestData, segments, config);
 

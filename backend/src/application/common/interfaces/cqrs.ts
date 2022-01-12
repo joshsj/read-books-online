@@ -6,7 +6,10 @@ type IBaseHandler<T extends IRequest<IRequestName>> = {
   handles: T["requestName"];
 };
 
-type IQueryHandler<TRequest extends IRequest<IRequestName>, TResponse extends object> = IBaseHandler<TRequest> & {
+type IQueryHandler<
+  TRequest extends IRequest<IRequestName>,
+  TResponse extends object
+> = IBaseHandler<TRequest> & {
   handle: (request: TRequest) => Promise<TResponse>;
 };
 
@@ -17,7 +20,10 @@ type ICommandHandler<TRequest extends IRequest<IRequestName>> = IBaseHandler<TRe
 type IRequestHandler = IQueryHandler<any, any> | ICommandHandler<any>;
 
 type IBehavior = {
-  handle: <T extends IResponseReturnValue>(request: IRequest<IRequestName>, next: () => Promise<T>) => Promise<T>;
+  handle: <T extends IResponseReturnValue>(
+    request: IRequest<IRequestName>,
+    next: () => Promise<T>
+  ) => Promise<T>;
 };
 
 type ICQRS = {
