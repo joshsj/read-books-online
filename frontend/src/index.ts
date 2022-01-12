@@ -1,6 +1,4 @@
-// styling
-import "@oruga-ui/oruga-next/dist/oruga.css";
-import "bulma/css/bulma.css";
+import "./styles.scss";
 
 // library components
 import { Button, Config as OrugaConfig } from "@oruga-ui/oruga-next";
