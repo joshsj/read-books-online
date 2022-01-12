@@ -1,7 +1,19 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-
-import { Button } from "@oruga-ui/oruga-next";
+// styling
 import "@oruga-ui/oruga-next/dist/oruga.css";
+import "bulma/css/bulma.css";
 
-createApp(App).use(Button).mount("#app");
+// library components
+import { Button, Config as OrugaConfig } from "@oruga-ui/oruga-next";
+
+// root
+import App from "./App.vue";
+import { createApp } from "vue";
+
+createApp(App)
+  .use(OrugaConfig, {
+    button: {
+      rootClass: "button",
+    },
+  })
+  .use(Button)
+  .mount("#app");
