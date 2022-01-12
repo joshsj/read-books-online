@@ -6,7 +6,7 @@ import "bulma/css/bulma.css";
 import { Button, Config as OrugaConfig } from "@oruga-ui/oruga-next";
 
 // root
-import App from "./App.vue";
+import App from "@/App.vue";
 import { createApp } from "vue";
 
 createApp(App)
