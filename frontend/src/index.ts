@@ -6,10 +6,14 @@ import "bulma/css/bulma.css";
 import { Button, Config as OrugaConfig } from "@oruga-ui/oruga-next";
 
 // root
-import App from "@/App.vue";
 import { createApp } from "vue";
+import App from "@/App.vue";
+import { createRouter } from "@/router";
+
+const router = createRouter();
 
 createApp(App)
+  .use(router)
   .use(OrugaConfig, {
     button: {
       rootClass: "button",

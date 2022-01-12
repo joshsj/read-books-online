@@ -1,7 +1,5 @@
-<script setup lang="ts">
-const onClick = () => alert("Hello, world!");
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <o-button @click="onClick">Click me!</o-button>
+  <router-view />
 </template>
