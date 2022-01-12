@@ -1,3 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const onClick = () => alert("Hello, world!");
+</script>
 
-<template>Hello World</template>
+<template>
+  <o-button @click="onClick">Click me!</o-button>
+</template>

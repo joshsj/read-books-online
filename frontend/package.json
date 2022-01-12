@@ -5,6 +5,7 @@
     "start": "vite"
   },
   "dependencies": {
+    "@oruga-ui/oruga-next": "^0.5.2",
     "vue": "^3.2.25"
   },
   "devDependencies": {
