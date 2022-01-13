@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
+
 const activeClass = ref<string | undefined>(undefined);
 const toggleNavbar = () =>
   (activeClass.value = activeClass.value ? undefined : "is-active");
@@ -9,7 +11,7 @@ const toggleNavbar = () =>
 <template>
   <header>
     <nav
-      class="navbar is-transparent p-4"
+      class="navbar is-transparent has-shadow is-spaced is-fixed-top"
       role="navigation"
       aria-label="main navigation"
     >
@@ -33,7 +35,7 @@ const toggleNavbar = () =>
       </div>
 
       <div class="navbar-menu" :class="activeClass">
-        <div class="navbar-end">
+        <div class="navbar-end has-text-weight-semibold">
           <router-link to="/" class="navbar-item">Home</router-link>
 
           <router-link to="/" class="navbar-item">Login</router-link>
@@ -48,3 +50,20 @@ const toggleNavbar = () =>
     </div>
   </main>
 </template>
+
+<style scoped lang="scss">
+@use "sass:map";
+
+@import "bulma/bulma.sass";
+
+header {
+  border-bottom: 2px solid $light;
+  margin-bottom: map.get($spacing-values, "6");
+}
+
+@include touch {
+  header {
+    margin-bottom: map.get($spacing-values, "3");
+  }
+}
+</style>
