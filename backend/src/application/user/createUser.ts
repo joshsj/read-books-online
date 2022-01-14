@@ -38,14 +38,12 @@ const createUserRequestHandler: ICommandHandler<CreateUserRequest> = {
     const hashingService = container.resolve<IHashingService>(Dependency.hashingService);
     const userRepository = container.resolve<UserRepository>(Dependency.userRepository);
 
-    const passwordSalt = await hashingService.salt();
-    const passwordHash = await hashingService.hash(password, passwordSalt);
+    const passwordHash = await hashingService.hash(password, await hashingService.salt());
 
     const user: User = {
       id: newId(),
       roles: ["client"],
       username,
-      passwordSalt,
       passwordHash,
     };
 

@@ -6,7 +6,6 @@ const UserSchema: Schema<User> = {
   ...EntitySchema,
   username: { type: String },
   passwordHash: { type: String },
-  passwordSalt: { type: String },
   roles: { type: [String] },
 };
 
