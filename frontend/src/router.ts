@@ -39,6 +39,8 @@ const route = <T extends object | void = void>(
 
 const routes = {
   home: route({ path: "/", component: Home, meta: { auth: "none" } }),
+
+  noPath: route({ path: "/:noPath(.*)*", redirect: "/", meta: { auth: "none" } }),
 };
 
 const routeHelper = <T extends RouteName>(args: { name: T } & HelperArg<T>): RouteLocationRaw =>
