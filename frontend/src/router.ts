@@ -5,15 +5,16 @@ import {
   RouteLocationRaw,
   RouteRecordRaw,
 } from "vue-router";
-import { Role } from "@/common/constants";
 
 declare module "vue-router" {
   interface RouteMeta {
-    auth: "none" | "any" | Role[] | (() => boolean);
+    auth: "none";
+    // TODO implement route guards | "any" | Role[] | (() => boolean);
   }
 }
 
-type RouteDef<T> = RouteRecordRaw & { helper: (arg: T) => RouteLocationRaw };
+type RouteDef<T> = RouteRecordRaw &
+  Required<Pick<RouteRecordRaw, "meta">> & { helper: (arg: T) => RouteLocationRaw };
 
 type Routes = typeof routes;
 type RouteName = keyof Routes;
@@ -22,7 +23,9 @@ type HelperArg<T extends RouteName> = Parameters<Routes[T]["helper"]>[0] extends
   ? {}
   : Parameters<Routes[T]["helper"]>[0];
 
-const route = <T extends object | void = void>(raw: RouteRecordRaw): RouteDef<T> => {
+const route = <T extends object | void = void>(
+  raw: RouteRecordRaw & Required<Pick<RouteRecordRaw, "meta">>
+): RouteDef<T> => {
   const helper = (arg: T) =>
     arg
       ? Object.entries(arg).reduce<string>(
@@ -35,8 +38,7 @@ const route = <T extends object | void = void>(raw: RouteRecordRaw): RouteDef<T>
 };
 
 const routes = {
-  home: route({ path: "/", component: Home }),
-  profile: route<{ id: string }>({ path: "/profile/:id", component: Home }),
+  home: route({ path: "/", component: Home, meta: { auth: "none" } }),
 };
 
 const routeHelper = <T extends RouteName>(args: { name: T } & HelperArg<T>): RouteLocationRaw =>
