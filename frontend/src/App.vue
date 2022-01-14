@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { route } from "@/router";
+import { store } from "@/store";
 
 document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
 
@@ -52,6 +53,8 @@ const toggleNavbar = () =>
       <router-view />
     </div>
   </main>
+
+  <o-loading :full-page="true" :active="store.pageLoading" />
 </template>
 
 <style scoped lang="scss">

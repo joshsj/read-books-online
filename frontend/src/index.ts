@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 // library components
-import { Button, Notification, Config as OrugaConfig } from "@oruga-ui/oruga-next";
+import { Button, Notification, Loading, Config as OrugaConfig } from "@oruga-ui/oruga-next";
 
 // root
 import { createApp } from "vue";
@@ -22,7 +22,12 @@ createApp(App)
       closeClass: "delete",
       variantClass: "is-",
     },
+
+    loading: {
+      fullPageClass: "overlay-background",
+    },
   })
   .use(Button)
   .use(Notification)
+  .use(Loading)
   .mount("#app");

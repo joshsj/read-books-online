@@ -1,2 +1,7 @@
 @import "@oruga-ui/oruga-next/dist/oruga.css";
 @import "bulma/bulma.sass";
+@import "@mdi/font/css/materialdesignicons.css";
+
+.overlay-background {
+  background-color: rgba($color: $white, $alpha: 0.5);
+}

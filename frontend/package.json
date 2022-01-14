@@ -5,6 +5,7 @@
     "start": "vite"
   },
   "dependencies": {
+    "@mdi/font": "^6.5.95",
     "@oruga-ui/oruga-next": "^0.5.2",
     "bulma": "^0.9.3",
     "vue": "^3.2.25",
