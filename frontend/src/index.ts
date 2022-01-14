@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 // library components
-import { Button, Config as OrugaConfig } from "@oruga-ui/oruga-next";
+import { Button, Notification, Config as OrugaConfig } from "@oruga-ui/oruga-next";
 
 // root
 import { createApp } from "vue";
@@ -16,6 +16,13 @@ createApp(App)
     button: {
       rootClass: "button",
     },
+
+    notification: {
+      rootClass: "notification",
+      closeClass: "delete",
+      variantClass: "is-",
+    },
   })
   .use(Button)
+  .use(Notification)
   .mount("#app");
