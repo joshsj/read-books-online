@@ -5,6 +5,13 @@ import {
   RouteLocationRaw,
   RouteRecordRaw,
 } from "vue-router";
+import { Role } from "@/common/constants";
+
+declare module "vue-router" {
+  interface RouteMeta {
+    auth: "none" | "any" | Role[] | (() => boolean);
+  }
+}
 
 type RouteDef<T> = RouteRecordRaw & { helper: (arg: T) => RouteLocationRaw };
 
@@ -35,10 +42,20 @@ const routes = {
 const routeHelper = <T extends RouteName>(args: { name: T } & HelperArg<T>): RouteLocationRaw =>
   routes[args.name].helper(args as never);
 
-const createRouter = () =>
-  createVueRouter({
+const createRouter = () => {
+  const router = createVueRouter({
     routes: Object.values(routes),
     history: createWebHistory(),
   });
 
+  router.beforeEach((to) => {
+    if (to.meta.auth === "none") {
+      return;
+    }
+
+    throw new Error("Authentication route guards not implemented");
+  });
+
+  return router;
+};
 export { createRouter, routeHelper as route };
