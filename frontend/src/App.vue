@@ -49,9 +49,7 @@ const toggleNavbar = () =>
   </header>
 
   <main>
-    <div class="container">
-      <router-view />
-    </div>
+    <router-view />
   </main>
 
   <o-loading :full-page="true" :active="store.pageLoading" />

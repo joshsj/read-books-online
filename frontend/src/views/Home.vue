@@ -3,5 +3,7 @@ const onClick = () => alert("Hello, world!");
 </script>
 
 <template>
-  <o-button @click="onClick">Click me!</o-button>
+  <div class="container">
+    <o-button @click="onClick">Click me!</o-button>
+  </div>
 </template>
