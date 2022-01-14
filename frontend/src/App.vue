@@ -13,7 +13,7 @@ const toggleNavbar = () =>
 <template>
   <header>
     <nav
-      class="navbar is-transparent has-shadow is-spaced is-fixed-top"
+      class="navbar is-transparent has-shadow is-spaced is-fixed-top has-background-warning"
       role="navigation"
       aria-label="main navigation">
       <div class="navbar-brand">
@@ -34,13 +34,13 @@ const toggleNavbar = () =>
         </a>
       </div>
 
-      <div class="navbar-menu" :class="activeClass">
+      <div class="navbar-menu has-background-warning" :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
           <router-link :to="route({ name: 'home' })" class="navbar-item">
             Home
           </router-link>
 
-          <router-link :to="route({ name: 'home' })" class="navbar-item">
+          <router-link :to="route({ name: 'login' })" class="navbar-item">
             Login
           </router-link>
         </div>
@@ -57,17 +57,32 @@ const toggleNavbar = () =>
 
 <style scoped lang="scss">
 @use "sass:map";
-
 @import "bulma/bulma.sass";
 
 header {
-  border-bottom: 2px solid $light;
   margin-bottom: map.get($spacing-values, "6");
+
+  @include touch {
+    margin-bottom: map.get($spacing-values, "4");
+  }
 }
 
-@include touch {
-  header {
-    margin-bottom: map.get($spacing-values, "3");
+nav {
+  border-bottom: 3px solid $text;
+}
+
+main {
+  --content-padding: #{$size-6};
+
+  padding-left: var(--content-padding);
+  padding-right: var(--content-padding);
+
+  @include tablet {
+    --content-padding: #{$size-6 * 4};
+  }
+
+  @include desktop {
+    --content-padding: #{$size-6 * 8};
   }
 }
 </style>
