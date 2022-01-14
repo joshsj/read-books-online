@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { route } from "@/router";
 
 document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
 
@@ -13,8 +14,7 @@ const toggleNavbar = () =>
     <nav
       class="navbar is-transparent has-shadow is-spaced is-fixed-top"
       role="navigation"
-      aria-label="main navigation"
-    >
+      aria-label="main navigation">
       <div class="navbar-brand">
         <router-link to="/" class="navbar-item">
           <h1 class="title mb-0">ReadBooksOnline</h1>
@@ -26,8 +26,7 @@ const toggleNavbar = () =>
           :class="activeClass"
           aria-label="menu"
           aria-expanded="false"
-          @click="toggleNavbar"
-        >
+          @click="toggleNavbar">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -36,9 +35,13 @@ const toggleNavbar = () =>
 
       <div class="navbar-menu" :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
-          <router-link to="/" class="navbar-item">Home</router-link>
+          <router-link :to="route({ name: 'home' })" class="navbar-item">
+            Home
+          </router-link>
 
-          <router-link to="/" class="navbar-item">Login</router-link>
+          <router-link :to="route({ name: 'home' })" class="navbar-item">
+            Login
+          </router-link>
         </div>
       </div>
     </nav>
