@@ -5,13 +5,13 @@ import { ensure } from "@/common/utilities";
 import { Entity } from "@/domain/common/entity";
 import { Id, isId } from "@/domain/common/id";
 import { Model } from "mongoose";
-import { Runtype } from "runtypes";
+import { ObjectSchema } from "yup";
 
 type Some<T> = T | T[];
 const arrayify = <T>(x: T | T[]): T[] => (Array.isArray(x) ? x : [x]);
 
 class MongoRepository<T extends Entity> implements IRepository<T> {
-  constructor(protected readonly helper: Runtype<T>, protected readonly model: Model<T>) {}
+  constructor(protected readonly helper: ObjectSchema<T>, protected readonly model: Model<T>) {}
 
   get(): Promise<T[]>;
   get(id: Id): Promise<T | undefined>;

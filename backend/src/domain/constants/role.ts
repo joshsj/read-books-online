@@ -1,6 +1,10 @@
-import { Union, Literal, Static } from "runtypes";
+import { mixed } from "yup";
 
-const Role = Union(Literal("client"), Literal("employee"), Literal("authoriser"));
-type Role = Static<typeof Role>;
+const Roles = ["client", "employee", "authorizer"] as const;
 
-export { Role };
+type Role = typeof Roles[number];
+const Role = mixed((x): x is Role => Roles.includes(x))
+  .strict()
+  .required();
+
+export { Role, Roles };

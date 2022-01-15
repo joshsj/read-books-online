@@ -11,8 +11,8 @@ const ensure: Ensure = (condition: boolean, error: Error | undefined): asserts c
   }
 };
 
-type Class<T, TParam = any> = {
-  new (...params: TParam[]): T;
+type Class<T, TParam extends any[]> = {
+  new (...params: TParam): T;
 };
 
 type Env<T extends string> = { [K in T]: string };

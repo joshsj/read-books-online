@@ -1,10 +1,11 @@
-import { RBOError } from "@/application/common/error/rboError";
 import { IIdentityService } from "@/application/common/interfaces/identityService";
 import { Dependency } from "@/application/dependency";
-import { ensure } from "@/common/utilities";
 import { AccountDto, TokenDto } from "@/web/common/models/auth";
+import { AssertSchema, assertSchema as _assertSchema } from "@/application/common/utilities/schema";
 import { handleAsync } from "@/web/common/utilities/requestHelper";
 import { Router } from "express";
+
+const assertSchema: AssertSchema = _assertSchema;
 
 const routes = Router();
 
@@ -25,7 +26,7 @@ routes.get(
 routes.post(
   "",
   handleAsync(async ({ body: accountDto }, {}, { ok, getPerRequestContainer }) => {
-    ensure(AccountDto.guard(accountDto), new RBOError("validation"));
+    assertSchema(accountDto, AccountDto);
 
     const container = getPerRequestContainer();
 

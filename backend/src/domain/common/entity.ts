@@ -1,8 +1,7 @@
-import { Record, Static } from "runtypes";
 import { Id } from "./id";
+import { InferType, object } from "yup";
 
-const Entity = Record({ id: Id });
-
-type Entity = Static<typeof Entity>;
+const Entity = object({ id: Id }).strict();
+type Entity = InferType<typeof Entity>;
 
 export { Entity };
