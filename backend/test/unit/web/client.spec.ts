@@ -5,22 +5,20 @@ import { expect } from "chai";
 import { spy } from "sinon";
 
 const config: IRBOClientConfig = {
+  callback: () => Promise.resolve(),
   baseUrl: "http://client.unit.test.com",
-  fetch: () => Promise.resolve({ json: () => Promise.resolve() } as Response),
   authenticationToken: undefined,
 };
 
-const fetchSpy = spy(config, "fetch");
+const callbackSpy = spy(config, "callback");
+
 const newSut = <T>(c: Partial<IRBOClientConfig> = {}): T =>
   createClientProxy([], { ...config, ...c });
-const getResult = (call = 0) => {
-  const [url, init] = fetchSpy.getCall(call).args;
 
-  return { url, init };
-};
+const getResult = (call = 0) => callbackSpy.getCall(call).args[0];
 
 describe("Client", () => {
-  beforeEach(() => fetchSpy.resetHistory());
+  beforeEach(() => callbackSpy.resetHistory());
 
   describe("Configuration", () => {
     it("Uses the configured fetch", async () => {
@@ -43,7 +41,7 @@ describe("Client", () => {
       const result = getResult();
       const expected = { authentication: `Bearer ${authenticationToken}` };
 
-      expect(result.init?.headers).to.include(expected);
+      expect(result.headers).to.include(expected);
     });
 
     it("Omits authentication without a token", async () => {
@@ -53,8 +51,8 @@ describe("Client", () => {
 
       const result = getResult();
 
-      expect(result.init).not.to.be.undefined;
-      expect(result.init?.headers).to.be.undefined;
+      expect(result).not.to.be.undefined;
+      expect(result.headers).to.be.undefined;
     });
   });
 
@@ -107,8 +105,8 @@ describe("Client", () => {
 
       const result = getResult();
 
-      expect(result.init?.body).not.to.be.undefined;
-      expect(JSON.parse(result.init?.body as string)).to.eql(body);
+      expect(result.body).not.to.be.undefined;
+      expect(JSON.parse(result.body as string)).to.eql(body);
     });
 
     it("Omits a body for GET requests", async () => {
@@ -121,8 +119,8 @@ describe("Client", () => {
 
       const result = getResult();
 
-      expect(result.init).not.to.be.undefined;
-      expect(result.init?.body).to.be.undefined;
+      expect(result).not.to.be.undefined;
+      expect(result.body).to.be.undefined;
     });
   });
 
@@ -144,8 +142,8 @@ describe("Client", () => {
 
         const result = getResult();
 
-        expect(result.init).not.to.be.undefined;
-        expect(result.init?.method).to.equal(method);
+        expect(result).not.to.be.undefined;
+        expect(result.method).to.equal(method);
       })
     );
   });

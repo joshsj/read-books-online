@@ -1,9 +1,16 @@
-import { ensure } from "@/common/utilities";
+import { Class, ensure } from "@/common/utilities";
 import { isId } from "@/domain/common/id";
 import { EndpointName, RequestData } from "@/web/client/types";
 import { toUrlParams } from "../common/utilities/http";
 
 type RBOMethod = "GET" | "POST" | "PUT" | "DELETE";
+
+type RequestState = {
+  url: string;
+  method: string;
+  body: string | undefined;
+  headers: Record<string, string> | undefined;
+};
 
 const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
   get: "GET",
@@ -17,16 +24,11 @@ const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
   delete: "DELETE",
 };
 
-const getRequestData = (
+const getRequestState = (
   data: RequestData,
   segments: string[],
   { baseUrl, authenticationToken }: IRBOClientConfig
-): {
-  url: string;
-  method: string;
-  body: string | undefined;
-  headers: Record<string, string> | undefined;
-} => {
+): RequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = baseUrl + "/" + segments.join("/");
@@ -63,21 +65,13 @@ const getRequestData = (
   };
 };
 
-const callEndpoint = async (segments: string[], args: any[], config: IRBOClientConfig) => {
+const callEndpoint = (segments: string[], args: any[], config: IRBOClientConfig) => {
   ensure(
     segments.length > 1,
     new Error("Invalid segments, at least two segments are required to form an endpoint")
   );
 
-  const { url, method, body, headers } = getRequestData(args[0] as RequestData, segments, config);
-
-  return config
-    .fetch(url, {
-      method,
-      body,
-      headers,
-    })
-    .then((res) => res.json());
+  return config.callback(getRequestState(args[0] as RequestData, segments, config));
 };
 
 // allows apply, construct proxy methods
@@ -94,19 +88,21 @@ const createClientProxy = (segments: string[], config: IRBOClientConfig): any =>
     },
 
     apply: ({}, {}, args) => callEndpoint(segments, args, config),
+
     construct: ({}, args) => createClientProxy([], args[0]),
   });
 
-type Clients = {};
+type IRBOClient = {};
 
 type IRBOClientConfig = {
-  fetch: typeof fetch;
+  callback: (state: RequestState) => Promise<any>;
   baseUrl: string;
   authenticationToken?: string;
 };
 
-type IRBOClient = { new (config: IRBOClientConfig): Clients } & Clients;
-
-const RBOClient: IRBOClient = createClientProxy([], {} as IRBOClientConfig);
+const RBOClient: Class<IRBOClient, [IRBOClientConfig]> = createClientProxy(
+  [],
+  {} as IRBOClientConfig
+);
 
 export { IRBOClient, IRBOClientConfig, RBOClient, createClientProxy, RBOMethod };
