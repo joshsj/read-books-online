@@ -1,7 +1,8 @@
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { Mode } from "@/application/common/interfaces/mode";
 import { ensure, getEnv } from "@/common/utilities";
-import { Algorithm } from "jsonwebtoken";
+
+import { JWTAlgorithm } from "@/domain/common/constrainedTypes";
 
 const EnvKeys = [
   "SERVER_PORT",
@@ -30,7 +31,7 @@ const getConfiguration = (): IConfiguration => {
 
       jwt: {
         secret: env.JWT_SECRET,
-        algorithm: env.JWT_ALGORITHM as Algorithm,
+        algorithm: env.JWT_ALGORITHM as JWTAlgorithm,
         issuer: env.JWT_ISSUER,
         audience: env.JWT_AUDIENCE,
       },
@@ -54,7 +55,7 @@ const getConfiguration = (): IConfiguration => {
     },
   };
 
-  ensure(IConfiguration.guard(configuration), new Error("Invalid configuration"));
+  ensure(IConfiguration.isType(configuration), new Error("Invalid configuration"));
 
   return configuration;
 };

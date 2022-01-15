@@ -1,33 +1,34 @@
-import { JWTAlgorithm, PositiveNumber } from "@/domain/common/constrainedTypes";
-import { Record, Static, String } from "runtypes";
+import { PositiveNumber, JWTAlgorithm } from "@/domain/common/constrainedTypes";
+import { object, string, InferType } from "yup";
 import { Mode } from "./mode";
 
-const IConfiguration = Record({
+const IConfiguration = object({
   mode: Mode,
-  hashing: Record({ saltRounds: PositiveNumber }),
-  mongo: Record({ uri: String, databaseName: String }),
 
-  auth: Record({
+  hashing: object({ saltRounds: PositiveNumber }),
+  mongo: object({ uri: string().strict().required(), databaseName: string().strict().required() }),
+
+  auth: object({
     expiresInMs: PositiveNumber,
 
-    jwt: Record({
-      secret: String,
+    jwt: object({
+      secret: string().strict().required(),
       algorithm: JWTAlgorithm,
-      issuer: String,
-      audience: String,
+      issuer: string().strict().required(),
+      audience: string().strict().required(),
     }),
   }),
 
-  server: Record({
+  server: object({
     port: PositiveNumber,
 
-    cookie: Record({
-      secret: String,
-      refreshTokenKey: String,
+    cookie: object({
+      secret: string().strict().required(),
+      refreshTokenKey: string().strict().required(),
     }),
   }),
 });
 
-type IConfiguration = Static<typeof IConfiguration>;
+type IConfiguration = InferType<typeof IConfiguration>;
 
 export { IConfiguration };

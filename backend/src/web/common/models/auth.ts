@@ -1,15 +1,15 @@
 import { Username, Password } from "@/domain/common/constrainedTypes";
 import { Id } from "@/domain/common/id";
-import { Record, Static, String } from "runtypes";
+import { InferType, object, string } from "yup";
 
 // https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
-const JWTPayload = Record({ sub: Id });
-type JWTPayload = Static<typeof JWTPayload>;
+const JWTPayload = object({ sub: Id });
+type JWTPayload = InferType<typeof JWTPayload>;
 
-const TokenDto = Record({ token: String });
-type TokenDto = Static<typeof TokenDto>;
+const TokenDto = object({ token: string().strict().required() });
+type TokenDto = InferType<typeof TokenDto>;
 
-const AccountDto = Record({ username: Username, password: Password });
-type AccountDto = Static<typeof AccountDto>;
+const AccountDto = object({ username: Username, password: Password });
+type AccountDto = InferType<typeof AccountDto>;
 
 export { AccountDto, JWTPayload, TokenDto };

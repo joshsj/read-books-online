@@ -1,25 +1,21 @@
-import { Number, Runtype, Static, String } from "runtypes";
+import { string, number, InferType, mixed } from "yup";
 import { Algorithm } from "jsonwebtoken";
 
-const Length = <T extends { length: number }>(
-  type: Runtype<T>,
-  { min, max }: { min?: number; max?: number }
-): Runtype<T> => {
-  typeof min !== "undefined" && (type = type.withConstraint((x) => x.length >= min));
-  typeof max !== "undefined" && (type = type.withConstraint((x) => x.length <= max));
+const PositiveNumber = number().strict().required().min(0);
+type PositiveNumber = InferType<typeof PositiveNumber>;
 
-  return type;
-};
+const Username = string().strict().required().min(3);
+type Username = InferType<typeof Username>;
 
-const PositiveNumber = Number.withConstraint((x) => x > 0);
-
-const Username = Length(String, { min: 3 });
-type Username = Static<typeof Username>;
-
-const Password = Length(String, { min: 8 });
-type Password = Static<typeof Password>;
+const Password = string().strict().required().min(8);
+type Password = InferType<typeof Password>;
 
 // library offers no validation for algorithm values, length is the best we can do
-const JWTAlgorithm = String.withConstraint<Algorithm>((x) => x.length === 5);
+const JWTAlgorithm = mixed(
+  (x): x is Exclude<Algorithm, "none"> => typeof x === "string" && x.length === 5
+)
+  .strict()
+  .required();
+type JWTAlgorithm = InferType<typeof JWTAlgorithm>;
 
-export { Length, Username, Password, PositiveNumber, JWTAlgorithm };
+export { PositiveNumber, Username, Password, JWTAlgorithm };

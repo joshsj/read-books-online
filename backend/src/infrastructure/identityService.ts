@@ -1,4 +1,3 @@
-import { RBOError } from "@/application/common/error/rboError";
 import {
   expiredRefreshToken,
   incorrectPassword,
@@ -7,6 +6,7 @@ import {
   noRefreshToken,
   userNotFound,
 } from "@/application/common/error/messages";
+import { RBOError } from "@/application/common/error/rboError";
 import { IConfiguration } from "@/application/common/interfaces/configuration";
 import { IHashingService } from "@/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
@@ -152,7 +152,7 @@ class IdentityService implements IIdentityService {
         json: true,
       });
 
-      if (!JWTPayload.guard(payload)) {
+      if (!JWTPayload.isType(payload)) {
         return reject(new RBOError("authentication", invalidAuthToken));
       }
 

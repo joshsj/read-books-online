@@ -1,14 +1,16 @@
-import { Array, Static, String } from "runtypes";
-import { Length } from "@/domain/common/constrainedTypes";
+import { string, object, array, InferType } from "yup";
 import { Role } from "@/domain/constants/role";
 import { Entity } from "@/domain/common/entity";
+import { Username } from "@/domain/common/constrainedTypes";
 
-const User = Entity.extend({
-  username: Length(String, { min: 1 }),
-  roles: Length(Array(Role), { min: 1 }),
-  passwordHash: String,
-});
+const User = Entity.concat(
+  object({
+    username: Username,
+    roles: array().of(Role).strict().required(),
+    passwordHash: string().strict().required(),
+  })
+);
 
-type User = Static<typeof User>;
+type User = InferType<typeof User>;
 
 export { User };

@@ -1,11 +1,12 @@
-import { Length } from "@/domain/common/constrainedTypes";
 import { Entity } from "@/domain/common/entity";
-import { Static, String } from "runtypes";
+import { InferType, object, string } from "yup";
 
-const TestEntity = Entity.extend({
-  min3: Length(String, { min: 3 }),
-});
+const TestEntity = Entity.concat(
+  object({
+    min3: string().strict().required().min(3),
+  })
+);
 
-type TestEntity = Static<typeof TestEntity>;
+type TestEntity = InferType<typeof TestEntity>;
 
 export { TestEntity };
