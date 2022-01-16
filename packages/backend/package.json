@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node            -r module-alias/register -r dotenv/config -r reflect-metadata                                    ../build/backend/src/index.js",
-    "test:unit": "node        -r module-alias/register -r dotenv/config -r reflect-metadata -r ./build/backend/test/plugins.js ../build/backend/test/unit/index.js",
-    "test:integration": "node -r module-alias/register -r dotenv/config                     -r ./build/backend/test/plugins.js ../build/backend/test/integration/index.js",
+    "test:unit": "node        -r module-alias/register -r dotenv/config -r reflect-metadata -r ../build/backend/test/plugins.js ../build/backend/test/unit/index.js",
+    "test:integration": "node -r module-alias/register -r dotenv/config                     -r ../build/backend/test/plugins.js ../build/backend/test/integration/index.js",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },
