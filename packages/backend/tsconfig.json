@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "../build/backend",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@backend/*": ["./src/*"],
+      "@backend/test/*": ["./test/*"],
+      "@core/*": ["../core/src/*"]
+    }
+  },
+  "exclude": ["../build"],
+  "references": [{ "path": "../core" }]
+}

@@ -29,3 +29,5 @@ A university project, built with a full JS stack.
 
 * [How to Write Epics and User Stories](https://productcoalition.com/how-to-write-epics-and-user-stories-best-practice-1de5b983900)
 * [How to write acceptance criteria?](https://productcoalition.com/how-to-write-acceptance-criteria-e2be975f92a3)
+
+- [Password Generator](https://www.grc.com/passwords.htm)
