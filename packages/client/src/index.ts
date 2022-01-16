@@ -1,14 +1,13 @@
 import { isId } from "@backend/domain/common/id";
-import { EndpointName, RequestData } from "@client/types";
+import {
+  EndpointName,
+  IRBOClient,
+  RBOClientConfig,
+  RBOClientMethod,
+  RBOClientRequestState,
+  RequestData,
+} from "@client/types";
 import { Class, ensure, toUrlParams } from "@core/utilities";
-
-type RBOClientMethod = "GET" | "POST" | "PUT" | "DELETE";
-
-type ClientRequestState = {
-  url: string;
-  method: string;
-  body: string | undefined;
-};
 
 const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   get: "GET",
@@ -25,8 +24,8 @@ const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
 const getRequestState = (
   data: RequestData,
   segments: string[],
-  { baseUrl }: IRBOClientConfig
-): ClientRequestState => {
+  { baseUrl }: RBOClientConfig
+): RBOClientRequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = baseUrl + "/" + segments.join("/");
@@ -57,7 +56,7 @@ const getRequestState = (
   };
 };
 
-const callEndpoint = (segments: string[], args: any[], config: IRBOClientConfig) => {
+const callEndpoint = (segments: string[], args: any[], config: RBOClientConfig) => {
   ensure(
     segments.length > 1,
     new Error("Invalid segments, at least two segments are required to form an endpoint")
@@ -69,7 +68,7 @@ const callEndpoint = (segments: string[], args: any[], config: IRBOClientConfig)
 // allows apply, construct proxy methods
 const dummy = Object.assign(class {}, () => void 0);
 
-const createClientProxy = (segments: string[], config: IRBOClientConfig): any =>
+const createClientProxy = (segments: string[], config: RBOClientConfig): any =>
   new Proxy(dummy, {
     get({}, segment) {
       if (typeof segment !== "string") {
@@ -84,16 +83,9 @@ const createClientProxy = (segments: string[], config: IRBOClientConfig): any =>
     construct: ({}, args) => createClientProxy([], args[0]),
   });
 
-type IRBOClient = {};
-
-type IRBOClientConfig = {
-  callback: (state: ClientRequestState) => Promise<any>;
-  baseUrl: string;
-};
-
-const RBOClient: Class<IRBOClient, [IRBOClientConfig]> = createClientProxy(
+const RBOClient: Class<IRBOClient, [RBOClientConfig]> = createClientProxy(
   [],
-  {} as IRBOClientConfig
+  {} as RBOClientConfig
 );
 
-export { IRBOClient, IRBOClientConfig, RBOClient, createClientProxy, RBOClientMethod };
+export { RBOClient, createClientProxy };
