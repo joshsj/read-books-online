@@ -1,7 +1,7 @@
 import { string, object, array, InferType } from "yup";
-import { Role } from "@/domain/constants/role";
-import { Entity } from "@/domain/common/entity";
-import { Username } from "@/domain/common/constrainedTypes";
+import { Role } from "@backend/domain/constants/role";
+import { Entity } from "@backend/domain/common/entity";
+import { Username } from "@backend/domain/common/constrainedTypes";
 
 const User = Entity.concat(
   object({

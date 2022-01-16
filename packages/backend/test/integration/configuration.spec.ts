@@ -1,5 +1,5 @@
-import { Env } from "@/test/integration/utilities";
-import { ok } from "@/web/common/utilities/http";
+import { Env } from "@backend/test/integration/utilities";
+import { ok } from "@backend/web/common/utilities/http";
 import { expect } from "chai";
 import fetch from "node-fetch";
 

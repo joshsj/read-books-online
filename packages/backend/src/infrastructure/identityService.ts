@@ -5,22 +5,25 @@ import {
   invalidRefreshToken,
   noRefreshToken,
   userNotFound,
-} from "@/application/common/error/messages";
-import { RBOError } from "@/application/common/error/rboError";
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { IHashingService } from "@/application/common/interfaces/hashingService";
-import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
-import { AuthTokenValue, IIdentityService } from "@/application/common/interfaces/identityService";
+} from "@backend/application/common/error/messages";
+import { RBOError } from "@backend/application/common/error/rboError";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { IHashingService } from "@backend/application/common/interfaces/hashingService";
+import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
+import {
+  AuthTokenValue,
+  IIdentityService,
+} from "@backend/application/common/interfaces/identityService";
 import {
   IRefreshTokenRepository,
   IUserRepository,
-} from "@/application/common/interfaces/repository";
-import { ensure } from "@/core/utilities";
-import { Password, Username } from "@/domain/common/constrainedTypes";
-import { Id, newId } from "@/domain/common/id";
-import { RefreshToken } from "@/domain/entities/refreshToken";
-import { User } from "@/domain/entities/user";
-import { JWTPayload } from "@/web/common/models/auth";
+} from "@backend/application/common/interfaces/repository";
+import { ensure } from "@core/utilities";
+import { Password, Username } from "@backend/domain/common/constrainedTypes";
+import { Id, newId } from "@backend/domain/common/id";
+import { RefreshToken } from "@backend/domain/entities/refreshToken";
+import { User } from "@backend/domain/entities/user";
+import { JWTPayload } from "@backend/web/common/models/auth";
 import jwt from "jsonwebtoken";
 
 class IdentityService implements IIdentityService {

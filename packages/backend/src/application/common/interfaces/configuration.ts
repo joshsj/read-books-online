@@ -1,4 +1,4 @@
-import { PositiveNumber, JWTAlgorithm } from "@/domain/common/constrainedTypes";
+import { PositiveNumber, JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
 import { object, string, InferType } from "yup";
 import { Mode } from "./mode";
 

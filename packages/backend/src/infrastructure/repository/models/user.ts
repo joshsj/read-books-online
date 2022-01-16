@@ -1,5 +1,5 @@
 import { model, Schema } from ".";
-import { User } from "@/domain/entities/user";
+import { User } from "@backend/domain/entities/user";
 import { EntitySchema } from "./entity";
 
 const UserSchema: Schema<User> = {

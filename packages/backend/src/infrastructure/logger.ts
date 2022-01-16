@@ -1,5 +1,5 @@
-import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
-import { ILogger, ILoggerContext } from "@/application/common/interfaces/logger";
+import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
+import { ILogger, ILoggerContext } from "@backend/application/common/interfaces/logger";
 import { EOL } from "os";
 
 const bracket = (s: string) => `[${s}]`;

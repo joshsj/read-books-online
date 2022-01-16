@@ -1,4 +1,4 @@
-import { Entity } from "@/domain/common/entity";
+import { Entity } from "@backend/domain/common/entity";
 import { InferType, object, string } from "yup";
 
 const TestEntity = Entity.concat(

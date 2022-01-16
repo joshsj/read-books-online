@@ -1,4 +1,4 @@
-import { Id } from "@/domain/common/id";
+import { Id } from "@backend/domain/common/id";
 import { IRBOErrorType } from "./rboError";
 
 const q = (s: string) => `'${s}'`;

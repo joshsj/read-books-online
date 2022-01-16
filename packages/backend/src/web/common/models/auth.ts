@@ -1,5 +1,5 @@
-import { Username, Password } from "@/domain/common/constrainedTypes";
-import { Id } from "@/domain/common/id";
+import { Username, Password } from "@backend/domain/common/constrainedTypes";
+import { Id } from "@backend/domain/common/id";
 import { InferType, object, string } from "yup";
 
 // https://datatracker.ietf.org/doc/html/rfc7519#section-4.1

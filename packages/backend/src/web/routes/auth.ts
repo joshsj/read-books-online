@@ -1,8 +1,11 @@
-import { IIdentityService } from "@/application/common/interfaces/identityService";
-import { Dependency } from "@/application/dependency";
-import { AccountDto, TokenDto } from "@/web/common/models/auth";
-import { AssertSchema, assertSchema as _assertSchema } from "@/application/common/utilities/schema";
-import { handleAsync } from "@/web/common/utilities/requestHelper";
+import { IIdentityService } from "@backend/application/common/interfaces/identityService";
+import { Dependency } from "@backend/application/dependency";
+import { AccountDto, TokenDto } from "@backend/web/common/models/auth";
+import {
+  AssertSchema,
+  assertSchema as _assertSchema,
+} from "@backend/application/common/utilities/schema";
+import { handleAsync } from "@backend/web/common/utilities/requestHelper";
 import { Router } from "express";
 
 const assertSchema: AssertSchema = _assertSchema;

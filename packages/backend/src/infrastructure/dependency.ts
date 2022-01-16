@@ -1,19 +1,19 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { ICQRS } from "@/application/common/interfaces/cqrs";
-import { IHashingService } from "@/application/common/interfaces/hashingService";
-import { IHttpContextService } from "@/application/common/interfaces/httpContextService";
-import { IIdentityService } from "@/application/common/interfaces/identityService";
-import { ILogger } from "@/application/common/interfaces/logger";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { ICQRS } from "@backend/application/common/interfaces/cqrs";
+import { IHashingService } from "@backend/application/common/interfaces/hashingService";
+import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
+import { IIdentityService } from "@backend/application/common/interfaces/identityService";
+import { ILogger } from "@backend/application/common/interfaces/logger";
 import {
   IRefreshTokenRepository,
   IUserRepository,
-} from "@/application/common/interfaces/repository";
-import { Dependency } from "@/application/dependency";
-import { CQRS } from "@/infrastructure/cqrs";
-import { IdentityService } from "@/infrastructure/identityService";
-import { Logger } from "@/infrastructure/logger";
-import { UserRepository } from "@/infrastructure/repository/userRepository";
-import { RefreshTokenRepository } from "@/infrastructure/repository/refreshTokenRepository";
+} from "@backend/application/common/interfaces/repository";
+import { Dependency } from "@backend/application/dependency";
+import { CQRS } from "@backend/infrastructure/cqrs";
+import { IdentityService } from "@backend/infrastructure/identityService";
+import { Logger } from "@backend/infrastructure/logger";
+import { UserRepository } from "@backend/infrastructure/repository/userRepository";
+import { RefreshTokenRepository } from "@backend/infrastructure/repository/refreshTokenRepository";
 import { container } from "tsyringe";
 
 const registerInfrastructureDependencies = () => {

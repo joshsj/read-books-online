@@ -46,7 +46,7 @@
   },
   "_moduleAliases": {
     "@": "build/backend/src",
-    "@/test": "build/backend/test",
-    "@/core": "build/core/src"
+    "@backend/test": "build/backend/test",
+    "@core": "build/core/src"
   }
 }

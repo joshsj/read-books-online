@@ -1,6 +1,6 @@
-import { RefreshToken } from "@/domain/entities/refreshToken";
+import { RefreshToken } from "@backend/domain/entities/refreshToken";
 import { model, Schema } from ".";
-import { EntitySchema } from "@/infrastructure/repository/models/entity";
+import { EntitySchema } from "@backend/infrastructure/repository/models/entity";
 
 const RefreshTokenSchema: Schema<RefreshToken> = {
   ...EntitySchema,

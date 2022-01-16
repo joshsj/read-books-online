@@ -3,9 +3,9 @@ import {
   IRequest,
   IRequestName,
   IRequestValidator,
-} from "@/application/common/interfaces/cqrs";
-import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency } from "@/application/dependency";
+} from "@backend/application/common/interfaces/cqrs";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { Dependency } from "@backend/application/dependency";
 import { container } from "tsyringe";
 
 const validatorBehavior: IBehavior = {

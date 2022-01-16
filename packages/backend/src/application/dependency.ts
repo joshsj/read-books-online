@@ -1,11 +1,11 @@
-import { requestLoggerBehavior } from "@/application/common/behaviors/requestLoggerBehavior";
-import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
-import { IBehavior } from "@/application/common/interfaces/cqrs";
+import { requestLoggerBehavior } from "@backend/application/common/behaviors/requestLoggerBehavior";
+import { validatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
+import { IBehavior } from "@backend/application/common/interfaces/cqrs";
 import {
   createUserRequestHandler,
   createUserRequestValidator,
-} from "@/application/user/createUser";
-import { toDependencies } from "@/core/utilities";
+} from "@backend/application/user/createUser";
+import { toDependencies } from "@core/utilities";
 import { container } from "tsyringe";
 
 const Dependency = toDependencies([

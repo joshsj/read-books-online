@@ -1,6 +1,6 @@
-import { Password, Username } from "@/domain/common/constrainedTypes";
-import { Id } from "@/domain/common/id";
-import { User } from "@/domain/entities/user";
+import { Password, Username } from "@backend/domain/common/constrainedTypes";
+import { Id } from "@backend/domain/common/id";
+import { User } from "@backend/domain/entities/user";
 
 type AuthTokenValue = string;
 

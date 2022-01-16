@@ -1,5 +1,5 @@
 import { ObjectSchema, ValidationError } from "yup";
-import { RBOError } from "@/application/common/error/rboError";
+import { RBOError } from "@backend/application/common/error/rboError";
 
 const assertSchema = <T extends object>(obj: any, schema: ObjectSchema<T>): asserts obj is T => {
   try {

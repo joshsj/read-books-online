@@ -1,5 +1,5 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { IHashingService } from "@/application/common/interfaces/hashingService";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import bcrypt from "bcrypt";
 
 class HashingService implements IHashingService {

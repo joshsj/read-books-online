@@ -1,12 +1,12 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { IHashingService } from "@/application/common/interfaces/hashingService";
-import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency, registerApplicationDependencies } from "@/application/dependency";
-import { getConfiguration } from "@/configuration";
-import { registerInfrastructureDependencies } from "@/infrastructure/dependency";
-import { HashingService } from "@/infrastructure/hashingService";
-import { createMongoConnection } from "@/infrastructure/repository/connection";
-import { Server } from "@/web/server";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { IHashingService } from "@backend/application/common/interfaces/hashingService";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { Dependency, registerApplicationDependencies } from "@backend/application/dependency";
+import { getConfiguration } from "@backend/configuration";
+import { registerInfrastructureDependencies } from "@backend/infrastructure/dependency";
+import { HashingService } from "@backend/infrastructure/hashingService";
+import { createMongoConnection } from "@backend/infrastructure/repository/connection";
+import { Server } from "@backend/web/server";
 import { container } from "tsyringe";
 
 const registerInitDependencies = () => {

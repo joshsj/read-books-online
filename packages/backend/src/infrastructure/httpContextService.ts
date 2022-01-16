@@ -1,7 +1,7 @@
 import {
   IHttpContext,
   IHttpContextService,
-} from "@/application/common/interfaces/httpContextService";
+} from "@backend/application/common/interfaces/httpContextService";
 
 class HttpContextService implements IHttpContextService {
   constructor(private readonly httpContext: IHttpContext) {}

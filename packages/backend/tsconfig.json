@@ -9,9 +9,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@/test/*": ["./test/*"],
-      "@/core/*": ["../core/src/*"]
+      "@backend/*": ["./src/*"],
+      "@backend/test/*": ["./test/*"],
+      "@core/*": ["../core/src/*"]
     }
   },
 

@@ -1,5 +1,8 @@
-import { getPerRequestContainer, setPerRequestContainer } from "@/web/common/utilities/container";
-import { created, noContent, ok } from "@/web/common/utilities/http";
+import {
+  getPerRequestContainer,
+  setPerRequestContainer,
+} from "@backend/web/common/utilities/container";
+import { created, noContent, ok } from "@backend/web/common/utilities/http";
 import { RequestHandler, Response } from "express";
 import { DependencyContainer } from "tsyringe";
 

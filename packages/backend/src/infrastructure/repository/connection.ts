@@ -1,6 +1,6 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency } from "@/application/dependency";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { Dependency } from "@backend/application/dependency";
 import { connect } from "mongoose";
 import { container } from "tsyringe";
 

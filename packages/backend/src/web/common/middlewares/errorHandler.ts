@@ -1,8 +1,8 @@
-import { RBOError, IRBOErrorType } from "@/application/common/error/rboError";
-import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency } from "@/application/dependency";
-import { ErrorDto } from "@/web/common/models/error";
-import { getPerRequestContainer } from "@/web/common/utilities/container";
+import { RBOError, IRBOErrorType } from "@backend/application/common/error/rboError";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { Dependency } from "@backend/application/dependency";
+import { ErrorDto } from "@backend/web/common/models/error";
+import { getPerRequestContainer } from "@backend/web/common/utilities/container";
 import { ErrorRequestHandler } from "express";
 
 type ErrorData = ErrorDto & { code: number; logData: any; logRest: any[] };

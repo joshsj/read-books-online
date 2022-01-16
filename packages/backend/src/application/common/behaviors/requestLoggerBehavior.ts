@@ -1,6 +1,6 @@
-import { ILogger } from "@/application/common/interfaces/logger";
-import { IBehavior } from "@/application/common/interfaces/cqrs";
-import { Dependency } from "@/application/dependency";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { IBehavior } from "@backend/application/common/interfaces/cqrs";
+import { Dependency } from "@backend/application/dependency";
 import { container } from "tsyringe";
 
 const requestLoggerBehavior: IBehavior = {

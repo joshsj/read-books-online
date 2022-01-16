@@ -1,12 +1,12 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import {
   IBehavior,
   ICommandHandler,
   IRequest,
   IRequestAuthorizer,
   IRequestValidator,
-} from "@/application/common/interfaces/cqrs";
-import { ILogger } from "@/application/common/interfaces/logger";
+} from "@backend/application/common/interfaces/cqrs";
+import { ILogger } from "@backend/application/common/interfaces/logger";
 
 type Outcome = "passes" | "fails";
 

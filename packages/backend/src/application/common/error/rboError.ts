@@ -1,4 +1,4 @@
-import { defaults } from "@/application/common/error/messages";
+import { defaults } from "@backend/application/common/error/messages";
 
 type IRBOErrorType = "missing" | "validation" | "authentication" | "authorization" | "fatal";
 

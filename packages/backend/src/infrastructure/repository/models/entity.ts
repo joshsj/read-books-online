@@ -1,4 +1,4 @@
-import { Entity } from "@/domain/common/entity";
+import { Entity } from "@backend/domain/common/entity";
 import { Schema } from ".";
 
 const EntitySchema: Schema<Entity> = {

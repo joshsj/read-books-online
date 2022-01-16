@@ -1,5 +1,5 @@
-import { RBOError } from "@/application/common/error/rboError";
-import { Id } from "@/domain/common/id";
+import { RBOError } from "@backend/application/common/error/rboError";
+import { Id } from "@backend/domain/common/id";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 

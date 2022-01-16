@@ -1,7 +1,7 @@
-import { Entity } from "@/domain/common/entity";
-import { Id } from "@/domain/common/id";
-import { RefreshToken, RefreshTokenValue } from "@/domain/entities/refreshToken";
-import { User } from "@/domain/entities/user";
+import { Entity } from "@backend/domain/common/entity";
+import { Id } from "@backend/domain/common/id";
+import { RefreshToken, RefreshTokenValue } from "@backend/domain/entities/refreshToken";
+import { User } from "@backend/domain/entities/user";
 
 type IWritableRepository<T extends Entity> = {
   insert(entity: T): Promise<void>;

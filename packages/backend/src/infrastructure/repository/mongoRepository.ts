@@ -1,9 +1,9 @@
-import { RBOError } from "@/application/common/error/rboError";
-import { entityNotFound } from "@/application/common/error/messages";
-import { IRepository } from "@/application/common/interfaces/repository";
-import { ensure } from "@/core/utilities";
-import { Entity } from "@/domain/common/entity";
-import { Id, isId } from "@/domain/common/id";
+import { RBOError } from "@backend/application/common/error/rboError";
+import { entityNotFound } from "@backend/application/common/error/messages";
+import { IRepository } from "@backend/application/common/interfaces/repository";
+import { ensure } from "@core/utilities";
+import { Entity } from "@backend/domain/common/entity";
+import { Id, isId } from "@backend/domain/common/id";
 import { Model } from "mongoose";
 import { ObjectSchema } from "yup";
 

@@ -1,4 +1,4 @@
-import { ensure } from "@/core/utilities";
+import { ensure } from "@core/utilities";
 import { Response } from "express";
 import { DependencyContainer } from "tsyringe";
 

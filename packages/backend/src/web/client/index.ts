@@ -1,6 +1,6 @@
-import { Class, ensure } from "@/core/utilities";
-import { isId } from "@/domain/common/id";
-import { EndpointName, RequestData } from "@/web/client/types";
+import { Class, ensure } from "@core/utilities";
+import { isId } from "@backend/domain/common/id";
+import { EndpointName, RequestData } from "@backend/web/client/types";
 import { toUrlParams } from "../common/utilities/http";
 
 type RBOMethod = "GET" | "POST" | "PUT" | "DELETE";

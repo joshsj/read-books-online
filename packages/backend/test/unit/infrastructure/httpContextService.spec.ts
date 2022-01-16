@@ -1,4 +1,4 @@
-import { HttpContextService } from "@/infrastructure/httpContextService";
+import { HttpContextService } from "@backend/infrastructure/httpContextService";
 import { expect } from "chai";
 import { Request, Response } from "express";
 

@@ -5,9 +5,9 @@ import {
   IRequest,
   IRequestName,
   IResponseReturnValue,
-} from "@/application/common/interfaces/cqrs";
-import { Dependency } from "@/application/dependency";
-import { ensure } from "@/core/utilities";
+} from "@backend/application/common/interfaces/cqrs";
+import { Dependency } from "@backend/application/dependency";
+import { ensure } from "@core/utilities";
 import { container as defaultContainer, DependencyContainer } from "tsyringe";
 
 class CQRS implements ICQRS {

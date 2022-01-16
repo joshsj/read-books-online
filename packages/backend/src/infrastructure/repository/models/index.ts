@@ -1,5 +1,5 @@
-import { RBOError } from "@/application/common/error/rboError";
-import { Entity } from "@/domain/common/entity";
+import { RBOError } from "@backend/application/common/error/rboError";
+import { Entity } from "@backend/domain/common/entity";
 import {
   model as _model,
   Schema as _Schema,

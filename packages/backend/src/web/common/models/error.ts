@@ -1,4 +1,4 @@
-import { IRBOErrorType } from "@/application/common/error/rboError";
+import { IRBOErrorType } from "@backend/application/common/error/rboError";
 
 type ErrorDto = {
   error: true;

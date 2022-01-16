@@ -1,6 +1,6 @@
-import { Id, newId } from "@/domain/common/id";
-import { createClientProxy, IRBOClientConfig, RBOMethod } from "@/web/client";
-import { Endpoint, EndpointName } from "@/web/client/types";
+import { Id, newId } from "@backend/domain/common/id";
+import { createClientProxy, IRBOClientConfig, RBOMethod } from "@backend/web/client";
+import { Endpoint, EndpointName } from "@backend/web/client/types";
 import { expect } from "chai";
 import { spy } from "sinon";
 

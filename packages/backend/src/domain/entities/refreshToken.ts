@@ -1,5 +1,5 @@
-import { Entity } from "@/domain/common/entity";
-import { Id } from "@/domain/common/id";
+import { Entity } from "@backend/domain/common/entity";
+import { Id } from "@backend/domain/common/id";
 import { string, date, object, InferType } from "yup";
 
 type RefreshTokenValue = string;

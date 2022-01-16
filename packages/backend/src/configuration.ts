@@ -1,7 +1,7 @@
-import { IConfiguration } from "@/application/common/interfaces/configuration";
-import { Mode } from "@/application/common/interfaces/mode";
-import { ensure, getEnv } from "@/core/utilities";
-import { JWTAlgorithm } from "@/domain/common/constrainedTypes";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { Mode } from "@backend/application/common/interfaces/mode";
+import { ensure, getEnv } from "@core/utilities";
+import { JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
 
 const EnvKeys = [
   "SERVER_PORT",

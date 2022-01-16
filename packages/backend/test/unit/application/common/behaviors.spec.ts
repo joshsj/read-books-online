@@ -1,14 +1,14 @@
-import { authorizerBehavior } from "@/application/common/behaviors/authorizerBehavior";
-import { validatorBehavior } from "@/application/common/behaviors/validatorBehavior";
+import { authorizerBehavior } from "@backend/application/common/behaviors/authorizerBehavior";
+import { validatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
 import {
   IBehavior,
   IRequestAuthorizer,
   IRequestHandler,
   IRequestValidator,
-} from "@/application/common/interfaces/cqrs";
-import { ILogger } from "@/application/common/interfaces/logger";
-import { Dependency } from "@/application/dependency";
-import { CQRS } from "@/infrastructure/cqrs";
+} from "@backend/application/common/interfaces/cqrs";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { Dependency } from "@backend/application/dependency";
+import { CQRS } from "@backend/infrastructure/cqrs";
 import {
   createLogger,
   createTestAuthorizer,
@@ -16,7 +16,7 @@ import {
   createTestRequestHandler,
   createTestValidator,
   TestRequest,
-} from "@/test/unit/utilities/mocks";
+} from "@backend/test/unit/utilities/mocks";
 import { expect } from "chai";
 import { container } from "tsyringe";
 
