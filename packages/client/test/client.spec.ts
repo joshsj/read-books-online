@@ -1,33 +1,37 @@
 import { Id, newId } from "@backend/domain/common/id";
-import { createClientProxy, IRBOClientConfig, RBOClientMethod } from "@client/index";
+import { createClientProxy } from "@client/index";
+import { RBOClientConfig, RBOClientMethod } from "@client/types";
 import { Endpoint, EndpointName } from "@client/types";
 import { expect } from "chai";
 import { spy } from "sinon";
 
-const config: IRBOClientConfig = {
-  callback: () => Promise.resolve(),
+type TestResult = { value: string };
+const TestResult = { value: "result" };
+
+const config: RBOClientConfig = {
+  callback: () => Promise.resolve<TestResult>(TestResult),
   baseUrl: "http://client.unit.test.com",
 };
 
 const callbackSpy = spy(config, "callback");
 
-const newSut = <T>(c: Partial<IRBOClientConfig> = {}): T =>
+const newSut = <T>(c: Partial<RBOClientConfig> = {}): T =>
   createClientProxy([], { ...config, ...c });
 
-const getResult = (call = 0) => callbackSpy.getCall(call).args[0];
+const getCallbackInvocation = (call = 0) => callbackSpy.getCall(call).args[0];
 
 describe("Client", () => {
   beforeEach(() => callbackSpy.resetHistory());
 
   describe("Configuration", () => {
     it("Uses the configured callback", async () => {
-      const sut = newSut<{ test: Endpoint<"get"> }>();
+      const sut = newSut<{ test: Endpoint<"get", void, TestResult> }>();
 
-      await sut.test.get();
+      const clientResult = await sut.test.get();
+      const invocation = getCallbackInvocation();
 
-      const result = getResult();
-
-      expect(result).not.to.be.null;
+      expect(invocation).not.to.be.null;
+      expect(clientResult).to.eql(TestResult);
     });
   });
 
@@ -37,10 +41,10 @@ describe("Client", () => {
 
       await sut.deep.nested.endpoint.create();
 
-      const result = getResult();
+      const invocation = getCallbackInvocation();
       const expected = `${config.baseUrl}\/deep\/nested\/endpoint`;
 
-      expect(result.url).to.equal(expected);
+      expect(invocation.url).to.equal(expected);
     });
 
     it("Composes URL parameters", async () => {
@@ -49,10 +53,10 @@ describe("Client", () => {
 
       await sut.test.get(id);
 
-      const result = getResult();
+      const invocation = getCallbackInvocation();
       const expected = `${config.baseUrl}/test/${id}`;
 
-      expect(result.url).to.equal(expected);
+      expect(invocation.url).to.equal(expected);
     });
 
     it("Composes query parameters for GET requests", async () => {
@@ -62,10 +66,10 @@ describe("Client", () => {
 
       await sut.test.get({ pageSize: 20 });
 
-      const result = getResult();
+      const invocation = getCallbackInvocation();
       const expected = `${config.baseUrl}/test?pageSize=20`;
 
-      expect(result.url).to.equal(expected);
+      expect(invocation.url).to.equal(expected);
     });
   });
 
@@ -78,10 +82,10 @@ describe("Client", () => {
 
       await sut.test.update(body);
 
-      const result = getResult();
+      const invocation = getCallbackInvocation();
 
-      expect(result.body).not.to.be.undefined;
-      expect(JSON.parse(result.body as string)).to.eql(body);
+      expect(invocation.body).not.to.be.undefined;
+      expect(JSON.parse(invocation.body as string)).to.eql(body);
     });
 
     it("Omits a body for GET requests", async () => {
@@ -92,10 +96,10 @@ describe("Client", () => {
 
       await sut.test.get(body);
 
-      const result = getResult();
+      const invocation = getCallbackInvocation();
 
-      expect(result).not.to.be.undefined;
-      expect(result.body).to.be.undefined;
+      expect(invocation).not.to.be.undefined;
+      expect(invocation.body).to.be.undefined;
     });
   });
 
@@ -115,10 +119,10 @@ describe("Client", () => {
 
         await sut.test[endpointName as EndpointName]();
 
-        const result = getResult();
+        const invocation = getCallbackInvocation();
 
-        expect(result).not.to.be.undefined;
-        expect(result.method).to.equal(method);
+        expect(invocation).not.to.be.undefined;
+        expect(invocation.method).to.equal(method);
       })
     );
   });
