@@ -1,5 +1,5 @@
 import { Id, newId } from "@backend/domain/common/id";
-import { createClientProxy, IRBOClientConfig, RBOMethod } from "@client/index";
+import { createClientProxy, IRBOClientConfig, RBOClientMethod } from "@client/index";
 import { Endpoint, EndpointName } from "@client/types";
 import { expect } from "chai";
 import { spy } from "sinon";
@@ -100,7 +100,7 @@ describe("Client", () => {
   });
 
   describe("Verb", () => {
-    const runs: { [K in EndpointName]: RBOMethod } = {
+    const runs: { [K in EndpointName]: RBOClientMethod } = {
       get: "GET",
       post: "POST",
       create: "POST",

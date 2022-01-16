@@ -2,15 +2,15 @@ import { isId } from "@backend/domain/common/id";
 import { EndpointName, RequestData } from "@client/types";
 import { Class, ensure, toUrlParams } from "@core/utilities";
 
-type RBOMethod = "GET" | "POST" | "PUT" | "DELETE";
+type RBOClientMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-type RequestState = {
+type ClientRequestState = {
   url: string;
   method: string;
   body: string | undefined;
 };
 
-const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
+const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   get: "GET",
 
   post: "POST",
@@ -26,7 +26,7 @@ const getRequestState = (
   data: RequestData,
   segments: string[],
   { baseUrl }: IRBOClientConfig
-): RequestState => {
+): ClientRequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = baseUrl + "/" + segments.join("/");
@@ -87,7 +87,7 @@ const createClientProxy = (segments: string[], config: IRBOClientConfig): any =>
 type IRBOClient = {};
 
 type IRBOClientConfig = {
-  callback: (state: RequestState) => Promise<any>;
+  callback: (state: ClientRequestState) => Promise<any>;
   baseUrl: string;
 };
 
@@ -96,4 +96,4 @@ const RBOClient: Class<IRBOClient, [IRBOClientConfig]> = createClientProxy(
   {} as IRBOClientConfig
 );
 
-export { IRBOClient, IRBOClientConfig, RBOClient, createClientProxy, RBOMethod };
+export { IRBOClient, IRBOClientConfig, RBOClient, createClientProxy, RBOClientMethod };

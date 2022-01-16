@@ -3,7 +3,7 @@ import { Id } from "@backend/domain/common/id";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
-type EndpointRes<T> = T extends void ? Promise<RBOError> : Promise<T | RBOError>;
+type EndpointRes<T> = Promise<RBOError | (T extends void ? never : T)>;
 
 type ResponseData = object | void;
 type RequestData<T extends EndpointName = "get"> = ResponseData | (T extends "get" ? Id : never);
