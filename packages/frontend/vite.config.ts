@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      "@/common/": path.resolve(__dirname, "../common/"),
-      "@": path.resolve(__dirname, "./src"),
+      "@frontend": path.resolve(__dirname, "./src"),
+      "@core": path.resolve(__dirname, "../core/src"),
     },
   },
 });

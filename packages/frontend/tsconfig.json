@@ -1,20 +1,19 @@
 {
-  "extends": "../tsconfig.strict.json",
+  "extends": "../tsconfig.base.json",
 
   "compilerOptions": {
-    "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
-    "moduleResolution": "node",
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/common/*": ["../common/*"]
+      "@frontend/*": ["./src/*"],
+      "@core/*": ["../core/src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "references": [{ "path": "../core" }]
 }

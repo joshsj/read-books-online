@@ -5,8 +5,8 @@ import { Button, Notification, Loading, Config as OrugaConfig } from "@oruga-ui/
 
 // root
 import { createApp } from "vue";
-import App from "@/App.vue";
-import { createRouter } from "@/router";
+import App from "@frontend/App.vue";
+import { createRouter } from "@frontend/router";
 
 const router = createRouter();
 

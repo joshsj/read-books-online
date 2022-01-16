@@ -1,4 +1,4 @@
-import Home from "@/views/Home.vue";
+import Home from "@frontend/views/Home.vue";
 import {
   createRouter as createVueRouter,
   createWebHistory,

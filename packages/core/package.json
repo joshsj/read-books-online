@@ -1,7 +1,8 @@
 {
   "name": "read-books-online-core",
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "watch": "tsc --watch"
   },
   "devDependencies": {
     "typescript": "^4.5.4"

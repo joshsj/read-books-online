@@ -6,7 +6,8 @@
   },
   "workspaces": [
     "./core",
-    "./backend"
+    "./backend",
+    "./frontend"
   ],
   "_moduleAliases": {
     "@core": "./build/core/src",

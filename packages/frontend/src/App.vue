@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { route } from "@/router";
-import { store } from "@/store";
+import { route } from "@frontend/router";
+import { store } from "@frontend/store";
 
 document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
 
@@ -17,7 +17,7 @@ const toggleNavbar = () =>
       role="navigation"
       aria-label="main navigation">
       <div class="navbar-brand">
-        <router-link to="/" class="navbar-item">
+        <router-link :to="route({ name: 'home' })" class="navbar-item">
           <h1 class="title mb-0">ReadBooksOnline</h1>
         </router-link>
 
@@ -40,7 +40,7 @@ const toggleNavbar = () =>
             Home
           </router-link>
 
-          <router-link :to="route({ name: 'login' })" class="navbar-item">
+          <router-link :to="route({ name: 'home' })" class="navbar-item">
             Login
           </router-link>
         </div>
