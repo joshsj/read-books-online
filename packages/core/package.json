@@ -1,11 +1,18 @@
 {
   "name": "read-books-online-core",
   "scripts": {
+    "test": "node -r module-alias/register -r ../build/core/test/plugins.js ../build/core/test/index.js",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "typescript": "^4.5.4",
-    "@types/node": "^16.11.7"
+    "@types/chai": "^4.3.0",
+    "@types/chai-as-promised": "^7.1.4",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.7",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^9.1.4",
+    "typescript": "^4.5.4"
   }
 }

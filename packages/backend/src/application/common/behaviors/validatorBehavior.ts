@@ -1,11 +1,7 @@
-import {
-  IBehavior,
-  IRequest,
-  IRequestName,
-  IRequestValidator,
-} from "@backend/application/common/interfaces/cqrs";
+import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
+import { IBehavior, IRequest, IRequestName } from "@core/cqrs/types";
 import { container } from "tsyringe";
 
 const validatorBehavior: IBehavior = {

@@ -1,17 +1,7 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
-import {
-  IBehavior,
-  ICommandHandler,
-  IRequest,
-  IRequestAuthorizer,
-  IRequestValidator,
-} from "@backend/application/common/interfaces/cqrs";
+import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
-
-type Outcome = "passes" | "fails";
-
-const createPromise = (outcome: Outcome = "passes"): Promise<any> =>
-  Promise[outcome === "passes" ? "resolve" : "reject"]();
+import { Outcome, TestRequest } from "@core/test/utilities/mocks";
 
 const createConfiguration = (): IConfiguration => ({
   mode: "development",
@@ -45,23 +35,9 @@ const createConfiguration = (): IConfiguration => ({
   },
 });
 
-type TestRequest = IRequest<"testRequest">;
-const createTestRequest = (): TestRequest => ({ requestName: "testRequest" });
+const createLogger = (): ILogger => ({ log: () => void 0 });
 
-const createTestRequestHandler = (): ICommandHandler<TestRequest> => ({
-  handles: "testRequest",
-  handle: async () => {},
-});
-
-const createTestBehavior = (outcome: Outcome): IBehavior => ({
-  handle: async ({}, next) => {
-    if (outcome === "fails") {
-      throw new Error();
-    }
-
-    return await next();
-  },
-});
+const createAuthorizationHeader = (token: string) => "Bearer " + token;
 
 const createTestAuthorizer = (outcome: Outcome): IRequestAuthorizer<TestRequest> => ({
   requestName: "testRequest",
@@ -81,20 +57,10 @@ const createTestValidator = (outcome: Outcome): IRequestValidator<TestRequest> =
   },
 });
 
-const createLogger = (): ILogger => ({ log: () => void 0 });
-
-const createAuthorizationHeader = (token: string) => "Bearer " + token;
-
 export {
-  Outcome,
-  TestRequest,
-  createPromise,
-  createTestRequest,
-  createTestBehavior,
-  createTestRequestHandler,
-  createTestAuthorizer,
-  createTestValidator,
   createLogger,
   createAuthorizationHeader,
   createConfiguration,
+  createTestAuthorizer,
+  createTestValidator,
 };

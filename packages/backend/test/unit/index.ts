@@ -1,4 +1,4 @@
-import { GlobalMochaOptions } from "@backend/test/config";
+import { GlobalMochaOptions } from "@core/test/utilities";
 import glob from "fast-glob";
 import Mocha from "mocha";
 import path from "path";

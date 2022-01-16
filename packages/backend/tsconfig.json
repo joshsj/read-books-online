@@ -11,7 +11,8 @@
     "paths": {
       "@backend/*": ["./src/*"],
       "@backend/test/*": ["./test/*"],
-      "@core/*": ["../core/src/*"]
+      "@core/*": ["../core/src/*"],
+      "@core/test*": ["../core/test/*"]
     }
   },
 

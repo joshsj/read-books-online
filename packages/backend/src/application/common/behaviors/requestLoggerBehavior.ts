@@ -1,5 +1,5 @@
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { IBehavior } from "@backend/application/common/interfaces/cqrs";
+import { IBehavior } from "@core/cqrs/types";
 import { Dependency } from "@backend/application/dependency";
 import { container } from "tsyringe";
 

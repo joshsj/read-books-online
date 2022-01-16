@@ -1,22 +1,19 @@
 import { authorizerBehavior } from "@backend/application/common/behaviors/authorizerBehavior";
 import { validatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
-import {
-  IBehavior,
-  IRequestAuthorizer,
-  IRequestHandler,
-  IRequestValidator,
-} from "@backend/application/common/interfaces/cqrs";
+import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
-import { CQRS } from "@backend/infrastructure/cqrs";
 import {
   createLogger,
   createTestAuthorizer,
+  createTestValidator,
+} from "@backend/test/unit/utilities/mocks";
+import { CQRS } from "@core/cqrs";
+import {
   createTestRequest,
   createTestRequestHandler,
-  createTestValidator,
   TestRequest,
-} from "@backend/test/unit/utilities/mocks";
+} from "@core/test/utilities/mocks";
 import { expect } from "chai";
 import { container } from "tsyringe";
 
@@ -24,27 +21,19 @@ describe("Behaviors", () => {
   beforeEach(() => {
     container.clearInstances();
 
-    container
-      .register<IRequestHandler>(Dependency.requestHandler, {
-        useValue: createTestRequestHandler(),
-      })
-      .register<ILogger>(Dependency.logger, { useValue: createLogger() });
+    container.register<ILogger>(Dependency.logger, { useValue: createLogger() });
   });
 
   describe("Authorizer", () => {
-    beforeEach(() =>
-      container.register<IBehavior>(Dependency.requestBehavior, {
-        useValue: authorizerBehavior,
-      })
-    );
-
     it("Passes for valid requests", () => {
       const authorizer = createTestAuthorizer("passes");
       container.register<IRequestAuthorizer<TestRequest>>(Dependency.requestAuthorizer, {
         useValue: authorizer,
       });
 
-      const result = new CQRS().send(createTestRequest());
+      const result = new CQRS([createTestRequestHandler()], [authorizerBehavior]).send(
+        createTestRequest()
+      );
 
       return expect(result).to.be.fulfilled;
     });
@@ -55,25 +44,23 @@ describe("Behaviors", () => {
         useValue: authorizer,
       });
 
-      const result = new CQRS().send(createTestRequest());
+      const result = new CQRS([createTestRequestHandler()], [authorizerBehavior]).send(
+        createTestRequest()
+      );
 
       return expect(result).to.be.rejected;
     });
   });
 
   describe("Validator", () => {
-    beforeEach(() =>
-      container.register<IBehavior>(Dependency.requestBehavior, {
-        useValue: validatorBehavior,
-      })
-    );
-
     it("Passes for valid requests", () => {
       const validator = createTestValidator("passes");
       container.register<IRequestValidator<TestRequest>>(Dependency.requestValidator, {
         useValue: validator,
       });
-      const result = new CQRS().send(createTestRequest());
+      const result = new CQRS([createTestRequestHandler()], [validatorBehavior]).send(
+        createTestRequest()
+      );
 
       return expect(result).to.be.fulfilled;
     });
@@ -84,7 +71,9 @@ describe("Behaviors", () => {
         useValue: validator,
       });
 
-      const result = new CQRS().send(createTestRequest());
+      const result = new CQRS([createTestRequestHandler()], [validatorBehavior]).send(
+        createTestRequest()
+      );
 
       return expect(result).to.be.rejected;
     });

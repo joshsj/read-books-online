@@ -1,17 +1,14 @@
 import { RBOError } from "@backend/application/common/error/rboError";
-import {
-  ICommandHandler,
-  IRequest,
-  IRequestValidator,
-} from "@backend/application/common/interfaces/cqrs";
+import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IUserRepository } from "@backend/application/common/interfaces/repository";
 import { Dependency } from "@backend/application/dependency";
-import { ensure } from "@core/utilities";
 import { Password, Username } from "@backend/domain/common/constrainedTypes";
 import { newId } from "@backend/domain/common/id";
 import { User } from "@backend/domain/entities/user";
 import { UserRepository } from "@backend/infrastructure/repository/userRepository";
+import { ICommandHandler, IRequest } from "@core/cqrs/types";
+import { ensure } from "@core/utilities";
 import { container } from "tsyringe";
 import { mixed, object, ObjectSchema } from "yup";
 

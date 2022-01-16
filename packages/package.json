@@ -11,6 +11,7 @@
   ],
   "_moduleAliases": {
     "@core": "./build/core/src",
+    "@core/test": "./build/core/test",
     "@backend": "./build/backend/src",
     "@backend/test": "./build/backend/test"
   }

@@ -1,7 +1,8 @@
-import { IBehavior, IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
+import { IBehavior } from "@core/cqrs/types";
 import { Dependency } from "@backend/application/dependency";
 import { container } from "tsyringe";
 import { ILogger } from "@backend/application/common/interfaces/logger";
+import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
 
 const authorizerBehavior: IBehavior = {
   handle: async (request, next) => {

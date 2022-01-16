@@ -3,6 +3,10 @@
 
   "compilerOptions": {
     "module": "CommonJS",
-    "outDir": "../build/core"
+    "outDir": "../build/core",
+    "paths": {
+      "@core/*": ["./src/*"],
+      "@core/test/*": ["./test/*"]
+    }
   }
 }

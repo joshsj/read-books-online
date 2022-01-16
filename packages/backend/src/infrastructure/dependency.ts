@@ -1,5 +1,4 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
-import { ICQRS } from "@backend/application/common/interfaces/cqrs";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
@@ -9,11 +8,12 @@ import {
   IUserRepository,
 } from "@backend/application/common/interfaces/repository";
 import { Dependency } from "@backend/application/dependency";
-import { CQRS } from "@backend/infrastructure/cqrs";
 import { IdentityService } from "@backend/infrastructure/identityService";
 import { Logger } from "@backend/infrastructure/logger";
-import { UserRepository } from "@backend/infrastructure/repository/userRepository";
 import { RefreshTokenRepository } from "@backend/infrastructure/repository/refreshTokenRepository";
+import { UserRepository } from "@backend/infrastructure/repository/userRepository";
+import { CQRS } from "@core/cqrs";
+import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
 import { container } from "tsyringe";
 
 const registerInfrastructureDependencies = () => {
@@ -40,7 +40,15 @@ const registerInfrastructureDependencies = () => {
     .register<IRefreshTokenRepository>(Dependency.refreshTokenRepository, {
       useValue: new RefreshTokenRepository(),
     })
-    .register<ICQRS>(Dependency.cqrs, { useFactory: (c) => new CQRS(c) });
+    .register<ICQRS>(Dependency.cqrs, {
+      useFactory: (c) =>
+        new CQRS(
+          c.resolveAll<IRequestHandler>(Dependency.requestHandler),
+          c.isRegistered(Dependency.requestBehavior)
+            ? c.resolveAll<IBehavior>(Dependency.requestBehavior)
+            : []
+        ),
+    });
 };
 
 export { registerInfrastructureDependencies };
