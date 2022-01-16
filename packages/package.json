@@ -1,0 +1,16 @@
+{
+  "name": "read-books-online",
+  "scripts": {
+    "build": "npm run build -ws",
+    "buildV": "npm run build -ws -- --verbose --diagnostics"
+  },
+  "workspaces": [
+    "./core",
+    "./backend"
+  ],
+  "_moduleAliases": {
+    "@": "build/backend/src",
+    "@/test": "build/backend/test",
+    "@/core": "build/core/src"
+  }
+}
