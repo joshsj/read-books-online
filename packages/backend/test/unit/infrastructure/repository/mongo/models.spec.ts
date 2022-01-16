@@ -1,6 +1,6 @@
 import { RBOError, IRBOError } from "@backend/application/common/error/rboError";
 import { newId } from "@backend/domain/common/id";
-import { itUsesMongo } from "@backend/test/unit/utilities/mongo";
+import { useMongo } from "@backend/test/unit/utilities/mongo";
 import { TestEntity } from "@backend/test/unit/utilities/testEntity";
 import { TestEntityModel } from "@backend/test/unit/utilities/testEntityModel";
 import { expect } from "chai";
@@ -9,7 +9,7 @@ const model = TestEntityModel;
 const expectedError: IRBOError = { type: "validation" };
 
 describe("Mongo Models", () => {
-  itUsesMongo();
+  useMongo();
 
   describe("Validation", () => {
     it("Passes for valid entities", async () => {

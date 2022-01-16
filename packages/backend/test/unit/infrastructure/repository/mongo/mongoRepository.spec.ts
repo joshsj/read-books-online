@@ -2,14 +2,14 @@ import { IRepository } from "@backend/application/common/interfaces/repository";
 import { newId } from "@backend/domain/common/id";
 import { MongoRepository } from "@backend/infrastructure/repository/mongoRepository";
 import { TestEntity } from "@backend/test/unit/utilities/testEntity";
-import { itUsesMongo } from "@backend/test/unit/utilities/mongo";
+import { useMongo } from "@backend/test/unit/utilities/mongo";
 import { expect } from "chai";
 import { TestEntityModel } from "@backend/test/unit/utilities/testEntityModel";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { ExpectedError } from "@backend/test/unit/utilities";
 
 describe("Mongo Repository", () => {
-  itUsesMongo();
+  useMongo();
 
   beforeEach(async () => {
     await TestEntityModel.create(testEntityOne);

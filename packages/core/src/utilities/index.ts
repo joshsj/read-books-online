@@ -23,4 +23,9 @@ const getEnv = <TEnvKey extends string>(envKeys: ReadonlyArray<TEnvKey>, env?: a
     {}
   ) as Env<TEnvKey>;
 
-export { Dependencies, toDependencies, ensure, Ensure, Class, Env, getEnv };
+const toUrlParams = (params: object) =>
+  Object.entries(params)
+    .map(([key, value]) => `${key}=${Array.isArray(value) ? value.join(",") : value}`)
+    .join("&");
+
+export { Dependencies, toDependencies, ensure, Ensure, Class, Env, getEnv, toUrlParams };

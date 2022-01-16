@@ -7,13 +7,9 @@ import {
   createLogger,
   createTestAuthorizer,
   createTestValidator,
-} from "@backend/test/unit/utilities/mocks";
+} from "@backend/test/unit/utilities";
 import { CQRS } from "@core/cqrs";
-import {
-  createTestRequest,
-  createTestRequestHandler,
-  TestRequest,
-} from "@core/test/utilities/mocks";
+import { createTestRequest, createTestRequestHandler, TestRequest } from "@core/utilities/test";
 import { expect } from "chai";
 import { container } from "tsyringe";
 

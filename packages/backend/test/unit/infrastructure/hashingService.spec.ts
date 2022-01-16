@@ -1,6 +1,6 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { HashingService } from "@backend/infrastructure/hashingService";
-import { createConfiguration } from "@backend/test/unit/utilities/mocks";
+import { createConfiguration } from "@backend/test/unit/utilities";
 import { expect } from "chai";
 
 const newSut = (config?: IConfiguration) => new HashingService(config ?? createConfiguration());

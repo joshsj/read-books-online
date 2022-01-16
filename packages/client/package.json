@@ -1,7 +1,7 @@
 {
-  "name": "read-books-online-core",
+  "name": "read-books-online-client",
   "scripts": {
-    "test:unit": "node -r module-alias/register -r ../build/core/test/plugins.js ../build/core/test/index.js",
+    "test:unit": "node -r module-alias/register -r ../build/client/test/plugins.js ../build/client/test/index.js",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },

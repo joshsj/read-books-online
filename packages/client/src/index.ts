@@ -1,7 +1,6 @@
-import { Class, ensure } from "@core/utilities";
 import { isId } from "@backend/domain/common/id";
-import { EndpointName, RequestData } from "@backend/web/client/types";
-import { toUrlParams } from "../common/utilities/http";
+import { EndpointName, RequestData } from "@client/types";
+import { Class, ensure, toUrlParams } from "@core/utilities";
 
 type RBOMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -9,7 +8,6 @@ type RequestState = {
   url: string;
   method: string;
   body: string | undefined;
-  headers: Record<string, string> | undefined;
 };
 
 const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
@@ -27,21 +25,17 @@ const endpointNameMethods: { [K in EndpointName]: RBOMethod } = {
 const getRequestState = (
   data: RequestData,
   segments: string[],
-  { baseUrl, authenticationToken }: IRBOClientConfig
+  { baseUrl }: IRBOClientConfig
 ): RequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = baseUrl + "/" + segments.join("/");
-  const headers = authenticationToken
-    ? { authentication: `Bearer ${authenticationToken}` }
-    : undefined;
 
   if (!data) {
     return {
       url: endpoint,
       body: undefined,
       method,
-      headers,
     };
   }
 
@@ -50,7 +44,6 @@ const getRequestState = (
       url: endpoint + "/" + data,
       body: undefined,
       method,
-      headers,
     };
   }
 
@@ -61,7 +54,6 @@ const getRequestState = (
     url,
     body,
     method,
-    headers,
   };
 };
 
@@ -97,7 +89,6 @@ type IRBOClient = {};
 type IRBOClientConfig = {
   callback: (state: RequestState) => Promise<any>;
   baseUrl: string;
-  authenticationToken?: string;
 };
 
 const RBOClient: Class<IRBOClient, [IRBOClientConfig]> = createClientProxy(

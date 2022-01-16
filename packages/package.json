@@ -2,17 +2,21 @@
   "name": "read-books-online",
   "scripts": {
     "build": "npm run build -ws",
-    "build-v": "npm run build -ws -- --verbose --diagnostics"
+    "build-v": "npm run build -ws -- --verbose --diagnostics",
+    "test:unit": "npm run test:unit -ws"
   },
   "workspaces": [
-    "./core",
     "./backend",
+    "./client",
+    "./core",
     "./frontend"
   ],
   "_moduleAliases": {
-    "@core": "./build/core/src",
-    "@core/test": "./build/core/test",
-    "@backend": "./build/backend/src",
-    "@backend/test": "./build/backend/test"
+    "@backend": "build/backend/src",
+    "@backend/test": "build/backend/test",
+    "@client": "build/client/src",
+    "@client/test": "build/client/test",
+    "@core": "build/core/src",
+    "@core/test": "build/core/test"
   }
 }

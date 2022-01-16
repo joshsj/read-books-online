@@ -8,5 +8,6 @@
       "@core/*": ["./src/*"],
       "@core/test/*": ["./test/*"]
     }
-  }
+  },
+  "exclude": ["../build"]
 }

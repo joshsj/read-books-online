@@ -1,13 +1,12 @@
 import { Id, newId } from "@backend/domain/common/id";
-import { createClientProxy, IRBOClientConfig, RBOMethod } from "@backend/web/client";
-import { Endpoint, EndpointName } from "@backend/web/client/types";
+import { createClientProxy, IRBOClientConfig, RBOMethod } from "@client/index";
+import { Endpoint, EndpointName } from "@client/types";
 import { expect } from "chai";
 import { spy } from "sinon";
 
 const config: IRBOClientConfig = {
   callback: () => Promise.resolve(),
   baseUrl: "http://client.unit.test.com",
-  authenticationToken: undefined,
 };
 
 const callbackSpy = spy(config, "callback");
@@ -21,7 +20,7 @@ describe("Client", () => {
   beforeEach(() => callbackSpy.resetHistory());
 
   describe("Configuration", () => {
-    it("Uses the configured fetch", async () => {
+    it("Uses the configured callback", async () => {
       const sut = newSut<{ test: Endpoint<"get"> }>();
 
       await sut.test.get();
@@ -29,30 +28,6 @@ describe("Client", () => {
       const result = getResult();
 
       expect(result).not.to.be.null;
-    });
-
-    it("Uses the configured authentication token", async () => {
-      const authenticationToken = "token";
-
-      const sut = newSut<{ test: Endpoint<"get"> }>({ authenticationToken });
-
-      await sut.test.get();
-
-      const result = getResult();
-      const expected = { authentication: `Bearer ${authenticationToken}` };
-
-      expect(result.headers).to.include(expected);
-    });
-
-    it("Omits authentication without a token", async () => {
-      const sut = newSut<{ test: Endpoint<"get"> }>();
-
-      await sut.test.get();
-
-      const result = getResult();
-
-      expect(result).not.to.be.undefined;
-      expect(result.headers).to.be.undefined;
     });
   });
 

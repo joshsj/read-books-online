@@ -1,11 +1,11 @@
 import { CQRS } from "@core/cqrs";
+import {
+  createTestBehavior,
+  createTestRequest,
+  createTestRequestHandler,
+} from "@core/utilities/test";
 import { expect } from "chai";
 import { spy } from "sinon";
-import {
-  createTestRequestHandler,
-  createTestRequest,
-  createTestBehavior,
-} from "@core/test/utilities/mocks";
 
 describe("CQRS", () => {
   describe("Handlers", () => {

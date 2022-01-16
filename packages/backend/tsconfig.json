@@ -11,10 +11,9 @@
     "paths": {
       "@backend/*": ["./src/*"],
       "@backend/test/*": ["./test/*"],
-      "@core/*": ["../core/src/*"],
-      "@core/test*": ["../core/test/*"]
+      "@core/*": ["../core/src/*"]
     }
   },
-
+  "exclude": ["../build"],
   "references": [{ "path": "../core" }]
 }

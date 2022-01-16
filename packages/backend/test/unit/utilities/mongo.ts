@@ -4,7 +4,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 let instance: MongoMemoryServer | undefined = undefined;
 let clients = 0;
 
-const itUsesMongo = () =>
+const useMongo = () =>
   before(async () => {
     ++clients;
 
@@ -26,4 +26,4 @@ const itUsesMongo = () =>
     });
   });
 
-export { itUsesMongo };
+export { useMongo };

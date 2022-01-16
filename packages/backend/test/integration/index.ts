@@ -1,4 +1,4 @@
-import { GlobalMochaOptions } from "@core/test/utilities";
+import { GlobalMochaOptions } from "@core/utilities/test";
 import glob from "fast-glob";
 import Mocha from "mocha";
 import path from "path";

@@ -2,7 +2,8 @@
   "name": "read-books-online-frontend",
   "version": "0.0.0",
   "scripts": {
-    "start": "vite"
+    "start": "vite",
+    "test:unit": "echo frontend has no unit tests implemented"
   },
   "dependencies": {
     "@mdi/font": "^6.5.95",
