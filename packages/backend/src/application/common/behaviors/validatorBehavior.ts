@@ -14,14 +14,14 @@ const validatorBehavior: IBehavior = {
 
     if (!validators.length) {
       logger.log(
-        "validation",
+        "cqrs",
         `Skipping validation for request ${request.requestName}, no validators were resolved`
       );
       return await next();
     }
 
     logger.log(
-      "validation",
+      "cqrs",
       `Resolved ${validators.length} validators for request ${request.requestName}`
     );
 
@@ -29,7 +29,7 @@ const validatorBehavior: IBehavior = {
       await validator.validate(request);
     }
 
-    logger.log("validation", `Validation passed for request ${request.requestName}`);
+    logger.log("cqrs", `Validation passed for request ${request.requestName}`);
 
     return await next();
   },

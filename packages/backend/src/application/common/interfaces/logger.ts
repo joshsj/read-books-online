@@ -5,8 +5,7 @@ type ILoggerContext =
   | "authentication"
   | "authorization"
   | "prcp"
-  | "cqrs"
-  | "validation";
+  | "cqrs";
 
 type ILogger = {
   log: (context: ILoggerContext, data: any, ...rest: any[]) => void;

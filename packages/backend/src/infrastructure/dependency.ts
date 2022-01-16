@@ -12,8 +12,6 @@ import { IdentityService } from "@backend/infrastructure/identityService";
 import { Logger } from "@backend/infrastructure/logger";
 import { RefreshTokenRepository } from "@backend/infrastructure/repository/refreshTokenRepository";
 import { UserRepository } from "@backend/infrastructure/repository/userRepository";
-import { CQRS } from "@core/cqrs";
-import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
 import { container } from "tsyringe";
 
 const registerInfrastructureDependencies = () => {
@@ -39,15 +37,6 @@ const registerInfrastructureDependencies = () => {
     .register<IUserRepository>(Dependency.userRepository, { useValue: new UserRepository() })
     .register<IRefreshTokenRepository>(Dependency.refreshTokenRepository, {
       useValue: new RefreshTokenRepository(),
-    })
-    .register<ICQRS>(Dependency.cqrs, {
-      useFactory: (c) =>
-        new CQRS(
-          c.resolveAll<IRequestHandler>(Dependency.requestHandler),
-          c.isRegistered(Dependency.requestBehavior)
-            ? c.resolveAll<IBehavior>(Dependency.requestBehavior)
-            : []
-        ),
     });
 };
 

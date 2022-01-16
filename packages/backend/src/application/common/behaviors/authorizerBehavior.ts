@@ -7,6 +7,7 @@ import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs"
 const authorizerBehavior: IBehavior = {
   handle: async (request, next) => {
     const logger = container.resolve<ILogger>(Dependency.logger);
+
     const authorizers = container.isRegistered(Dependency.requestAuthorizer)
       ? container
           .resolveAll<IRequestAuthorizer<any>>(Dependency.requestAuthorizer)

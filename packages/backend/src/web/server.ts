@@ -24,8 +24,8 @@ class Server {
       .use(express.json())
       .use(cookieParser(this.configuration.server.cookie.secret))
       .use(cors({ origin: this.configuration.server.cors.origins }))
-      .use(httpContextServiceProvider)
       .use(requestLogger)
+      .use(httpContextServiceProvider)
       .use("/api", routes)
       .use(missingRouteHandler)
       .use(errorHandler);
