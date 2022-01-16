@@ -3,12 +3,15 @@
   "scripts": {
     "build": "npm run build -ws",
     "build-v": "npm run build -ws -- --verbose --diagnostics",
-    "test:unit": "npm run test:unit -ws"
+    "test:unit": "npm run test:unit -ws",
+    "clean": "rimraf ./build",
+    "delete-modules": "npm run delete-modules -ws && rimraf ./node_modules"
   },
   "workspaces": [
     "./backend",
     "./client",
-    "./core"
+    "./core",
+    "./frontend"
   ],
   "_moduleAliases": {
     "@backend": "build/backend/src",
@@ -17,5 +20,8 @@
     "@client/test": "build/client/test",
     "@core": "build/core/src",
     "@core/test": "build/core/test"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }

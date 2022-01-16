@@ -3,8 +3,11 @@ import { Mode } from "@backend/application/common/interfaces/mode";
 import { ensure, getEnv } from "@core/utilities";
 import { JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
 
+const EnvArraySep = ",";
+
 const EnvKeys = [
   "SERVER_PORT",
+  "SERVER_CORS_ORIGINS",
   "NODE_ENV",
   "MONGO_URI",
   "MONGO_DB_NAME",
@@ -38,6 +41,8 @@ const getConfiguration = (): IConfiguration => {
 
     server: {
       port: parseInt(env.SERVER_PORT),
+      cors: { origins: env.SERVER_CORS_ORIGINS.split(EnvArraySep) },
+
       cookie: {
         secret: env.COOKIE_SECRET,
         refreshTokenKey: env.COOKIE_REFRESH_TOKEN_KEY,

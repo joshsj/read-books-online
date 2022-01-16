@@ -1,16 +1,18 @@
 {
   "name": "read-books-online-backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "start": "node            -r module-alias/register -r dotenv/config -r reflect-metadata                                    ../build/backend/src/index.js",
     "test:unit": "node        -r module-alias/register -r dotenv/config -r reflect-metadata -r ../build/backend/test/plugins.js ../build/backend/test/unit/index.js",
     "test:integration": "node -r module-alias/register -r dotenv/config                     -r ../build/backend/test/plugins.js ../build/backend/test/integration/index.js",
     "build": "tsc --build",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "delete-modules": "rimraf ./node_modules"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
@@ -28,6 +30,7 @@
     "@types/chai": "^4.3.0",
     "@types/chai-as-promised": "^7.1.4",
     "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/mocha": "^9.0.0",
@@ -42,6 +45,7 @@
     "mongodb-memory-server": "^8.1.0",
     "node-fetch": "^3.1.0",
     "read-books-online-core": "file:core",
+    "rimraf": "^3.0.2",
     "sinon": "^12.0.1"
   }
 }

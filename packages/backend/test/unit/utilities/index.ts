@@ -22,6 +22,9 @@ const createConfiguration = (): IConfiguration => ({
 
   server: {
     port: 1,
+    cors: {
+      origins: ["http://origin.com"],
+    },
     cookie: {
       secret: "secret",
       refreshTokenKey: "refreshTokenKey",
