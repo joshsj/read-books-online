@@ -11,9 +11,14 @@
     "lib": ["esnext", "dom"],
     "paths": {
       "@frontend/*": ["./src/*"],
-      "@core/*": ["../core/src/*"]
+      "@core/*": ["../core/src/*"],
+      "@client/*": ["../client/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [{ "path": "../core" }]
+  "references": [
+    { "path": "../backend" },
+    { "path": "../client" },
+    { "path": "../core" }
+  ]
 }
