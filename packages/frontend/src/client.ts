@@ -5,8 +5,8 @@ import { store } from "@frontend/store";
 const requester: RBOClientRequester = ({ endpoint, body, method }) => {
   const headers: HeadersInit = { "Content-Type": "application/json" };
 
-  if (store.authenticationToken) {
-    headers["authentication"] = `Bearer ${store.authenticationToken}`;
+  if (store.user) {
+    headers["authentication"] = `Bearer ${store.user.authenticationToken}`;
   }
 
   return fetch((store.apiUrl ?? "") + "/" + endpoint, {

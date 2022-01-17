@@ -15,6 +15,8 @@ import {
 import { createApp } from "vue";
 
 store.apiUrl = import.meta.env.VITE_API_URL;
+
+// attempt initial authentication using refresh token
 store.user = await (async () => {
   const response = await client.auth.get();
 
