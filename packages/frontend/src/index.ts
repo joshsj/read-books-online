@@ -1,20 +1,25 @@
-import "./styles.scss";
-
-// library components
-import { Button, Notification, Loading, Config as OrugaConfig } from "@oruga-ui/oruga-next";
-
-// root
-import { createApp } from "vue";
 import App from "@frontend/App.vue";
 import { createRouter } from "@frontend/router";
+import { store } from "@frontend/store";
+import "@frontend/styles.scss";
+import {
+  Config as OrugaConfig,
+  Button,
+  Input,
+  Field,
+  Loading,
+  Notification,
+} from "@oruga-ui/oruga-next";
+import { createApp } from "vue";
 
-const router = createRouter();
+store.apiUrl = import.meta.env.VITE_API_URL;
 
 createApp(App)
-  .use(router)
+  .use(createRouter())
   .use(OrugaConfig, {
     button: {
       rootClass: "button",
+      variantClass: "is-",
     },
 
     notification: {
@@ -26,8 +31,25 @@ createApp(App)
     loading: {
       fullPageClass: "overlay-background",
     },
+
+    field: {
+      rootClass: "field",
+      labelClass: "label",
+      messageClass: "form-text",
+      variantClass: "field-",
+      variantMessageClass: "has-text-",
+    },
+
+    input: {
+      inputClass: "input",
+      variantClass: "is-",
+      iconLeftClass: "input-icon-left",
+      iconRightClass: "input-icon-right",
+    },
   })
   .use(Button)
   .use(Notification)
+  .use(Input)
+  .use(Field)
   .use(Loading)
   .mount("#app");

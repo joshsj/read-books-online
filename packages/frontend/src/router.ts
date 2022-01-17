@@ -1,15 +1,17 @@
+import { Role } from "@client/dtos";
 import Home from "@frontend/views/Home.vue";
+import Login from "@frontend/views/Login.vue";
 import {
   createRouter as createVueRouter,
   createWebHistory,
   RouteLocationRaw,
   RouteRecordRaw,
 } from "vue-router";
+import { store } from "@frontend/store";
 
 declare module "vue-router" {
   interface RouteMeta {
-    auth: "none";
-    // TODO implement route guards | "any" | Role[] | (() => boolean);
+    auth: "none" | "any"; // | Role[] | (() => boolean);
   }
 }
 
@@ -38,7 +40,12 @@ const route = <T extends object | void = void>(
 };
 
 const routes = {
-  home: route({ path: "/", component: Home, meta: { auth: "none" } }),
+  home: route({ path: "/", component: Home, meta: { auth: "any" } }),
+  login: route({
+    path: "/login",
+    component: Login,
+    meta: { auth: "none" },
+  }),
 
   noPath: route({ path: "/:noPath(.*)*", redirect: "/", meta: { auth: "none" } }),
 };
@@ -57,7 +64,11 @@ const createRouter = () => {
       return;
     }
 
-    throw new Error("Authentication route guards not implemented");
+    if (!store.authenticationToken) {
+      return routeHelper({ name: "login" });
+    }
+
+    return;
   });
 
   return router;

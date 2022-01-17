@@ -1,10 +1,10 @@
-import { RBOError } from "@backend/application/common/error/rboError";
+import { RBOErrorDto } from "@backend/web/common/models/error";
 import { Id } from "@backend/domain/common/id";
 import { IAuthClient } from "@client/clients";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
-type EndpointRes<T> = Promise<RBOError | (T extends void ? never : T)>;
+type EndpointRes<T> = Promise<RBOErrorDto | (T extends void ? never : T)>;
 
 type ResponseData = object | void;
 type RequestData<T extends EndpointName = "get"> = ResponseData | (T extends "get" ? Id : never);

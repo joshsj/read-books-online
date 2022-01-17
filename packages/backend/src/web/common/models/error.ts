@@ -1,9 +1,7 @@
-import { IRBOErrorType } from "@backend/application/common/error/rboError";
+import { RBOError, RBOErrorType } from "@backend/application/common/error/rboError";
 
-type ErrorDto = {
-  error: true;
-  type: IRBOErrorType | "internal" | "invalidRoute";
-  message?: string;
+type RBOErrorDto = Pick<RBOError, "rboError" | "message"> & {
+  type: RBOErrorType | "internal" | "invalidRoute";
 };
 
-export { ErrorDto };
+export { RBOErrorDto };

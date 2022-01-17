@@ -1,13 +1,13 @@
-import { RBOError, IRBOErrorType } from "@backend/application/common/error/rboError";
+import { RBOError, RBOErrorType } from "@backend/application/common/error/rboError";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
-import { ErrorDto } from "@backend/web/common/models/error";
+import { RBOErrorDto } from "@backend/web/common/models/error";
 import { getPerRequestContainer } from "@backend/web/common/utilities/container";
 import { ErrorRequestHandler } from "express";
 
-type ErrorData = ErrorDto & { code: number; logData: any; logRest: any[] };
+type ErrorData = RBOErrorDto & { code: number; logData: any; logRest: any[] };
 
-const statusCode: { [K in IRBOErrorType]: number } = {
+const statusCode: { [K in RBOErrorType]: number } = {
   fatal: 500,
   validation: 400,
   authentication: 401,
@@ -16,7 +16,7 @@ const statusCode: { [K in IRBOErrorType]: number } = {
 };
 
 const getRBOErrorData = ({ type, message }: RBOError): ErrorData => ({
-  error: true,
+  rboError: true,
   type,
   message,
   code: statusCode[type],
@@ -28,11 +28,12 @@ const getErrorData = (err: any): ErrorData => {
   const [logData, logRest] = err instanceof Error ? ["Unknown error occurred", err.message] : [err];
 
   return {
-    error: true,
+    rboError: true,
     type: "internal",
     code: 500,
     logData,
     logRest: [logRest],
+    message: "Internal error occurred",
   };
 };
 
@@ -44,8 +45,8 @@ const errorHandler: ErrorRequestHandler = (err, {}, res, {}) => {
     .resolve<ILogger>(Dependency.logger)
     .log("server", data.logData, ...data.logRest);
 
-  const dto: ErrorDto = {
-    error: true,
+  const dto: RBOErrorDto = {
+    rboError: true,
     type: data.type,
     message: data.message,
   };

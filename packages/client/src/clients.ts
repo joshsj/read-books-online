@@ -1,5 +1,5 @@
 import { Endpoint } from "@client/types";
-import type { AccountDto, TokenDto } from "@backend/web/common/models/auth";
+import { AccountDto, TokenDto } from "@client/models";
 
 type IAuthClient = {
   auth: Endpoint<"get", void, TokenDto> & Endpoint<"post", AccountDto, TokenDto>;

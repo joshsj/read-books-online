@@ -1,4 +1,5 @@
 import { isId } from "@backend/domain/common/id";
+import { RBOErrorDto } from "@backend/web/common/models/error";
 import {
   EndpointName,
   RBOClientMethod,
@@ -76,4 +77,8 @@ const createClientProxy = (segments: string[], requester: RBOClientRequester): u
     apply: ({}, {}, args) => callEndpoint(segments, args, requester),
   });
 
-export { createClientProxy };
+const checkKey: Extract<keyof RBOErrorDto, "rboError"> = "rboError";
+const checkValue: RBOErrorDto["rboError"] = true;
+const isRBOError = (obj: any): obj is RBOErrorDto => obj && obj[checkKey] === checkValue;
+
+export { createClientProxy, isRBOError };

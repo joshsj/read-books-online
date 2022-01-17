@@ -8,9 +8,9 @@
     "delete-modules": "npm run delete-modules -ws && rimraf ./node_modules"
   },
   "workspaces": [
+    "./core",
     "./backend",
     "./client",
-    "./core",
     "./frontend"
   ],
   "_moduleAliases": {

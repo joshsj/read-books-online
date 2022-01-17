@@ -5,3 +5,12 @@
 .overlay-background {
   background-color: rgba($color: $white, $alpha: 0.5);
 }
+
+@mixin input-icon($side) {
+  .input-icon-#{$side} {
+    margin-#{$side}: 0.5em;
+  }
+}
+
+@include input-icon(left);
+@include input-icon(right);

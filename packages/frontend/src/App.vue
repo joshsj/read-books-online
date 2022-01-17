@@ -1,9 +1,12 @@
 <script setup lang="ts">
+document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
+
 import { ref } from "vue";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
+import { useLogin } from "@frontend/plugins/login";
 
-document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
+const { isLoggedIn, logout } = useLogin();
 
 const activeClass = ref<string | undefined>(undefined);
 const toggleNavbar = () =>
@@ -13,7 +16,7 @@ const toggleNavbar = () =>
 <template>
   <header>
     <nav
-      class="navbar is-transparent has-shadow is-spaced is-fixed-top has-background-warning"
+      class="navbar is-transparent has-shadow is-spaced is-fixed-top is-dark"
       role="navigation"
       aria-label="main navigation">
       <div class="navbar-brand">
@@ -22,6 +25,8 @@ const toggleNavbar = () =>
         </router-link>
 
         <a
+          v-show="isLoggedIn()"
+          :aria-hidden="!isLoggedIn()"
           role="button"
           class="navbar-burger"
           :class="activeClass"
@@ -34,15 +39,19 @@ const toggleNavbar = () =>
         </a>
       </div>
 
-      <div class="navbar-menu has-background-warning" :class="activeClass">
+      <div
+        v-show="isLoggedIn()"
+        :aria-hidden="!isLoggedIn()"
+        class="navbar-menu"
+        :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
           <router-link :to="route({ name: 'home' })" class="navbar-item">
             Home
           </router-link>
 
-          <router-link :to="route({ name: 'home' })" class="navbar-item">
-            Login
-          </router-link>
+          <div class="navbar-item">
+            <a class="button" @click="logout" role="button">Logout</a>
+          </div>
         </div>
       </div>
     </nav>
@@ -67,10 +76,6 @@ header {
   }
 }
 
-nav {
-  border-bottom: 3px solid $text;
-}
-
 main {
   --content-padding: #{$size-6};
 
@@ -84,5 +89,9 @@ main {
   @include desktop {
     --content-padding: #{$size-6 * 8};
   }
+}
+
+.title {
+  color: inherit;
 }
 </style>

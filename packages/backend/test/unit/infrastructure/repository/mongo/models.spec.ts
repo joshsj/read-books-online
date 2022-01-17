@@ -1,4 +1,4 @@
-import { RBOError, IRBOError } from "@backend/application/common/error/rboError";
+import { RBOError } from "@backend/application/common/error/rboError";
 import { newId } from "@backend/domain/common/id";
 import { useMongo } from "@backend/test/unit/utilities/mongo";
 import { TestEntity } from "@backend/test/unit/utilities/testEntity";
@@ -6,7 +6,7 @@ import { TestEntityModel } from "@backend/test/unit/utilities/testEntityModel";
 import { expect } from "chai";
 
 const model = TestEntityModel;
-const expectedError: IRBOError = { type: "validation" };
+const expectedError = new RBOError("validation");
 
 describe("Mongo Models", () => {
   useMongo();

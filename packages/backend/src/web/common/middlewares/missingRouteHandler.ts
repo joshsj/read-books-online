@@ -1,9 +1,9 @@
 import { Handler } from "express";
 import { handleAsync } from "@backend/web/common/utilities/requestHelper";
-import { ErrorDto } from "@backend/web/common/models/error";
+import { RBOErrorDto } from "@backend/web/common/models/error";
 
 const missingRouteHandler: Handler = handleAsync(async ({}, res) => {
-  const dto: ErrorDto = { error: true, type: "invalidRoute" };
+  const dto: RBOErrorDto = { rboError: true, type: "invalidRoute", message: "Invalid route" };
 
   res.status(404).json(dto).end();
 });

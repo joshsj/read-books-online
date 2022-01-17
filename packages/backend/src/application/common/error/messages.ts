@@ -1,9 +1,9 @@
 import { Id } from "@backend/domain/common/id";
-import { IRBOErrorType } from "./rboError";
+import { RBOErrorType } from "./rboError";
 
 const q = (s: string) => `'${s}'`;
 
-export const defaults: { [K in IRBOErrorType]: string } = {
+export const defaults: { [K in RBOErrorType]: string } = {
   fatal: "Internal error occurred",
   validation: "Invalid request",
   authentication: "Failed to authenticate",
