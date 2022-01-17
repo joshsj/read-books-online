@@ -9,9 +9,12 @@ const requester: RBOClientRequester = ({ endpoint, body, method }) => {
     headers["authentication"] = `Bearer ${store.authenticationToken}`;
   }
 
-  return fetch((store.apiUrl ?? "") + "/" + endpoint, { method, body, headers }).then((res) =>
-    res.json()
-  );
+  return fetch((store.apiUrl ?? "") + "/" + endpoint, {
+    method,
+    body,
+    headers,
+    credentials: "include",
+  }).then((res) => res.json());
 };
 
 const client: RBOClient = createClientProxy([], requester) as RBOClient;

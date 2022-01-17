@@ -1,3 +1,4 @@
+import { client } from "@frontend/client";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { Router, useRouter } from "vue-router";
@@ -13,7 +14,7 @@ const login = (router: Router, token: string) => {
 const logout = (router: Router) => {
   store.authenticationToken = undefined;
 
-  // TODO implement api request to expire refresh token
+  client.auth.delete();
 
   router.push(route({ name: "login" }));
 };

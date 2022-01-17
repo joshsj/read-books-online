@@ -23,7 +23,12 @@ class Server {
     const app = express()
       .use(express.json())
       .use(cookieParser(this.configuration.server.cookie.secret))
-      .use(cors({ origin: this.configuration.server.cors.origins }))
+      .use(
+        cors({
+          origin: this.configuration.server.cors.origins,
+          credentials: true,
+        })
+      )
       .use(requestLogger)
       .use(httpContextServiceProvider)
       .use("/api", routes)

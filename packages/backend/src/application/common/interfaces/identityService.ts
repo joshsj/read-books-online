@@ -8,6 +8,8 @@ type IIdentityService = {
   login(username: Username, password: Password): Promise<AuthTokenValue>;
   login(refresh: "refresh"): Promise<AuthTokenValue>;
 
+  logout(): Promise<void>;
+
   authenticate(): Promise<void>;
 
   getCurrentUserId(): Promise<Id>;

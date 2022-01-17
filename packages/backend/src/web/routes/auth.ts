@@ -19,13 +19,13 @@ routes.get(
     const container = getPerRequestContainer();
 
     const logger = container.resolve<ILogger>(Dependency.logger);
-    logger.log("authentication", "Attempting with refresh token");
+    logger.log("authentication", "Attempting login using refresh token");
 
     const token = await container
       .resolve<IIdentityService>(Dependency.identityService)
       .login("refresh");
 
-    logger.log("authentication", "Succeeded using refresh token");
+    logger.log("authentication", "Login successful using refresh token");
 
     const tokenDto: TokenDto = { token };
 
@@ -41,17 +41,29 @@ routes.post(
     const container = getPerRequestContainer();
 
     const logger = container.resolve<ILogger>(Dependency.logger);
-    logger.log("authentication", "Attempting with credentials");
+    logger.log("authentication", "Attempting login using credentials");
 
     const token = await container
       .resolve<IIdentityService>(Dependency.identityService)
       .login(accountDto.username, accountDto.password);
 
-    logger.log("authentication", "Succeeded using credentials");
+    logger.log("authentication", "Login successful using credentials");
 
     const tokenDto: TokenDto = { token };
 
     ok(tokenDto);
+  })
+);
+
+routes.delete(
+  "",
+  handleAsync(async ({}, {}, { getPerRequestContainer }) => {
+    const container = getPerRequestContainer();
+
+    const logger = container.resolve<ILogger>(Dependency.logger);
+    logger.log("authentication", "Logging out");
+
+    await container.resolve<IIdentityService>(Dependency.identityService).logout();
   })
 );
 
