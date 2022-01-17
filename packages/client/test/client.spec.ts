@@ -1,6 +1,6 @@
 import { Id, newId } from "@backend/domain/common/id";
 import { createClientProxy } from "@client/index";
-import { RBOClientConfig, RBOClientMethod } from "@client/types";
+import { RBOClientMethod, RBOClientRequester } from "@client/types";
 import { Endpoint, EndpointName } from "@client/types";
 import { expect } from "chai";
 import { spy } from "sinon";
@@ -8,27 +8,21 @@ import { spy } from "sinon";
 type TestResult = { value: string };
 const TestResult = { value: "result" };
 
-const config: RBOClientConfig = {
-  callback: () => Promise.resolve<TestResult>(TestResult),
-  baseUrl: "http://client.unit.test.com",
-};
+const requester = spy<RBOClientRequester>(() => Promise.resolve(TestResult));
 
-const callbackSpy = spy(config, "callback");
+const newSut = <T>(): T => createClientProxy([], requester) as T;
 
-const newSut = <T>(c: Partial<RBOClientConfig> = {}): T =>
-  createClientProxy([], { ...config, ...c });
-
-const getCallbackInvocation = (call = 0) => callbackSpy.getCall(call).args[0];
+const getRequesterInvocation = (call = 0) => requester.getCall(call).args[0];
 
 describe("Client", () => {
-  beforeEach(() => callbackSpy.resetHistory());
+  beforeEach(() => requester.resetHistory());
 
   describe("Configuration", () => {
     it("Uses the configured callback", async () => {
       const sut = newSut<{ test: Endpoint<"get", void, TestResult> }>();
 
       const clientResult = await sut.test.get();
-      const invocation = getCallbackInvocation();
+      const invocation = getRequesterInvocation();
 
       expect(invocation).not.to.be.null;
       expect(clientResult).to.eql(TestResult);
@@ -41,10 +35,10 @@ describe("Client", () => {
 
       await sut.deep.nested.endpoint.create();
 
-      const invocation = getCallbackInvocation();
-      const expected = `${config.baseUrl}\/deep\/nested\/endpoint`;
+      const invocation = getRequesterInvocation();
+      const expected = "deep/nested/endpoint";
 
-      expect(invocation.url).to.equal(expected);
+      expect(invocation.endpoint).to.equal(expected);
     });
 
     it("Composes URL parameters", async () => {
@@ -53,10 +47,10 @@ describe("Client", () => {
 
       await sut.test.get(id);
 
-      const invocation = getCallbackInvocation();
-      const expected = `${config.baseUrl}/test/${id}`;
+      const invocation = getRequesterInvocation();
+      const expected = `test/${id}`;
 
-      expect(invocation.url).to.equal(expected);
+      expect(invocation.endpoint).to.equal(expected);
     });
 
     it("Composes query parameters for GET requests", async () => {
@@ -66,10 +60,10 @@ describe("Client", () => {
 
       await sut.test.get({ pageSize: 20 });
 
-      const invocation = getCallbackInvocation();
-      const expected = `${config.baseUrl}/test?pageSize=20`;
+      const invocation = getRequesterInvocation();
+      const expected = "test?pageSize=20";
 
-      expect(invocation.url).to.equal(expected);
+      expect(invocation.endpoint).to.equal(expected);
     });
   });
 
@@ -82,7 +76,7 @@ describe("Client", () => {
 
       await sut.test.update(body);
 
-      const invocation = getCallbackInvocation();
+      const invocation = getRequesterInvocation();
 
       expect(invocation.body).not.to.be.undefined;
       expect(JSON.parse(invocation.body as string)).to.eql(body);
@@ -96,7 +90,7 @@ describe("Client", () => {
 
       await sut.test.get(body);
 
-      const invocation = getCallbackInvocation();
+      const invocation = getRequesterInvocation();
 
       expect(invocation).not.to.be.undefined;
       expect(invocation.body).to.be.undefined;
@@ -119,7 +113,7 @@ describe("Client", () => {
 
         await sut.test[endpointName as EndpointName]();
 
-        const invocation = getCallbackInvocation();
+        const invocation = getRequesterInvocation();
 
         expect(invocation).not.to.be.undefined;
         expect(invocation.method).to.equal(method);

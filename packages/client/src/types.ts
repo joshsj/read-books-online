@@ -20,17 +20,14 @@ type Endpoint<
 type RBOClientMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 type RBOClientRequestState = {
-  url: string;
+  endpoint: string;
   method: string;
   body: string | undefined;
 };
 
-type IRBOClient = IAuthClient;
+type RBOClientRequester = (state: RBOClientRequestState) => Promise<any>;
 
-type RBOClientConfig = {
-  callback: (state: RBOClientRequestState) => Promise<any>;
-  baseUrl: string;
-};
+type RBOClient = IAuthClient;
 
 export {
   Endpoint,
@@ -38,8 +35,8 @@ export {
   EndpointRes,
   RequestData,
   ResponseData,
-  RBOClientConfig,
+  RBOClientRequester,
   RBOClientMethod,
   RBOClientRequestState,
-  IRBOClient,
+  RBOClient,
 };

@@ -1,13 +1,12 @@
 import { isId } from "@backend/domain/common/id";
 import {
   EndpointName,
-  IRBOClient,
-  RBOClientConfig,
   RBOClientMethod,
+  RBOClientRequester,
   RBOClientRequestState,
   RequestData,
 } from "@client/types";
-import { Class, ensure, toUrlParams } from "@core/utilities";
+import { ensure, toUrlParams } from "@core/utilities";
 
 const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   get: "GET",
@@ -21,18 +20,14 @@ const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   delete: "DELETE",
 };
 
-const getRequestState = (
-  data: RequestData,
-  segments: string[],
-  { baseUrl }: RBOClientConfig
-): RBOClientRequestState => {
+const getRequestState = (data: RequestData, segments: string[]): RBOClientRequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
-  const endpoint = baseUrl + "/" + segments.join("/");
+  const endpoint = segments.join("/");
 
   if (!data) {
     return {
-      url: endpoint,
+      endpoint: endpoint,
       body: undefined,
       method,
     };
@@ -40,7 +35,7 @@ const getRequestState = (
 
   if (isId(data)) {
     return {
-      url: endpoint + "/" + data,
+      endpoint: endpoint + "/" + data,
       body: undefined,
       method,
     };
@@ -50,42 +45,35 @@ const getRequestState = (
     method === "GET" ? [endpoint + "?" + toUrlParams(data)] : [endpoint, JSON.stringify(data)];
 
   return {
-    url,
+    endpoint: url,
     body,
     method,
   };
 };
 
-const callEndpoint = (segments: string[], args: any[], config: RBOClientConfig) => {
+const callEndpoint = (segments: string[], args: any[], requester: RBOClientRequester) => {
   ensure(
     segments.length > 1,
     new Error("Invalid segments, at least two segments are required to form an endpoint")
   );
 
-  return config.callback(getRequestState(args[0] as RequestData, segments, config));
+  return requester(getRequestState(args[0] as RequestData, segments));
 };
 
 // allows apply, construct proxy methods
 const dummy = Object.assign(class {}, () => void 0);
 
-const createClientProxy = (segments: string[], config: RBOClientConfig): any =>
+const createClientProxy = (segments: string[], requester: RBOClientRequester): unknown =>
   new Proxy(dummy, {
     get({}, segment) {
       if (typeof segment !== "string") {
         return undefined;
       }
 
-      return createClientProxy([...segments, segment], config);
+      return createClientProxy([...segments, segment], requester);
     },
 
-    apply: ({}, {}, args) => callEndpoint(segments, args, config),
-
-    construct: ({}, args) => createClientProxy([], args[0]),
+    apply: ({}, {}, args) => callEndpoint(segments, args, requester),
   });
 
-const RBOClient: Class<IRBOClient, [RBOClientConfig]> = createClientProxy(
-  [],
-  {} as RBOClientConfig
-);
-
-export { RBOClient, createClientProxy };
+export { createClientProxy };
