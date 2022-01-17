@@ -127,10 +127,14 @@ class IdentityService implements IIdentityService {
 
     const method = existingId ? "update" : "insert";
     await this.refreshTokenRepository[method](refreshToken);
-
     this.setRefreshTokenCookie(refreshToken.value, expires);
 
-    const payload: JWTPayload = { sub: userId };
+    const user = (await this.userRepository.get(userId))!;
+
+    const payload: JWTPayload = {
+      sub: userId,
+      preferred_username: user.username,
+    };
 
     return new Promise((resolve, reject) =>
       jwt.sign(

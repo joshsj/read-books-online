@@ -3,7 +3,11 @@ import { Id } from "@backend/domain/common/id";
 import { InferType, object, string } from "yup";
 
 // https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
-const JWTPayload = object({ sub: Id });
+// https://www.iana.org/assignments/jwt/jwt.xhtml
+const JWTPayload = object({
+  sub: Id,
+  preferred_username: string().strict().required(),
+});
 type JWTPayload = InferType<typeof JWTPayload>;
 
 const TokenDto = object({ token: string().strict().required() });

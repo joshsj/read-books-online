@@ -1,27 +1,27 @@
-import { TokenDto } from "@client/models";
 import App from "@frontend/App.vue";
+import { client, isRBOError } from "@frontend/client";
+import { toUserStore } from "@frontend/plugins/login";
 import { createRouter } from "@frontend/router";
 import { store } from "@frontend/store";
 import "@frontend/styles.scss";
 import {
-  Config as OrugaConfig,
   Button,
-  Input,
+  Config as OrugaConfig,
   Field,
+  Input,
   Loading,
   Notification,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
-import { client, isRBOError } from "@frontend/client";
 
 store.apiUrl = import.meta.env.VITE_API_URL;
-store.authenticationToken = await (async () => {
+store.user = await (async () => {
   const response = await client.auth.get();
 
-  return isRBOError(response) ? undefined : response.token;
+  return isRBOError(response) ? undefined : toUserStore(response.token);
 })();
 
-const app = createApp(App)
+createApp(App)
   .use(createRouter())
   .use(OrugaConfig, {
     button: {
@@ -58,6 +58,5 @@ const app = createApp(App)
   .use(Notification)
   .use(Input)
   .use(Field)
-  .use(Loading);
-
-app.mount("#app");
+  .use(Loading)
+  .mount("#app");

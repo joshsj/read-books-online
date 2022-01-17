@@ -6,7 +6,7 @@ import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { useLogin } from "@frontend/plugins/login";
 
-const { isLoggedIn, logout } = useLogin();
+const { logout, isLoggedIn } = useLogin();
 
 const activeClass = ref<string | undefined>(undefined);
 const toggleNavbar = () =>
@@ -49,8 +49,16 @@ const toggleNavbar = () =>
             Home
           </router-link>
 
-          <div class="navbar-item">
-            <a class="button" @click="logout" role="button">Logout</a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">{{ store.user?.username ?? "User" }}</a>
+
+            <div class="navbar-dropdown">
+              <div class="navbar-item">
+                <a class="button is-danger" @click="logout" role="button">
+                  Logout
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

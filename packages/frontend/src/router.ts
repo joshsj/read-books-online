@@ -64,7 +64,7 @@ const createRouter = () => {
       return;
     }
 
-    if (!store.authenticationToken) {
+    if (!store.user) {
       return routeHelper({ name: "login" });
     }
 

@@ -1,28 +1,23 @@
 <script setup lang="ts">
-import { useForm, useField } from "vee-validate";
 import { AccountDto } from "@client/models";
 import { fieldState } from "@frontend/plugins/forms";
-import { client, isRBOError } from "@frontend/client";
-import { store } from "@frontend/store";
-import { useRouter } from "vue-router";
-import { route } from "@frontend/router";
+import { useLogin } from "@frontend/plugins/login";
 import { useNotifier } from "@frontend/plugins/notifier";
+import { useField, useForm } from "vee-validate";
 
-const router = useRouter();
 const { notify } = useNotifier();
+const { login } = useLogin();
 
 const { handleSubmit } = useForm<AccountDto>({ validationSchema: AccountDto });
 
 const onSubmit = handleSubmit(async (dto) => {
-  const result = await client.auth.post(dto);
+  const error = await login(dto);
 
-  if (isRBOError(result)) {
-    notify(result.message, "danger");
+  if (!error) {
     return;
   }
 
-  store.authenticationToken = result.token;
-  router.push(route({ name: "home" }));
+  notify(error.message, "danger");
 });
 
 const username = useField<string>("username");

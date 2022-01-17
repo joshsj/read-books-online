@@ -39,4 +39,5 @@ export {
   RBOClientMethod,
   RBOClientRequestState,
   RBOClient,
+  RBOErrorDto,
 };
