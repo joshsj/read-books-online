@@ -45,7 +45,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
 
     const associableEntity = this.mapAssociations(entity);
 
-    await this.model.insertMany(associableEntity);
+    await this.model.create(associableEntity);
   }
 
   async update(entity: T): Promise<void> {
