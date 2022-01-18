@@ -49,7 +49,7 @@ const createUserRequestHandler: ICommandHandler<CreateUserRequest> = {
     const passwordHash = await hashingService.hash(password, await hashingService.salt());
 
     const user: User = {
-      id: newId(),
+      _id: newId(),
       roles: ["client"],
       username,
       passwordHash,

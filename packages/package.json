@@ -1,11 +1,12 @@
 {
   "name": "read-books-online",
+  "version": "0.1.0",
   "scripts": {
     "build": "npm run build -ws",
-    "build-v": "npm run build -ws -- --verbose --diagnostics",
+    "build:v": "npm run build -ws -- --verbose --diagnostics",
     "test:unit": "npm run test:unit -ws",
-    "clean": "rimraf ./build",
-    "delete-modules": "npm run delete-modules -ws && rimraf ./node_modules"
+    "clean:build": "rimraf ./build",
+    "clean:modules": "npm run delete-modules -ws && rimraf ./node_modules"
   },
   "workspaces": [
     "./core",
