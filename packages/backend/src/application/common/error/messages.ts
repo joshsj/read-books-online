@@ -24,4 +24,4 @@ export const noRefreshToken = "Refresh token not provided";
 export const invalidRefreshToken = "Invalid refresh token";
 export const expiredRefreshToken = "Refresh token has expired";
 
-export const entityNotFound = (id: Id) => `Entity with ID ${q(id)} was not found`;
+export const entityNotFound = (id: Id) => `Entity with ID ${q(id.toString())} was not found`;

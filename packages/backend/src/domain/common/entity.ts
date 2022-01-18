@@ -1,7 +1,12 @@
-import { Id } from "./id";
+import { Id, isId } from "./id";
 import { InferType, object } from "yup";
 
-const Entity = object({ id: Id }).strict();
+const IdKey = "_id";
+
+const Entity = object({ [IdKey]: Id }).strict();
 type Entity = InferType<typeof Entity>;
 
-export { Entity };
+const isEntity = (obj: any): obj is Entity =>
+  typeof obj === "object" && obj[IdKey] && isId(obj[IdKey]);
+
+export { Entity, isEntity };
