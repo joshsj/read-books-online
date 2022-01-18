@@ -78,11 +78,11 @@ class IdentityService implements IIdentityService {
 
     const user = await this.userRepository.get(refreshToken.userId);
     if (!user) {
-      await this.refreshTokenRepository.delete(refreshToken.id);
+      await this.refreshTokenRepository.delete(refreshToken._id);
 
       throw new RBOError(
         "fatal",
-        `Invalid userId value (${refreshToken.userId}) for Refresh Token (${refreshToken.id})`
+        `Invalid userId value (${refreshToken.userId}) for Refresh Token (${refreshToken._id})`
       );
     }
 
@@ -104,10 +104,10 @@ class IdentityService implements IIdentityService {
       return;
     }
 
-    await this.refreshTokenRepository.delete(refreshToken.id);
+    await this.refreshTokenRepository.delete(refreshToken._id);
   }
 
-  private async configureTokens({ id: userId }: User): Promise<AuthTokenValue> {
+  private async configureTokens({ _id: userId }: User): Promise<AuthTokenValue> {
     const {
       auth: {
         expiresInMs,
@@ -116,10 +116,10 @@ class IdentityService implements IIdentityService {
     } = this.configuration;
     const expires = new Date(Date.now() + expiresInMs);
 
-    const existingId = (await this.refreshTokenRepository.getByUserId(userId))?.id;
+    const existingId = (await this.refreshTokenRepository.getByUserId(userId))?._id;
 
     const refreshToken: RefreshToken = {
-      id: existingId ?? newId(),
+      _id: existingId ?? newId(),
       value: await this.hashingService.salt(),
       userId,
       expires,
