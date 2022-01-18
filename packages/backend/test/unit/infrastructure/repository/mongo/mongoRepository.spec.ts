@@ -1,6 +1,6 @@
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRepository } from "@backend/application/common/interfaces/repository";
-import { Id, newId } from "@backend/domain/common/id";
+import { newId } from "@backend/domain/common/id";
 import { MongoRepository } from "@backend/infrastructure/repository/mongoRepository";
 import { ExpectedError } from "@backend/test/unit/utilities";
 import { useMongo } from "@backend/test/unit/utilities/mongo";
