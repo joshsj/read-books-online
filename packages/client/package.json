@@ -2,7 +2,7 @@
   "name": "read-books-online-client",
   "version": "0.1.0",
   "scripts": {
-    "test:unit": "node        -r module-alias/register -r ../build/client/test/plugins.js ../build/client/test/unit/index.js",
+    "test:unit": "node        -r module-alias/register                  -r ../build/client/test/plugins.js ../build/client/test/unit/index.js",
     "test:integration": "node -r module-alias/register -r dotenv/config -r ../build/client/test/plugins.js ../build/client/test/integration/index.js",
     "build": "tsc --build",
     "watch": "tsc --watch",

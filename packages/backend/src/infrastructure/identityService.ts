@@ -150,7 +150,7 @@ class IdentityService implements IIdentityService {
     const { req } = this.httpContextService.getCurrent();
 
     const value = req.headers.authorization?.split(" ")[1];
-    ensure(!!value, new RBOError("authorization", invalidAuthToken));
+    ensure(!!value, new RBOError("authentication", invalidAuthToken));
 
     return value;
   }

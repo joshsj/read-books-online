@@ -23,11 +23,12 @@ type RBOClientRequestState = {
   endpoint: string;
   method: string;
   body: string | undefined;
+  defaultHeaders: Record<string, string>;
 };
 
 type RBOClientRequester = (state: RBOClientRequestState) => Promise<any>;
 
-type RBOClient = IAuthClient | ITicketClient;
+type RBOClient = IAuthClient & ITicketClient;
 
 export {
   Endpoint,

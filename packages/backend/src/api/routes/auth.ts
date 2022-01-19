@@ -29,7 +29,7 @@ routes.get(
 
     const tokenDto: TokenDto = { token };
 
-    return { state: "ok", result: tokenDto };
+    return { state: "ok", value: tokenDto };
   })
 );
 
@@ -51,7 +51,7 @@ routes.post(
 
     const tokenDto: TokenDto = { token };
 
-    return { state: "ok", result: tokenDto };
+    return { state: "ok", value: tokenDto };
   })
 );
 

@@ -1,8 +1,11 @@
-import { requestLoggerBehavior } from "@backend/application/common/behaviors/requestLoggerBehavior";
-import { validatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
+import { AuthorizerBehavior } from "@backend/application/common/behaviors/authorizerBehavior";
+import { RequestLoggerBehavior } from "@backend/application/common/behaviors/requestLoggerBehavior";
+import { ValidatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
+import { resolveAny } from "@backend/application/common/utilities/dependency";
 import {
-  CreateTicketHandler,
-  CreateTicketValidator,
+  CreateTicketRequestAuthorizer,
+  CreateTicketRequestHandler,
+  CreateTicketRequestValidator,
 } from "@backend/application/ticket/commands/createTicket";
 import {
   CreateUserRequestHandler,
@@ -35,19 +38,31 @@ const Dependency = toDependencies([
 
 const registerBehaviors = () => {
   container
-    .register<IBehavior>(Dependency.requestBehavior, { useValue: requestLoggerBehavior })
-    .register<IBehavior>(Dependency.requestBehavior, { useValue: validatorBehavior });
+    .register<IBehavior>(Dependency.requestBehavior, {
+      useFactory: (c) => new RequestLoggerBehavior(c.resolve(Dependency.logger)),
+    })
+    .register<IBehavior>(Dependency.requestBehavior, {
+      useFactory: (c) =>
+        new ValidatorBehavior(
+          c.resolve(Dependency.logger),
+          resolveAny(c, Dependency.requestValidator)
+        ),
+    })
+    .register<IBehavior>(Dependency.requestBehavior, {
+      useFactory: (c) =>
+        new AuthorizerBehavior(
+          c.resolve(Dependency.logger),
+          resolveAny(c, Dependency.requestAuthorizer)
+        ),
+    });
 };
 
-// TODO: replace with directory scanning
 const registerApplicationDependencies = () => {
   container.register<ICQRS>(Dependency.cqrs, {
     useFactory: (c) =>
       new CQRS(
         c.resolveAll<IRequestHandler>(Dependency.requestHandler),
-        c.isRegistered(Dependency.requestBehavior)
-          ? c.resolveAll<IBehavior>(Dependency.requestBehavior)
-          : []
+        resolveAny(c, Dependency.requestBehavior)
       ),
   });
 
@@ -66,11 +81,14 @@ const registerApplicationDependencies = () => {
     });
 
   container
-    .register(Dependency.requestValidator, {
-      useFactory: (c) => new CreateTicketValidator(c.resolve(Dependency.identityService)),
+    .register<CreateTicketRequestValidator>(Dependency.requestValidator, {
+      useValue: new CreateTicketRequestValidator(),
     })
-    .register(Dependency.requestHandler, {
-      useFactory: (c) => new CreateTicketHandler(c.resolve(Dependency.ticketRepository)),
+    .register<CreateTicketRequestAuthorizer>(Dependency.requestAuthorizer, {
+      useFactory: (c) => new CreateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
+    })
+    .register<CreateTicketRequestHandler>(Dependency.requestHandler, {
+      useFactory: (c) => new CreateTicketRequestHandler(c.resolve(Dependency.ticketRepository)),
     });
 };
 

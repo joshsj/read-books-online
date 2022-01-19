@@ -15,24 +15,25 @@ const statusCode: { [K in RBOErrorType]: number } = {
   missing: 404,
 };
 
-const getRBOErrorData = ({ type, message }: RBOError): ErrorData => ({
+const getRBOErrorData = ({ type, message, stack }: RBOError): ErrorData => ({
   rboError: true,
   type,
   message,
   code: statusCode[type],
   logData: `${type} error occurred`,
-  logRest: [message],
+  logRest: [message, stack],
 });
 
 const getErrorData = (err: any): ErrorData => {
-  const [logData, logRest] = err instanceof Error ? ["Unknown error occurred", err.message] : [err];
+  const [logData, ...logRest] =
+    err instanceof Error ? ["Unknown error occurred", err.message, err.stack] : [err];
 
   return {
     rboError: true,
     type: "internal",
     code: 500,
     logData,
-    logRest: [logRest],
+    logRest,
     message: "Internal error occurred",
   };
 };

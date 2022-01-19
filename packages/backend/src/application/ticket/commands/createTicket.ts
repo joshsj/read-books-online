@@ -1,6 +1,6 @@
 import { requiresRoles } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
-import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
+import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request } from "@backend/application/common/utilities/cqrs";
@@ -17,25 +17,31 @@ const CreateTicketRequest = object({
 
 type CreateTicketRequest = InferType<typeof CreateTicketRequest>;
 
-class CreateTicketValidator implements IRequestValidator<CreateTicketRequest> {
+class CreateTicketRequestValidator implements IRequestValidator<CreateTicketRequest> {
+  requestName = "createTicketRequest" as const;
+
+  async validate(request: unknown) {
+    ensure(await CreateTicketRequest.isValid(request), new RBOError("validation"));
+  }
+}
+
+class CreateTicketRequestAuthorizer implements IRequestAuthorizer<CreateTicketRequest> {
   requestName = "createTicketRequest" as const;
 
   constructor(private readonly identityService: IIdentityService) {}
 
-  async validate(request: unknown) {
-    ensure(await CreateTicketRequest.isValid(request), new RBOError("validation"));
-
+  async authorize() {
     const requiredRole: Role = "client";
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
       currentUser.roles.includes(requiredRole),
-      new RBOError("validation", requiresRoles(requiredRole))
+      new RBOError("authentication", requiresRoles(requiredRole))
     );
   }
 }
 
-class CreateTicketHandler implements ICommandHandler<CreateTicketRequest> {
+class CreateTicketRequestHandler implements ICommandHandler<CreateTicketRequest> {
   handles = "createTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
@@ -47,4 +53,9 @@ class CreateTicketHandler implements ICommandHandler<CreateTicketRequest> {
   }
 }
 
-export { CreateTicketRequest, CreateTicketValidator, CreateTicketHandler };
+export {
+  CreateTicketRequest,
+  CreateTicketRequestValidator,
+  CreateTicketRequestAuthorizer,
+  CreateTicketRequestHandler,
+};

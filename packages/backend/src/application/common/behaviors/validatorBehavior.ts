@@ -1,26 +1,28 @@
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { Dependency } from "@backend/application/dependency";
-import { IBehavior, IRequest, IRequestName } from "@core/cqrs/types";
-import { container } from "tsyringe";
+import { IBehavior, IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types";
 
-const validatorBehavior: IBehavior = {
-  handle: async (request, next) => {
-    const logger = container.resolve<ILogger>(Dependency.logger);
+class ValidatorBehavior implements IBehavior {
+  constructor(
+    private readonly logger: ILogger,
+    private readonly requestValidators: IRequestValidator<any>[]
+  ) {}
 
-    const validators = container
-      .resolveAll<IRequestValidator<IRequest<IRequestName>>>(Dependency.requestValidator)
-      .filter((v) => v.requestName === request.requestName);
+  async handle<T extends IResponseReturnValue>(
+    request: IRequest<IRequestName>,
+    next: () => Promise<T>
+  ) {
+    const validators = this.requestValidators.filter((v) => v.requestName === request.requestName);
 
     if (!validators.length) {
-      logger.log(
+      this.logger.log(
         "cqrs",
         `Skipping validation for request ${request.requestName}, no validators were resolved`
       );
       return await next();
     }
 
-    logger.log(
+    this.logger.log(
       "cqrs",
       `Resolved ${validators.length} validators for request ${request.requestName}`
     );
@@ -29,10 +31,10 @@ const validatorBehavior: IBehavior = {
       await validator.validate(request);
     }
 
-    logger.log("cqrs", `Validation passed for request ${request.requestName}`);
+    this.logger.log("cqrs", `Validation passed for request ${request.requestName}`);
 
     return await next();
-  },
-};
+  }
+}
 
-export { validatorBehavior };
+export { ValidatorBehavior };

@@ -13,7 +13,7 @@ const createRequestHelper = (res: Response) => ({
 
 type AsyncRequestHandlerResult =
   | { state: "next" | "created" | "noContent" }
-  | { state: "ok"; result: object | undefined };
+  | { state: "ok"; value: object | undefined };
 
 type AsyncRequestHandler = (
   ...args: [
@@ -39,7 +39,7 @@ const handleAsync =
         }
 
         res.status(resultStatusMap[result.state]);
-        result && res.json(result);
+        result.state === "ok" && res.json(result.value);
         res.end();
       })
       .catch((e) => next(e ?? new Error()));

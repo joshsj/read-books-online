@@ -20,7 +20,7 @@ export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
 
 export const failedToCreateAuthToken = "Failed to create authentication token";
-export const invalidAuthToken = "Invalid authorization token provided";
+export const invalidAuthToken = "Invalid authentication token provided";
 
 export const noRefreshToken = "Refresh token not provided";
 export const invalidRefreshToken = "Invalid refresh token";

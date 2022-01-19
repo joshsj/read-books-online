@@ -10,6 +10,8 @@ import {
 import { ensure } from "@core/utilities";
 import { toUrlParams } from "@core/utilities/http";
 
+const defaultHeaders: HeadersInit = Object.freeze({ "Content-Type": "application/json" });
+
 const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   get: "GET",
 
@@ -32,6 +34,7 @@ const getRequestState = (data: RequestData, segments: string[]): RBOClientReques
       endpoint: endpoint,
       body: undefined,
       method,
+      defaultHeaders,
     };
   }
 
@@ -40,6 +43,7 @@ const getRequestState = (data: RequestData, segments: string[]): RBOClientReques
       endpoint: endpoint + "/" + data,
       body: undefined,
       method,
+      defaultHeaders,
     };
   }
 
@@ -50,10 +54,11 @@ const getRequestState = (data: RequestData, segments: string[]): RBOClientReques
     endpoint: url,
     body,
     method,
+    defaultHeaders,
   };
 };
 
-const callEndpoint = (segments: string[], args: any[], requester: RBOClientRequester) => {
+const callRequester = (segments: string[], args: any[], requester: RBOClientRequester) => {
   ensure(
     segments.length > 1,
     new Error("Invalid segments, at least two segments are required to form an endpoint")
@@ -75,7 +80,7 @@ const createClientProxy = (segments: string[], requester: RBOClientRequester): u
       return createClientProxy([...segments, segment], requester);
     },
 
-    apply: ({}, {}, args) => callEndpoint(segments, args, requester),
+    apply: ({}, {}, args) => callRequester(segments, args, requester),
   });
 
 const checkKey: Extract<keyof RBOErrorDto, "rboError"> = "rboError";

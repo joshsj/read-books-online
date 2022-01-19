@@ -1,25 +1,27 @@
-import { IBehavior } from "@core/cqrs/types";
-import { Dependency } from "@backend/application/dependency";
-import { container } from "tsyringe";
-import { ILogger } from "@backend/application/common/interfaces/logger";
 import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
+import { ILogger } from "@backend/application/common/interfaces/logger";
+import { IBehavior, IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types";
 
-const authorizerBehavior: IBehavior = {
-  handle: async (request, next) => {
-    const logger = container.resolve<ILogger>(Dependency.logger);
+class AuthorizerBehavior implements IBehavior {
+  constructor(
+    private readonly logger: ILogger,
+    private readonly requestAuthorizers: IRequestAuthorizer<any>[]
+  ) {}
 
-    const authorizers = container.isRegistered(Dependency.requestAuthorizer)
-      ? container
-          .resolveAll<IRequestAuthorizer<any>>(Dependency.requestAuthorizer)
-          .filter((x) => x.requestName === request.requestName)
-      : [];
+  async handle<T extends IResponseReturnValue>(
+    request: IRequest<IRequestName>,
+    next: () => Promise<T>
+  ) {
+    const authorizers = this.requestAuthorizers.filter(
+      (x) => x.requestName === request.requestName
+    );
 
     if (!authorizers.length) {
-      logger.log("authorization", `No authorizers found for request ${request.requestName}`);
+      this.logger.log("authorization", `No authorizers found for request ${request.requestName}`);
       return await next();
     }
 
-    logger.log(
+    this.logger.log(
       "authorization",
       `Resolved ${authorizers.length} authorizers for request ${request.requestName}`
     );
@@ -28,10 +30,10 @@ const authorizerBehavior: IBehavior = {
       await authorizer.authorize(request);
     }
 
-    logger.log("authorization", `Passed for request ${request.requestName}`);
+    this.logger.log("authorization", `Passed for request ${request.requestName}`);
 
     return await next();
-  },
-};
+  }
+}
 
-export { authorizerBehavior };
+export { AuthorizerBehavior };

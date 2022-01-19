@@ -6,13 +6,13 @@ const routes = Router();
 
 routes.get(
   "/hello",
-  handleAsync(async () => ({ state: "ok", result: { hello: "world" } }))
+  handleAsync(async () => ({ state: "ok", value: { hello: "world" } }))
 );
 
 routes.get(
   "/auth",
   authenticator,
-  handleAsync(async () => ({ state: "ok", result: { authenticated: true } }))
+  handleAsync(async () => ({ state: "ok", value: { authenticated: true } }))
 );
 
 export { routes as testRoutes };
