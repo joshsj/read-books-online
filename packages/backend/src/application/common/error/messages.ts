@@ -1,6 +1,6 @@
 import { Id } from "@backend/domain/common/id";
 import { Role } from "@backend/domain/constants/role";
-import { plural } from "@core/utilities";
+import { plural } from "@core/utilities/string";
 import { RBOErrorType } from "./rboError";
 
 const q = (s: string | string[]): string =>

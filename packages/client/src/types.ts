@@ -1,4 +1,4 @@
-import { RBOErrorDto } from "@backend/web/common/models/error";
+import { RBOErrorDto } from "@backend/api/common/models/error";
 import { Id } from "@backend/domain/common/id";
 import { IAuthClient, ITicketClient } from "@client/clients";
 

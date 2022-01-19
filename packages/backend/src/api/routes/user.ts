@@ -1,6 +1,6 @@
 import { ICQRS } from "@core/cqrs/types";
 import { Dependency } from "@backend/application/dependency";
-import { handleAsync } from "@backend/web/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/requestHelper";
 import { Router } from "express";
 import { container } from "tsyringe";
 

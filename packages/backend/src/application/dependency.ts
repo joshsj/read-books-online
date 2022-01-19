@@ -10,7 +10,7 @@ import {
 } from "@backend/application/user/commands/createUser";
 import { CQRS } from "@core/cqrs";
 import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
-import { toDependencies } from "@core/utilities";
+import { toDependencies } from "@core/utilities/dependency";
 import { container } from "tsyringe";
 
 const Dependency = toDependencies([

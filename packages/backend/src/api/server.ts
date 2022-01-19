@@ -1,12 +1,12 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { errorHandler } from "@backend/web/common/middlewares/errorHandler";
-import { httpContextServiceProvider } from "@backend/web/common/middlewares/httpContextServiceProvider";
-import { requestLogger } from "@backend/web/common/middlewares/requestLogger";
-import { missingRouteHandler } from "@backend/web/common/middlewares/missingRouteHandler";
-import { authRoutes } from "@backend/web/routes/auth";
-import { ticketRoutes } from "@backend/web/routes/ticket";
-import { userRoutes } from "@backend/web/routes/user";
+import { errorHandler } from "@backend/api/common/middlewares/errorHandler";
+import { httpContextServiceProvider } from "@backend/api/common/middlewares/httpContextServiceProvider";
+import { requestLogger } from "@backend/api/common/middlewares/requestLogger";
+import { missingRouteHandler } from "@backend/api/common/middlewares/missingRouteHandler";
+import { authRoutes } from "@backend/api/routes/auth";
+import { ticketRoutes } from "@backend/api/routes/ticket";
+import { userRoutes } from "@backend/api/routes/user";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Router } from "express";
@@ -21,7 +21,7 @@ class Server {
       .use("/ticket", ticketRoutes);
 
     if (this.configuration.mode === "development") {
-      import("@backend/web/routes/test").then(({ testRoutes }) => routes.use("/test", testRoutes));
+      import("@backend/api/routes/test").then(({ testRoutes }) => routes.use("/test", testRoutes));
     }
 
     const app = express()

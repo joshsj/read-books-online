@@ -1,5 +1,5 @@
 import { Dependency } from "@backend/application/dependency";
-import { handleAsync } from "@backend/web/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/requestHelper";
 import { ICQRS } from "@core/cqrs/types";
 import { Router } from "express";
 

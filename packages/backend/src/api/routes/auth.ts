@@ -1,11 +1,11 @@
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { Dependency } from "@backend/application/dependency";
-import { AccountDto, TokenDto } from "@backend/web/common/models/auth";
+import { AccountDto, TokenDto } from "@backend/api/common/models/auth";
 import {
   AssertSchema,
   assertSchema as _assertSchema,
 } from "@backend/application/common/utilities/schema";
-import { handleAsync } from "@backend/web/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/requestHelper";
 import { Router } from "express";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 

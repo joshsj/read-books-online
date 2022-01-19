@@ -11,5 +11,6 @@
       "@core/*": ["../core/src/*"]
     }
   },
+  "exclude": ["../build"],
   "references": [{ "path": "../core" }, { "path": "../backend" }]
 }

@@ -6,7 +6,7 @@ import { getConfiguration } from "@backend/configuration";
 import { registerInfrastructureDependencies } from "@backend/infrastructure/dependency";
 import { HashingService } from "@backend/infrastructure/hashingService";
 import { createMongoConnection } from "@backend/infrastructure/repository/connection";
-import { Server } from "@backend/web/server";
+import { Server } from "@backend/api/server";
 import { container } from "tsyringe";
 
 const registerInitDependencies = () => {

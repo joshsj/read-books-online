@@ -1,13 +1,14 @@
 import { isId } from "@backend/domain/common/id";
-import { RBOErrorDto } from "@backend/web/common/models/error";
 import {
   EndpointName,
   RBOClientMethod,
   RBOClientRequester,
   RBOClientRequestState,
+  RBOErrorDto,
   RequestData,
 } from "@client/types";
-import { ensure, toUrlParams } from "@core/utilities";
+import { ensure } from "@core/utilities";
+import { toUrlParams } from "@core/utilities/http";
 
 const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   get: "GET",

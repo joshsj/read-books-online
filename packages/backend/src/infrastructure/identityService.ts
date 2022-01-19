@@ -22,7 +22,7 @@ import { Password, Username } from "@backend/domain/common/constrainedTypes";
 import { Id, newId } from "@backend/domain/common/id";
 import { RefreshToken } from "@backend/domain/entities/refreshToken";
 import { User } from "@backend/domain/entities/user";
-import { JWTPayload } from "@backend/web/common/models/auth";
+import { JWTPayload } from "@backend/api/common/models/auth";
 import { ensure } from "@core/utilities";
 import jwt from "jsonwebtoken";
 
