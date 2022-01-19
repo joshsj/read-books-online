@@ -6,11 +6,12 @@ import {
   createTestAuthorizer,
   createTestValidator,
 } from "@backend/test/unit/utilities";
-import { CQRS } from "@core/cqrs";
-import { createTestRequest, createTestRequestHandler } from "@core/utilities/test";
+import { createTestRequest } from "@core/utilities/test";
 import { expect } from "chai";
 
 describe("Behaviors", () => {
+  const next = () => Promise.resolve();
+
   describe("Authorizer", () => {
     const newSut = (authorizers: IRequestAuthorizer<any>[]) =>
       new AuthorizerBehavior(createLogger(), authorizers);
@@ -19,8 +20,7 @@ describe("Behaviors", () => {
       const authorizer = createTestAuthorizer("passes");
 
       const sut = newSut([authorizer]);
-
-      const result = new CQRS([createTestRequestHandler()], [sut]).send(createTestRequest());
+      const result = sut.handle(createTestRequest(), next);
 
       return expect(result).to.be.fulfilled;
     });
@@ -29,8 +29,7 @@ describe("Behaviors", () => {
       const authorizer = createTestAuthorizer("fails");
 
       const sut = newSut([authorizer]);
-
-      const result = new CQRS([createTestRequestHandler()], [sut]).send(createTestRequest());
+      const result = sut.handle(createTestRequest(), next);
 
       return expect(result).to.be.rejected;
     });
@@ -44,8 +43,7 @@ describe("Behaviors", () => {
       const validator = createTestValidator("passes");
 
       const sut = newSut([validator]);
-
-      const result = new CQRS([createTestRequestHandler()], [sut]).send(createTestRequest());
+      const result = sut.handle(createTestRequest(), next);
 
       return expect(result).to.be.fulfilled;
     });
@@ -54,8 +52,7 @@ describe("Behaviors", () => {
       const validator = createTestValidator("fails");
 
       const sut = newSut([validator]);
-
-      const result = new CQRS([createTestRequestHandler()], [sut]).send(createTestRequest());
+      const result = sut.handle(createTestRequest(), next);
 
       return expect(result).to.be.rejected;
     });
