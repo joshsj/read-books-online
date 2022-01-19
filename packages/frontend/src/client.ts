@@ -14,7 +14,9 @@ const requester: RBOClientRequester = ({ endpoint, body, method }) => {
     body,
     headers,
     credentials: "include",
-  }).then((res) => res.json());
+  })
+    .then((res) => res.json())
+    .catch(() => undefined);
 };
 
 const client: RBOClient = createClientProxy([], requester) as RBOClient;
