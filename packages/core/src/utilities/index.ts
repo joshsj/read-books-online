@@ -28,4 +28,7 @@ const toUrlParams = (params: object) =>
     .map(([key, value]) => `${key}=${Array.isArray(value) ? value.join(",") : value}`)
     .join("&");
 
-export { Dependencies, toDependencies, ensure, Ensure, Class, Env, getEnv, toUrlParams };
+const plural = (condition: boolean, s: string, replacement?: string) =>
+  condition ? (replacement ? replacement : s + "s") : s;
+
+export { Dependencies, toDependencies, ensure, Ensure, Class, Env, getEnv, toUrlParams, plural };

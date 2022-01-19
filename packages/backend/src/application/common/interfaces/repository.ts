@@ -1,6 +1,7 @@
 import { Entity } from "@backend/domain/common/entity";
 import { Id } from "@backend/domain/common/id";
 import { RefreshToken, RefreshTokenValue } from "@backend/domain/entities/refreshToken";
+import { Ticket } from "@backend/domain/entities/ticket";
 import { User } from "@backend/domain/entities/user";
 
 type IWritableRepository<T extends Entity> = {
@@ -28,10 +29,13 @@ type IRefreshTokenRepository = IRepository<RefreshToken> & {
   getByValue(value: RefreshTokenValue): Promise<RefreshToken | undefined>;
 };
 
+type ITicketRepository = IRepository<Ticket>;
+
 export {
   IWritableRepository,
   IReadableRepository,
   IRepository,
   IUserRepository,
   IRefreshTokenRepository,
+  ITicketRepository,
 };

@@ -2,9 +2,10 @@ import { IConfiguration } from "@backend/application/common/interfaces/configura
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { errorHandler } from "@backend/web/common/middlewares/errorHandler";
 import { httpContextServiceProvider } from "@backend/web/common/middlewares/httpContextServiceProvider";
-import { missingRouteHandler } from "@backend/web/common/middlewares/missingRouteHandler";
 import { requestLogger } from "@backend/web/common/middlewares/requestLogger";
+import { missingRouteHandler } from "@backend/web/common/middlewares/missingRouteHandler";
 import { authRoutes } from "@backend/web/routes/auth";
+import { ticketRoutes } from "@backend/web/routes/ticket";
 import { userRoutes } from "@backend/web/routes/user";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -14,7 +15,10 @@ class Server {
   constructor(private readonly logger: ILogger, private readonly configuration: IConfiguration) {}
 
   start() {
-    const routes = Router().use("/user", userRoutes).use("/auth", authRoutes);
+    const routes = Router()
+      .use("/auth", authRoutes)
+      .use("/user", userRoutes)
+      .use("/ticket", ticketRoutes);
 
     if (this.configuration.mode === "development") {
       import("@backend/web/routes/test").then(({ testRoutes }) => routes.use("/test", testRoutes));
@@ -29,8 +33,8 @@ class Server {
           credentials: true,
         })
       )
-      .use(requestLogger)
       .use(httpContextServiceProvider)
+      .use(requestLogger)
       .use("/api", routes)
       .use(missingRouteHandler)
       .use(errorHandler);
