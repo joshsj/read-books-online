@@ -5,7 +5,7 @@ import {
   AssertSchema,
   assertSchema as _assertSchema,
 } from "@backend/application/common/utilities/schema";
-import { handleAsync } from "@backend/api/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/request";
 import { Router } from "express";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 
@@ -15,7 +15,7 @@ const routes = Router();
 
 routes.get(
   "",
-  handleAsync(async ({}, {}, { getPerRequestContainer, ok }) => {
+  handleAsync(async ({}, {}, { getPerRequestContainer }) => {
     const container = getPerRequestContainer();
 
     const logger = container.resolve<ILogger>(Dependency.logger);
@@ -29,13 +29,13 @@ routes.get(
 
     const tokenDto: TokenDto = { token };
 
-    ok(tokenDto);
+    return { state: "ok", result: tokenDto };
   })
 );
 
 routes.post(
   "",
-  handleAsync(async ({ body: accountDto }, {}, { ok, getPerRequestContainer }) => {
+  handleAsync(async ({ body: accountDto }, {}, { getPerRequestContainer }) => {
     assertSchema(accountDto, AccountDto);
 
     const container = getPerRequestContainer();
@@ -51,7 +51,7 @@ routes.post(
 
     const tokenDto: TokenDto = { token };
 
-    ok(tokenDto);
+    return { state: "ok", result: tokenDto };
   })
 );
 
@@ -64,6 +64,8 @@ routes.delete(
     logger.log("authentication", "Logging out");
 
     await container.resolve<IIdentityService>(Dependency.identityService).logout();
+
+    return { state: "noContent" };
   })
 );
 

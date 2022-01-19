@@ -1,22 +1,18 @@
 import { Router } from "express";
 import { authenticator } from "@backend/api/common/middlewares/authenticator";
-import { handleAsync } from "@backend/api/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/request";
 
 const routes = Router();
 
 routes.get(
   "/hello",
-  handleAsync(async ({}, res) => {
-    res.status(200).json({ hello: "world" });
-  })
+  handleAsync(async () => ({ state: "ok", result: { hello: "world" } }))
 );
 
 routes.get(
   "/auth",
   authenticator,
-  handleAsync(async ({}, res) => {
-    res.status(200).json({ authenticated: true });
-  })
+  handleAsync(async () => ({ state: "ok", result: { authenticated: true } }))
 );
 
 export { routes as testRoutes };

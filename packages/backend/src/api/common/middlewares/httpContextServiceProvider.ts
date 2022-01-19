@@ -1,7 +1,7 @@
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
 import { Dependency } from "@backend/application/dependency";
 import { HttpContextService } from "@backend/infrastructure/httpContextService";
-import { handleAsync } from "@backend/api/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/request";
 import { Handler } from "express";
 import { container } from "tsyringe";
 
@@ -19,7 +19,7 @@ const httpContextServiceProvider: Handler = handleAsync(
 
     setPerRequestContainer(requestContainer);
 
-    return "next";
+    return { state: "next" };
   }
 );
 

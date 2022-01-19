@@ -1,7 +1,7 @@
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
-import { handleAsync } from "@backend/api/common/utilities/requestHelper";
+import { handleAsync } from "@backend/api/common/utilities/request";
 import { Handler } from "express";
 
 const authenticator: Handler = handleAsync(async ({}, {}, { getPerRequestContainer }) => {
@@ -14,7 +14,7 @@ const authenticator: Handler = handleAsync(async ({}, {}, { getPerRequestContain
 
   logger.log("authentication", "Passed");
 
-  return "next";
+  return { state: "next" };
 });
 
 export { authenticator };
