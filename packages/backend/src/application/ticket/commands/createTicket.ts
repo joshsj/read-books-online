@@ -7,17 +7,15 @@ import { Request } from "@backend/application/common/utilities/cqrs";
 import { newId } from "@backend/domain/common/id";
 import { Role } from "@backend/domain/constants/role";
 import { Ticket } from "@backend/domain/entities/ticket";
-import { ICommandHandler, IRequest } from "@core/cqrs/types";
+import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
-import { object, ObjectSchema, string } from "yup";
+import { InferType, object, string } from "yup";
 
-type CreateTicketRequest = IRequest<"createTicketRequest"> & {
-  information: string;
-};
-
-const CreateTicketRequest: ObjectSchema<CreateTicketRequest> = object({
+const CreateTicketRequest = object({
   information: string().strict().required(),
 }).concat(Request("createTicketRequest"));
+
+type CreateTicketRequest = InferType<typeof CreateTicketRequest>;
 
 class CreateTicketValidator implements IRequestValidator<CreateTicketRequest> {
   requestName = "createTicketRequest" as const;

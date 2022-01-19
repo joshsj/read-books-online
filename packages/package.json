@@ -2,7 +2,7 @@
   "name": "read-books-online",
   "version": "0.1.0",
   "scripts": {
-    "build": "npm run build -ws",
+    "build": "npm run clean:build && npm run build -ws",
     "build:v": "npm run build -ws -- --verbose --diagnostics",
     "test:unit": "npm run test:unit -ws",
     "clean:build": "rimraf ./build",

@@ -33,3 +33,6 @@ export const requiresRoles = (role: Role, ...roles: Role[]) => {
 
   return `This operation requires the following ${plural(roles.length > 1, "role")}: ${q(roles)}`;
 };
+
+export const userAlreadyExists = (username: string) =>
+  `User already exists with username ${username}`;

@@ -1,3 +1,4 @@
+import { userAlreadyExists } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
@@ -6,19 +7,16 @@ import { Request } from "@backend/application/common/utilities/cqrs";
 import { Password, Username } from "@backend/domain/common/constrainedTypes";
 import { newId } from "@backend/domain/common/id";
 import { User } from "@backend/domain/entities/user";
-import { ICommandHandler, IRequest } from "@core/cqrs/types";
+import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
-import { object, ObjectSchema } from "yup";
+import { InferType, object } from "yup";
 
-type CreateUserRequest = IRequest<"createUserRequest"> & {
-  username: string;
-  password: string;
-};
-
-const CreateUserRequest: ObjectSchema<CreateUserRequest> = object({
+const CreateUserRequest = object({
   username: Username,
   password: Password,
 }).concat(Request("createUserRequest"));
+
+type CreateUserRequest = InferType<typeof CreateUserRequest>;
 
 class CreateUserRequestValidator implements IRequestValidator<CreateUserRequest> {
   requestName = "createUserRequest" as const;
@@ -28,11 +26,11 @@ class CreateUserRequestValidator implements IRequestValidator<CreateUserRequest>
   async validate(request: unknown) {
     ensure(CreateUserRequest.isValidSync(request), new RBOError("validation"));
 
-    const currentUser = await this.userRepository.getByUsername(request.username);
+    const existingUser = await this.userRepository.getByUsername(request.username);
 
     ensure(
-      typeof currentUser === "undefined",
-      new RBOError("validation", `User already exists with username ${request.username}`)
+      typeof existingUser === "undefined",
+      new RBOError("validation", userAlreadyExists(request.username))
     );
   }
 }
