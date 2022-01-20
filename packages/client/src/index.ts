@@ -24,7 +24,7 @@ const endpointNameMethods: { [K in EndpointName]: RBOClientMethod } = {
   delete: "DELETE",
 };
 
-const getRequestState = (data: RequestData, segments: string[]): RBOClientRequestState => {
+const getRequestState = (data: RequestData<any>, segments: string[]): RBOClientRequestState => {
   const finalSegment = segments.pop()!;
   const method = endpointNameMethods[finalSegment as EndpointName];
   const endpoint = segments.join("/");
@@ -64,7 +64,7 @@ const callRequester = (segments: string[], args: any[], requester: RBOClientRequ
     new Error("Invalid segments, at least two segments are required to form an endpoint")
   );
 
-  return requester(getRequestState(args[0] as RequestData, segments));
+  return requester(getRequestState(args[0] as RequestData<any>, segments));
 };
 
 // allows apply, construct proxy methods

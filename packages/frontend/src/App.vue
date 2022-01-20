@@ -49,6 +49,10 @@ const toggleNavbar = () =>
             Home
           </router-link>
 
+          <router-link :to="route({ name: 'tickets' })" class="navbar-item">
+            Tickets
+          </router-link>
+
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">{{ store.user?.username ?? "User" }}</a>
 
@@ -76,15 +80,13 @@ const toggleNavbar = () =>
 @use "sass:map";
 @import "bulma/bulma.sass";
 
-header {
-  margin-bottom: map.get($spacing-values, "6");
+main {
+  padding-top: map.get($spacing-values, "6");
 
   @include touch {
-    margin-bottom: map.get($spacing-values, "4");
+    padding-top: map.get($spacing-values, "4");
   }
-}
 
-main {
   --content-padding: #{$size-6};
 
   padding-left: var(--content-padding);

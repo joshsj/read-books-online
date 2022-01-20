@@ -11,6 +11,7 @@ import {
   Input,
   Loading,
   Notification,
+  Modal,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -38,6 +39,7 @@ createApp(App)
     },
 
     loading: {
+      overlayClass: "overlay-background",
       fullPageClass: "overlay-background",
     },
 
@@ -55,10 +57,18 @@ createApp(App)
       iconLeftClass: "input-icon-left",
       iconRightClass: "input-icon-right",
     },
+
+    modal: {
+      rootClass: "modal is-active",
+      contentClass: "modal-card",
+      overlayClass: "modal-background",
+      closeClass: "modal-close is-large",
+    },
   })
   .use(Button)
   .use(Notification)
   .use(Input)
   .use(Field)
   .use(Loading)
+  .use(Modal)
   .mount("#app");

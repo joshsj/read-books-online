@@ -4,17 +4,15 @@ import { IAuthClient, ITicketClient } from "@client/clients";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
-type EndpointRes<T> = Promise<RBOErrorDto | (T extends void ? never : T)>;
-
 type ResponseData = object | void;
-type RequestData<T extends EndpointName = "get"> = ResponseData | (T extends "get" ? Id : never);
+type RequestData<T extends EndpointName> = ResponseData | (T extends "get" ? Id : never);
 
 type Endpoint<
   TName extends EndpointName,
   TReq extends RequestData<TName> = void,
   TRes extends ResponseData = void
 > = {
-  [K in TName]: (req: TReq) => EndpointRes<TRes>;
+  [K in TName]: (req: TReq) => Promise<TRes | RBOErrorDto>;
 };
 
 type RBOClientMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -33,7 +31,6 @@ type RBOClient = IAuthClient & ITicketClient;
 export {
   Endpoint,
   EndpointName,
-  EndpointRes,
   RequestData,
   ResponseData,
   RBOClientRequester,

@@ -1,4 +1,5 @@
 import { getCurrentInstance } from "vue";
+import { useOrugaMixin } from "./orugaMixin";
 
 type NotifyVariant = "info" | "success" | "danger";
 
@@ -17,8 +18,10 @@ const useNotifier = () => {
     throw new Error("getCurrentInstance() did not return a value");
   }
 
+  const { oruga } = useOrugaMixin();
+
   const notify = (message: string, variant: NotifyVariant = "info") => {
-    vm.appContext.config.globalProperties["$oruga"].notification.open({
+    oruga.notification.open({
       ...defaultConfig,
       variant,
       message,

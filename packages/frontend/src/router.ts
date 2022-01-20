@@ -1,6 +1,9 @@
-import { Role } from "@client/dtos";
 import Home from "@frontend/views/Home.vue";
 import Login from "@frontend/views/Login.vue";
+import Tickets from "@frontend/views/Tickets.vue";
+
+import { Role } from "@client/models";
+
 import {
   createRouter as createVueRouter,
   createWebHistory,
@@ -41,11 +44,14 @@ const route = <T extends object | void = void>(
 
 const routes = {
   home: route({ path: "/", component: Home, meta: { auth: "any" } }),
+
   login: route({
     path: "/login",
     component: Login,
     meta: { auth: "none" },
   }),
+
+  tickets: route({ path: "/tickets", component: Tickets, meta: { auth: "any" } }),
 
   noPath: route({ path: "/:noPath(.*)*", redirect: "/", meta: { auth: "none" } }),
 };

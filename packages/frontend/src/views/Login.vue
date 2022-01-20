@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AccountDto } from "@client/models";
-import { fieldState } from "@frontend/plugins/forms";
+import { fieldState } from "@frontend/utilities/forms";
 import { useLogin } from "@frontend/plugins/login";
 import { useNotifier } from "@frontend/plugins/notifier";
 import { useField, useForm } from "vee-validate";
@@ -26,9 +26,9 @@ const password = useField<string>("password");
 
 <template>
   <div class="container">
-    <form @submit="onSubmit">
-      <h1 class="title">Login</h1>
+    <h1 class="title">Login</h1>
 
+    <form @submit="onSubmit">
       <o-field
         label="Username"
         label-for="Username"

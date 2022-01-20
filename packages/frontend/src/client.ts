@@ -6,7 +6,7 @@ const requester: RBOClientRequester = ({ endpoint, body, method }) => {
   const headers: HeadersInit = { "Content-Type": "application/json" };
 
   if (store.user) {
-    headers["authentication"] = `Bearer ${store.user.authenticationToken}`;
+    headers.authorization = `Bearer ${store.user.authenticationToken}`;
   }
 
   return fetch((store.apiUrl ?? "") + "/" + endpoint, {
