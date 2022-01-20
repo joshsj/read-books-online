@@ -1,11 +1,12 @@
 import { Entity } from "@backend/domain/common/entity";
+import { Auditable } from "@backend/domain/common/auditable";
 import { InferType, object, string } from "yup";
 
-const Ticket = Entity.concat(
-  object({
-    information: string().strict().required(),
-  })
-);
+const Ticket = object({
+  information: string().strict().required(),
+})
+  .concat(Entity)
+  .concat(Auditable("created"));
 
 type Ticket = InferType<typeof Ticket>;
 

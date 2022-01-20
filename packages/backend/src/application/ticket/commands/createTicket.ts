@@ -1,5 +1,6 @@
 import { requiresRoles } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
+import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -44,10 +45,19 @@ class CreateTicketRequestAuthorizer implements IRequestAuthorizer<CreateTicketRe
 class CreateTicketRequestHandler implements ICommandHandler<CreateTicketRequest> {
   handles = "createTicketRequest" as const;
 
-  constructor(private readonly ticketRepository: ITicketRepository) {}
+  constructor(
+    private readonly ticketRepository: ITicketRepository,
+    private readonly auditService: IAuditService
+  ) {}
 
   async handle({ information }: CreateTicketRequest) {
-    const ticket: Ticket = { _id: newId(), information };
+    const auditing = await this.auditService.init("created");
+
+    const ticket: Ticket = {
+      _id: newId(),
+      information,
+      ...auditing,
+    };
 
     await this.ticketRepository.insert(ticket);
   }

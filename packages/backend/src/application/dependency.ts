@@ -24,6 +24,7 @@ const Dependency = toDependencies([
   "hashingService",
   "identityService",
   "httpContextService",
+  "auditService",
   // repository
   "userRepository",
   "refreshTokenRepository",
@@ -88,7 +89,11 @@ const registerApplicationDependencies = () => {
       useFactory: (c) => new CreateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
     })
     .register<CreateTicketRequestHandler>(Dependency.requestHandler, {
-      useFactory: (c) => new CreateTicketRequestHandler(c.resolve(Dependency.ticketRepository)),
+      useFactory: (c) =>
+        new CreateTicketRequestHandler(
+          c.resolve(Dependency.ticketRepository),
+          c.resolve(Dependency.auditService)
+        ),
     });
 };
 

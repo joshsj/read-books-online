@@ -8,7 +8,7 @@ import {
 import mongooseAutoPopulate from "mongoose-autopopulate";
 import { ObjectSchema } from "yup";
 
-type Schema<T extends Entity> = Required<SchemaDefinition<SchemaDefinitionType<T>>>;
+type Schema<T extends object> = Required<SchemaDefinition<SchemaDefinitionType<T>>>;
 
 const model = <T extends Entity>(
   name: string,
