@@ -8,10 +8,12 @@ import {
   Button,
   Config as OrugaConfig,
   Field,
+  Icon,
   Input,
   Loading,
-  Notification,
   Modal,
+  Notification,
+  Tooltip,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -64,6 +66,12 @@ createApp(App)
       overlayClass: "modal-background",
       closeClass: "modal-close is-large",
     },
+
+    tooltip: {
+      contentClass: "tooltip",
+      arrowClass: "tooltip-arrow",
+      triggers: ["hover", "click", "focus"],
+    },
   })
   .use(Button)
   .use(Notification)
@@ -71,4 +79,6 @@ createApp(App)
   .use(Field)
   .use(Loading)
   .use(Modal)
+  .use(Tooltip)
+  .use(Icon)
   .mount("#app");

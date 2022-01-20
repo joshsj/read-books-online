@@ -27,15 +27,21 @@ export type Exposed = { form: FormContext<CreateTicketRequest> };
 
 <template>
   <form @submit="onSubmit">
-    <o-field
-      label="Information"
-      label-for="Information"
-      v-bind="fieldState(information)">
-      <o-input
-        id="Information"
-        name="Information"
-        placeholder="Information"
-        v-model="information.value" />
+    <o-field v-bind="fieldState(information)">
+      <template #label>
+        Information
+        <o-tooltip label="ISBN, Title, Year, Author" position="right">
+          <o-icon icon="information" size="small" />
+        </o-tooltip>
+      </template>
+
+      <template #default>
+        <o-input
+          id="Information"
+          name="Information"
+          placeholder="Information"
+          v-model="information.value" />
+      </template>
     </o-field>
   </form>
 </template>

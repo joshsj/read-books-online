@@ -18,3 +18,17 @@
 .modal-card {
   border-radius: 0.75em;
 }
+
+.tooltip {
+  @extend .is-size-7;
+  @extend .has-text-white;
+  @extend .has-text-weight-normal;
+  @extend .has-background-grey-dark;
+  @extend .p-1;
+
+  border-radius: 0.25em;
+
+  &-arrow {
+    @extend .has-text-grey-dark;
+  }
+}
