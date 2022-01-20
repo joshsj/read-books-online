@@ -1,7 +1,7 @@
 import { RBOErrorDto } from "@client/types";
 import { useNotifier } from "./notifier";
 
-const useErrorHandler = () => {
+const useErrors = () => {
   const { notify } = useNotifier();
 
   const handleError = (error: RBOErrorDto | undefined): void =>
@@ -10,4 +10,4 @@ const useErrorHandler = () => {
   return { handleError };
 };
 
-export { useErrorHandler };
+export { useErrors };
