@@ -5,25 +5,21 @@ import { EOL } from "os";
 const bracket = (s: string) => `[${s}]`;
 const pretty = (data: any) =>
   data ? (typeof data === "object" ? JSON.stringify(data) : data) : "";
-const separate = (left: string, right: any) => `${left} | ${right}`;
 
 class Logger implements ILogger {
   constructor(private readonly httpContextService?: IHttpContextService) {}
 
   log(context: ILoggerContext, data: any, ...rest: any[]) {
-    const fullContext =
+    const header =
       bracket(context) +
       (this.httpContextService
         ? ` ${bracket("id:" + this.httpContextService.getCurrent().id.toString())}`
         : "");
 
-    const message =
-      separate(fullContext, pretty(data)) +
-      (rest.length
-        ? EOL + rest.map((x) => separate("".padStart(fullContext.length, " "), pretty(x))).join(EOL)
-        : "");
+    rest.unshift(data);
+    rest.unshift(header);
 
-    console.log(message);
+    console.log(rest.map(pretty).join(EOL) + EOL);
   }
 }
 
