@@ -8,6 +8,7 @@ import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Username from "@frontend/components/general/Username.vue";
 
 const { notify } = useNotifier();
 const router = useRouter();
@@ -40,20 +41,15 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="column is-1" />
-
-      <div class="column is-5">
+      <div class="column is-5 is-offset-1">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
             <div class="tile is-child notification is-success">
               <strong>Created</strong>
 
               <p>
-                By
-                <router-link :to="route({ name: 'account' })">
-                  {{ ticket.createdBy.username }}
-                </router-link>
-                at {{ formatDate(ticket.createdAt) }}
+                By <username :username="ticket.createdBy.username" /> at
+                {{ formatDate(ticket.createdAt) }}
               </p>
             </div>
           </div>

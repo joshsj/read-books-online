@@ -3,4 +3,7 @@ const plural = (condition: boolean, s: string, replacement?: string) =>
 
 const capitalize = (s: string): string => (s ? s[0]!.toLocaleUpperCase() + s.slice(1) : "");
 
-export { plural, capitalize };
+const truncate = (s: string, length: number, trail = "..."): string =>
+  s.length > length ? s.slice(0, length - trail.length) + trail : s;
+
+export { plural, capitalize, truncate };

@@ -54,8 +54,8 @@ const routes = {
   }),
   tickets: route({ path: "/tickets", component: Tickets, meta: { auth: "any" } }),
 
-  account: route<{ accountId: Id }>({
-    path: "/accounts/:accountId",
+  account: route<{ username: string }>({
+    path: "/accounts/:username",
     redirect: "/",
     meta: { auth: "any" },
     props: true,

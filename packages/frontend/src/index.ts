@@ -14,6 +14,7 @@ import {
   Modal,
   Notification,
   Tooltip,
+  Table,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -72,6 +73,10 @@ createApp(App)
       arrowClass: "tooltip-arrow",
       triggers: ["hover", "click", "focus"],
     },
+
+    table: {
+      rootClass: "table is-striped is-hoverable",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -81,4 +86,5 @@ createApp(App)
   .use(Modal)
   .use(Tooltip)
   .use(Icon)
+  .use(Table)
   .mount("#app");
