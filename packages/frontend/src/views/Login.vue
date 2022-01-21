@@ -13,11 +13,9 @@ const { handleSubmit } = useForm<AccountDto>({ validationSchema: AccountDto });
 const onSubmit = handleSubmit(async (dto) => {
   const error = await login(dto);
 
-  if (!error) {
-    return;
+  if (error) {
+    notify(error);
   }
-
-  notify(error.message, "danger");
 });
 
 const username = useField<string>("username");

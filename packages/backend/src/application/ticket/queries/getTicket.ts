@@ -1,3 +1,4 @@
+import { UserDto, userDto } from "@backend/application/common/dtos/userDto";
 import { cannotView, notFound } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -5,10 +6,10 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
+import { Ticket } from "@backend/domain/entities/ticket";
 import { IQueryHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
-import { TicketDto, ticketDto } from "./ticketDto";
 
 const GetTicketRequest = object({
   ticketId: Id,
@@ -63,13 +64,25 @@ class GetTicketRequestHandler implements IQueryHandler<GetTicketRequest, TicketD
   async handle({ ticketId }: GetTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    return ticketDto.fromTicket(ticket);
+    return TicketDto.fromTicket(ticket);
   }
 }
+
+type TicketDto = Pick<Ticket, "_id" | "information" | "createdAt"> & { createdBy: UserDto };
+
+const TicketDto = {
+  fromTicket: ({ _id, information, createdAt, createdBy }: Ticket): TicketDto => ({
+    _id,
+    information,
+    createdAt,
+    createdBy: userDto.fromUser(createdBy),
+  }),
+};
 
 export {
   GetTicketRequest,
   GetTicketRequestValidator,
   GetTicketRequestAuthorizer,
   GetTicketRequestHandler,
+  TicketDto,
 };

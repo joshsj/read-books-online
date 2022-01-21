@@ -1,5 +1,5 @@
+import { AccountDto, CreateTicketRequest, Id, TicketDto, TokenDto } from "@client/models";
 import { Endpoint } from "@client/types";
-import { AccountDto, CreateTicketRequest, TokenDto } from "@client/models";
 
 type IAuthClient = {
   auth: Endpoint<"get", void, TokenDto> &
@@ -8,7 +8,7 @@ type IAuthClient = {
 };
 
 type ITicketClient = {
-  ticket: Endpoint<"create", CreateTicketRequest>;
+  ticket: Endpoint<"create", CreateTicketRequest> & Endpoint<"get", Id, TicketDto>;
 };
 
 export { IAuthClient, ITicketClient };

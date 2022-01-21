@@ -1,8 +1,15 @@
+import { isRBOError } from "@client/index";
+import { RBOErrorDto } from "@client/types";
 import { getCurrentInstance } from "vue";
 import { useOrugaMixin } from "./orugaMixin";
 
 type NotifyVariant = "info" | "success" | "danger";
 type NotifyDuration = keyof typeof durations;
+type NotifyOptions = {
+  message: string;
+  variant: NotifyVariant;
+  duration: NotifyDuration;
+};
 
 // @oruga-ui\oruga-next\src\utils\NoticeMixin.ts
 const defaultConfig = {
@@ -22,16 +29,16 @@ const useNotifier = () => {
 
   const { oruga } = useOrugaMixin();
 
-  const notify = (
-    message: string,
-    variant: NotifyVariant = "info",
-    duration: NotifyDuration = "long"
-  ) => {
+  const notify = (options: NotifyOptions | RBOErrorDto) => {
+    const { variant, duration } = isRBOError(options)
+      ? { variant: "danger", duration: durations["long"] }
+      : { variant: options.variant, duration: durations[options.duration] };
+
     oruga.notification.open({
       ...defaultConfig,
-      duration: durations[duration],
       variant,
-      message,
+      duration,
+      message: options.message,
     });
   };
 
