@@ -1,6 +1,6 @@
 import { Ticket } from "@backend/domain/entities/ticket";
-import { EntitySchema } from "@backend/infrastructure/repository/models/entity";
 import { AuditableSchema } from "@backend/infrastructure/repository/models/auditable";
+import { EntitySchema } from "@backend/infrastructure/repository/models/entity";
 import { model, Schema } from ".";
 
 const TicketSchema: Schema<Ticket> = {
@@ -9,6 +9,6 @@ const TicketSchema: Schema<Ticket> = {
   information: { type: String },
 };
 
-const TicketModel = model("Ticket", Ticket, TicketSchema);
+const TicketModel = model("Ticket", Ticket, TicketSchema, true);
 
 export { TicketSchema, TicketModel };
