@@ -40,6 +40,7 @@ export type Exposed = { form: FormContext<CreateTicketRequest> };
           id="Information"
           name="Information"
           placeholder="Information"
+          type="textarea"
           v-model="information.value" />
       </template>
     </o-field>
