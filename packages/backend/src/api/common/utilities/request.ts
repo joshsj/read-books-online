@@ -13,7 +13,7 @@ const createRequestHelper = (res: Response) => ({
 
 type AsyncRequestHandlerResult =
   | { state: "next" | "created" | "noContent" }
-  | { state: "ok"; value: object | undefined };
+  | { state: "ok"; value: object | void | undefined };
 
 type AsyncRequestHandler = (
   ...args: [

@@ -1,4 +1,4 @@
-import { entityNotFound } from "@backend/application/common/error/messages";
+import { notFound } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRepository } from "@backend/application/common/interfaces/repository";
 import { Entity, isEntity } from "@backend/domain/common/entity";
@@ -58,7 +58,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
       { $set: { ...associableEntity, _id: undefined } }
     );
 
-    ensure(!!result.modifiedCount, new RBOError("missing", entityNotFound(entity._id)));
+    ensure(!!result.modifiedCount, new RBOError("missing", notFound(entity._id)));
   }
 
   async delete(_id: Some<Id>): Promise<void> {

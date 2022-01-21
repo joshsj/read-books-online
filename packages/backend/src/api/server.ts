@@ -1,12 +1,12 @@
-import { IConfiguration } from "@backend/application/common/interfaces/configuration";
-import { ILogger } from "@backend/application/common/interfaces/logger";
 import { errorHandler } from "@backend/api/common/middlewares/errorHandler";
 import { httpContextServiceProvider } from "@backend/api/common/middlewares/httpContextServiceProvider";
-import { requestLogger } from "@backend/api/common/middlewares/requestLogger";
 import { missingRouteHandler } from "@backend/api/common/middlewares/missingRouteHandler";
+import { requestLogger } from "@backend/api/common/middlewares/requestLogger";
 import { authRoutes } from "@backend/api/routes/auth";
 import { ticketRoutes } from "@backend/api/routes/ticket";
 import { userRoutes } from "@backend/api/routes/user";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
+import { ILogger } from "@backend/application/common/interfaces/logger";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Router } from "express";
@@ -25,7 +25,7 @@ class Server {
     }
 
     const app = express()
-      .use(express.json())
+      .use(express.json({ strict: true }))
       .use(cookieParser(this.configuration.server.cookie.secret))
       .use(
         cors({

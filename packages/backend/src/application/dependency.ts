@@ -14,7 +14,13 @@ import {
 import { CQRS } from "@core/cqrs";
 import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
 import { toDependencies } from "@core/utilities/dependency";
-import { container } from "tsyringe";
+import { container, FactoryProvider, InjectionToken } from "tsyringe";
+import { IRequestAuthorizer, IRequestValidator } from "./common/interfaces/cqrs";
+import {
+  GetTicketRequestAuthorizer,
+  GetTicketRequestHandler,
+  GetTicketRequestValidator,
+} from "./ticket/queries/getTicket";
 
 const Dependency = toDependencies([
   // general
@@ -58,6 +64,15 @@ const registerBehaviors = () => {
     });
 };
 
+const registerer =
+  <T>(token: InjectionToken) =>
+  (factories: FactoryProvider<T>["useFactory"][]) =>
+    factories.forEach((f) => container.register(token, { useFactory: f }));
+
+const registerValidators = registerer<IRequestValidator<any>>(Dependency.requestValidator);
+const registerAuthorizers = registerer<IRequestAuthorizer<any>>(Dependency.requestAuthorizer);
+const registerHandlers = registerer<IRequestHandler>(Dependency.requestHandler);
+
 const registerApplicationDependencies = () => {
   container.register<ICQRS>(Dependency.cqrs, {
     useFactory: (c) =>
@@ -69,32 +84,35 @@ const registerApplicationDependencies = () => {
 
   registerBehaviors();
 
-  container
-    .register(Dependency.requestValidator, {
-      useFactory: (c) => new CreateUserRequestValidator(c.resolve(Dependency.userRepository)),
-    })
-    .register(Dependency.requestHandler, {
-      useFactory: (c) =>
-        new CreateUserRequestHandler(
-          c.resolve(Dependency.hashingService),
-          c.resolve(Dependency.userRepository)
-        ),
-    });
+  registerValidators([
+    (c) => new CreateUserRequestValidator(c.resolve(Dependency.userRepository)),
+    () => new CreateTicketRequestValidator(),
+    (c) => new GetTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
+  ]);
 
-  container
-    .register<CreateTicketRequestValidator>(Dependency.requestValidator, {
-      useValue: new CreateTicketRequestValidator(),
-    })
-    .register<CreateTicketRequestAuthorizer>(Dependency.requestAuthorizer, {
-      useFactory: (c) => new CreateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
-    })
-    .register<CreateTicketRequestHandler>(Dependency.requestHandler, {
-      useFactory: (c) =>
-        new CreateTicketRequestHandler(
-          c.resolve(Dependency.ticketRepository),
-          c.resolve(Dependency.auditService)
-        ),
-    });
+  registerAuthorizers([
+    (c) => new CreateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) =>
+      new GetTicketRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.ticketRepository)
+      ),
+  ]);
+
+  registerHandlers([
+    (c) =>
+      new CreateUserRequestHandler(
+        c.resolve(Dependency.hashingService),
+        c.resolve(Dependency.userRepository)
+      ),
+    (c) =>
+      new CreateTicketRequestHandler(
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.auditService)
+      ),
+
+    (c) => new GetTicketRequestHandler(c.resolve(Dependency.ticketRepository)),
+  ]);
 };
 
 export { Dependency, registerApplicationDependencies };
