@@ -1,3 +1,4 @@
+import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
@@ -9,17 +10,14 @@ import {
   IUserRepository,
 } from "@backend/application/common/interfaces/repository";
 import { Dependency } from "@backend/application/dependency";
-import { Ticket } from "@backend/domain/entities/ticket";
-import { IdentityService } from "@backend/infrastructure/identityService";
+import { AuditService } from "@backend/infrastructure/auditService";
 import { HashingService } from "@backend/infrastructure/hashingService";
+import { IdentityService } from "@backend/infrastructure/identityService";
 import { Logger } from "@backend/infrastructure/logger";
-import { TicketModel } from "@backend/infrastructure/repository/models/ticket";
-import { MongoRepository } from "@backend/infrastructure/repository/mongoRepository";
 import { RefreshTokenRepository } from "@backend/infrastructure/repository/refreshTokenRepository";
 import { UserRepository } from "@backend/infrastructure/repository/userRepository";
 import { container } from "tsyringe";
-import { IAuditService } from "@backend/application/common/interfaces/auditService";
-import { AuditService } from "@backend/infrastructure/auditService";
+import { TicketRepository } from "./repository/ticketRepository";
 
 const registerInfrastructureDependencies = () => {
   container.register<ILogger>(Dependency.logger, {
@@ -56,7 +54,7 @@ const registerInfrastructureDependencies = () => {
       useValue: new RefreshTokenRepository(),
     })
     .register<ITicketRepository>(Dependency.ticketRepository, {
-      useValue: new MongoRepository(Ticket, TicketModel),
+      useValue: new TicketRepository(),
     });
 };
 

@@ -20,7 +20,7 @@ onMounted(async () => {
 
   if (isRBOError(response)) {
     notify(response);
-    router.back();
+    router.push(route({ name: "tickets" }));
     return;
   }
 

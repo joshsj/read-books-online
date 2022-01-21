@@ -2,10 +2,27 @@ import { authenticator } from "@backend/api/common/middlewares/authenticator";
 import { handleAsync } from "@backend/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
 import { GetTicketRequest } from "@backend/application/ticket/queries/getTicket";
+import { GetTicketsRequest } from "@backend/application/ticket/queries/getTickets";
 import { ICQRS } from "@core/cqrs/types";
 import { Router } from "express";
 
 const routes = Router().use(authenticator);
+
+routes.get(
+  "",
+  handleAsync(async ({}, {}, { getPerRequestContainer, getParsedQuery }) => {
+    const request: GetTicketsRequest = {
+      requestName: "getTicketsRequest",
+      ...getParsedQuery(),
+    };
+
+    const value = await getPerRequestContainer()
+      .resolve<ICQRS>(Dependency.cqrs)
+      .send(request ?? { requestName: "getTicketsRequest" });
+
+    return { state: "ok", value };
+  })
+);
 
 routes.get(
   "/:id",

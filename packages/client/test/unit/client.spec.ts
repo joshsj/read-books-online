@@ -54,14 +54,14 @@ describe("Client", () => {
     });
 
     it("Composes query parameters for GET requests", async () => {
-      type Query = { pageSize: number };
+      type Query = { filter: { pageSize: number } };
 
       const sut = newSut<{ test: Endpoint<"get", Query> }>();
 
-      await sut.test.get({ pageSize: 20 });
+      await sut.test.get({ filter: { pageSize: 20 } });
 
       const invocation = getRequesterInvocation();
-      const expected = "test?pageSize=20";
+      const expected = "test?filter=%7B%22pageSize%22%3A20%7D";
 
       expect(invocation.endpoint).to.equal(expected);
     });

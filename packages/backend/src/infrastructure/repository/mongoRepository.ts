@@ -4,7 +4,7 @@ import { IRepository } from "@backend/application/common/interfaces/repository";
 import { Entity, isEntity } from "@backend/domain/common/entity";
 import { Id, isId } from "@backend/domain/common/id";
 import { ensure } from "@core/utilities";
-import { Model } from "mongoose";
+import { FilterQuery, Model } from "mongoose";
 import { ObjectSchema, ValidationError } from "yup";
 
 type Some<T> = T | T[];
@@ -33,6 +33,10 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
     }
 
     const filter = _id ? { _id: { $in: _id } } : {};
+    return (await this.model.find(filter).lean({ autopopulate: true }).exec()) as T[];
+  }
+
+  protected async _filtered(filter: FilterQuery<T>): Promise<T[]> {
     return (await this.model.find(filter).lean({ autopopulate: true }).exec()) as T[];
   }
 

@@ -1,3 +1,4 @@
+import { TicketQuery } from "@backend/application/ticket/queries/ticketQuery";
 import { Entity } from "@backend/domain/common/entity";
 import { Id } from "@backend/domain/common/id";
 import { RefreshToken, RefreshTokenValue } from "@backend/domain/entities/refreshToken";
@@ -29,7 +30,9 @@ type IRefreshTokenRepository = IRepository<RefreshToken> & {
   getByValue(value: RefreshTokenValue): Promise<RefreshToken | undefined>;
 };
 
-type ITicketRepository = IRepository<Ticket>;
+type ITicketRepository = IRepository<Ticket> & {
+  filtered(filter: TicketQuery): Promise<Ticket[]>;
+};
 
 export {
   IWritableRepository,

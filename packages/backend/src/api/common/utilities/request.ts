@@ -2,13 +2,21 @@ import {
   getPerRequestContainer,
   setPerRequestContainer,
 } from "@backend/api/common/utilities/container";
-import { RequestHandler, Response } from "express";
+import { fromUrlParams } from "@core/utilities/http";
+import { Request, RequestHandler, Response } from "express";
 import { DependencyContainer } from "tsyringe";
 
-const createRequestHelper = (res: Response) => ({
+const createRequestHelper = (req: Request, res: Response) => ({
   getPerRequestContainer: () => getPerRequestContainer(res),
   setPerRequestContainer: (container: DependencyContainer) =>
     setPerRequestContainer(res, container),
+
+  // remove leading ?
+  getParsedQuery: () => {
+    const query = req.originalUrl.split("?")[1];
+
+    return query ? fromUrlParams(query) : {};
+  },
 });
 
 type AsyncRequestHandlerResult =
@@ -32,7 +40,7 @@ const resultStatusMap: { [K in Exclude<AsyncRequestHandlerResult["state"], "next
 const handleAsync =
   (handler: AsyncRequestHandler): RequestHandler =>
   (req, res, next) =>
-    handler(req, res, createRequestHelper(res))
+    handler(req, res, createRequestHelper(req, res))
       .then((result) => {
         if (result.state === "next") {
           return next();

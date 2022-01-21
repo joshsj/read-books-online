@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { client } from "@frontend/client";
+import { client, isRBOError } from "@frontend/client";
+import { TicketDto, TicketQuery } from "@client/models";
 import RboFormModal from "@frontend/components/general/FormModal.vue";
 import RboTicketForm, {
   Exposed,
 } from "@frontend/components/ticket/TicketForm.vue";
 import { useNotifier } from "@frontend/plugins/notifier";
 import { delayedRef, ModifyMode } from "@frontend/utilities/component";
-import { reactive, ref, shallowRef } from "vue";
+import { onMounted, reactive, ref, shallowRef } from "vue";
 
 const { notify } = useNotifier();
 
@@ -31,11 +32,31 @@ const save = async () => {
   form.resetForm();
   notify({ message: "Ticket created", variant: "success", duration: "short" });
 };
+
+const tickets = ref<TicketDto[]>([]);
+
+onMounted(async () => {
+  const response = await client.ticket.get({
+    filter: {
+      createdAt: {},
+      createdBy: ["61eb09354504c108d174b537"],
+    },
+  });
+
+  if (isRBOError(response)) {
+    notify(response);
+    return;
+  }
+
+  tickets.value = response;
+});
 </script>
 
 <template>
   <div class="container">
     <h1 class="title">Tickets</h1>
+
+    {{ tickets }}
 
     <o-button @click="modal.showing = true">Create</o-button>
 

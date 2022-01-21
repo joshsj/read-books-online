@@ -23,9 +23,7 @@ export const expiredRefreshToken = "Refresh token has expired";
 
 export const notFound = (id: Id, entity = "Entity") =>
   `${entity} with ID ${q(id.toString())} was not found` as const;
-
 export const cannotView = (entity = "item") => `You cannot view this ${entity}` as const;
-
 export const requiresRoles = (role: Role, ...roles: Role[]) => {
   roles.push(role);
 
