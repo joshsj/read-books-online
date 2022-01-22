@@ -15,6 +15,7 @@ import {
   Notification,
   Tooltip,
   Table,
+  Dropdown,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -33,6 +34,8 @@ createApp(App)
     button: {
       rootClass: "button",
       variantClass: "is-",
+      sizeClass: "is-",
+      outlinedClass: () => "is-outlined",
     },
 
     notification: {
@@ -75,7 +78,25 @@ createApp(App)
     },
 
     table: {
-      rootClass: "table is-striped is-hoverable",
+      rootClass: "table is-striped",
+    },
+
+    dropdown: {
+      rootClass: ({}: string, vm: { data: { isActive: boolean }; props: { position: string } }) => {
+        const classes = ["dropdown"];
+
+        vm.data.isActive && classes.push("is-active");
+        vm.props.position.includes("left") && classes.push("is-right");
+        vm.props.position.includes("top") && classes.push("is-up");
+
+        return classes.join(" ");
+      },
+      triggerClass: "dropdown-trigger",
+      menuClass: "dropdown-menu dropdown-content",
+      itemTag: "a",
+      itemClass: "dropdown-item",
+      itemActiveClass: "is-active",
+      mobileModal: false,
     },
   })
   .use(Button)
@@ -87,4 +108,5 @@ createApp(App)
   .use(Tooltip)
   .use(Icon)
   .use(Table)
+  .use(Dropdown)
   .mount("#app");

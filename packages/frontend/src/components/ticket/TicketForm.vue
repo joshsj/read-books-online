@@ -37,3 +37,9 @@ export type Exposed = { form: FormContext<CreateTicketRequest> };
     </o-field>
   </form>
 </template>
+
+<style scoped>
+#Information {
+  height: 4em;
+}
+</style>

@@ -40,6 +40,7 @@ const createTicket = async () => {
   modal.showing = false;
   form.resetForm();
   notify({ message: "Ticket created", variant: "success", duration: "short" });
+  getTickets();
 };
 
 const getTickets = async () => {
@@ -65,25 +66,38 @@ onMounted(getTickets);
     <h1 class="title">Tickets</h1>
 
     <o-table :data="tickets" sticky-header>
-      <o-table-column label="Id">
-        <template v-slot="{ row: { _id } }">
-          <router-link :to="route({ name: 'ticket', ticketId: _id })">
-            {{ _id }}
-          </router-link>
-        </template>
-      </o-table-column>
-
       <o-table-column label="Information">
         <template v-slot="{ row: { information } }">
-          {{ truncate(information, 200) }}
+          <span>{{ truncate(information, 250) }}</span>
         </template>
       </o-table-column>
 
       <o-table-column label="Created">
         <template v-slot="{ row: { createdAt, createdBy } }">
-          {{ formatDate(createdAt, "date") }}
-          <br />
-          <username :username="createdBy.username" />
+          <span>
+            {{ formatDate(createdAt, "date") }}
+            <username :username="createdBy.username" />
+          </span>
+        </template>
+      </o-table-column>
+
+      <o-table-column label="Actions">
+        <template v-slot="{ index, row: { _id } }">
+          <o-dropdown
+            :position="`${index > tickets.length / 2 ? 'top' : 'bottom'}-left`">
+            <template #trigger>
+              <o-button outline>
+                <span>!</span>
+              </o-button>
+            </template>
+
+            <router-link
+              :to="route({ name: 'ticket', ticketId: _id })"
+              custom
+              v-slot="{ navigate }">
+              <o-dropdown-item @click="navigate"> View </o-dropdown-item>
+            </router-link>
+          </o-dropdown>
         </template>
       </o-table-column>
     </o-table>

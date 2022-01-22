@@ -58,9 +58,7 @@ const toggleNavbar = () =>
 
             <div class="navbar-dropdown">
               <div class="navbar-item">
-                <a class="button is-danger" @click="logout" role="button">
-                  Logout
-                </a>
+                <a class="button is-danger" @click="logout"> Logout </a>
               </div>
             </div>
           </div>
@@ -80,24 +78,17 @@ const toggleNavbar = () =>
 @use "sass:map";
 @import "bulma/bulma.sass";
 
+$base-spacing: map.get($spacing-values, "2");
+
 main {
-  padding-top: map.get($spacing-values, "6");
-
-  @include touch {
-    padding-top: map.get($spacing-values, "4");
-  }
-
-  --content-padding: #{$size-6};
-
-  padding-left: var(--content-padding);
-  padding-right: var(--content-padding);
+  padding: $base-spacing;
 
   @include tablet {
-    --content-padding: #{$size-6 * 4};
+    padding: ($base-spacing * 2) ($base-spacing * 5);
   }
 
   @include desktop {
-    --content-padding: #{$size-6 * 8};
+    padding: ($base-spacing * 6) ($base-spacing * 10);
   }
 }
 

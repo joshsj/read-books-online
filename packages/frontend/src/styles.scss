@@ -19,6 +19,8 @@
   border-radius: 0.75em;
 }
 
+// Bulma provides no tooltip component
+// Customizing the Oruga styles works fine
 .tooltip {
   @extend .is-size-7;
   @extend .has-text-white;
@@ -33,6 +35,8 @@
   }
 }
 
-.o-input__textarea {
-  height: 4rem;
+.table-mobile {
+  td::before {
+    @extend .has-text-weight-bold;
+  }
 }
