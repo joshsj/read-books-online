@@ -14,9 +14,10 @@ import { useInteractor } from "@frontend/plugins/interactor";
 import { delayedRef, ModifyMode } from "@frontend/utilities/component";
 import { onMounted, reactive, ref, shallowRef } from "vue";
 import { store } from "@frontend/store";
-import { ticketLogic, userLogic } from "@frontend/logic";
+import { useBusiness } from "@frontend/plugins/business";
 
-const { notify, confirm } = useInteractor();
+const { notify } = useInteractor();
+const { ticketBusiness } = useBusiness();
 
 const modal = reactive({
   mode: "create" as ModifyMode,
@@ -60,29 +61,6 @@ const getTickets = async () => {
   tickets.value = response;
 };
 
-const allocateTicket = async (ticketId: Id) => {
-  const confirmation = await confirm(
-    "Are you sure you want to allocate this ticket to yourself?"
-  );
-
-  if (!confirmation) {
-    return;
-  }
-
-  const response = await client.ticket.allocation.create({
-    requestName: "allocateTicketRequest",
-    ticketId,
-  });
-
-  if (isRBOError(response)) {
-    notify(response);
-    return;
-  }
-
-  notify({ message: "Allocation successful", variant: "success" });
-  getTickets();
-};
-
 onMounted(getTickets);
 </script>
 
@@ -92,7 +70,7 @@ onMounted(getTickets);
       <o-button @click="modal.showing = true">Create</o-button>
     </view-title>
 
-    <o-table :data="tickets" sticky-header>
+    <o-table :data="tickets">
       <o-table-column label="Information">
         <template v-slot="{ row: { information } }">
           <span>{{ truncate(information, 250) }}</span>
@@ -135,8 +113,12 @@ onMounted(getTickets);
             </router-link>
 
             <o-dropdown-item
-              v-if="ticketLogic.canAllocate(ticket)"
-              @click="allocateTicket(ticket._id)">
+              v-if="ticketBusiness.canAllocate(ticket)"
+              @click="
+                ticketBusiness
+                  .allocate(ticket._id)
+                  .then((x) => x && getTickets())
+              ">
               Allocate
             </o-dropdown-item>
           </o-dropdown>

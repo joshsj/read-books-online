@@ -1,8 +1,8 @@
 import { isRBOError } from "@client/index";
 import { RBOErrorDto } from "@client/types";
-import { createApp, getCurrentInstance, createVNode, render, RootRenderFunction } from "vue";
-import { useOrugaMixin } from "./orugaMixin";
 import Modal from "@frontend/components/general/Modal.vue";
+import { createVNode, getCurrentInstance, render } from "vue";
+import { useOrugaMixin } from "./orugaMixin";
 
 type NotifyVariant = "info" | "success" | "danger";
 type NotifyDuration = keyof typeof durations;
@@ -89,4 +89,6 @@ const useInteractor = () => {
   return { notify, confirm };
 };
 
-export { useInteractor, NotifyVariant };
+type Interactor = ReturnType<typeof useInteractor>;
+
+export { useInteractor, NotifyVariant, Interactor };

@@ -32,6 +32,7 @@ createApp(App)
   .use(createRouter())
   .use(OrugaConfig, {
     button: {
+      override: true,
       rootClass: "button",
       variantClass: "is-",
       sizeClass: "is-",
@@ -83,8 +84,9 @@ createApp(App)
     },
 
     table: {
-      rootClass: "table is-hoverable",
+      tableClass: "table is-hoverable",
       tdPositionClass: "has-text-",
+      narrowedClass: "is-narrow",
     },
 
     dropdown: {

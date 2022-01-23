@@ -10,14 +10,16 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Username from "@frontend/components/general/Username.vue";
 import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
+import { useBusiness } from "@frontend/plugins/business";
 
+const { ticketBusiness } = useBusiness();
 const { notify } = useInteractor();
 const router = useRouter();
 const props = defineProps({ ticketId: { type: String, required: true } });
 
 const ticket = ref<TicketDto | undefined>();
 
-onMounted(async () => {
+const getTicket = async () => {
   const response = await store.pageLoad(client.ticket.get(props.ticketId));
 
   if (isRBOError(response)) {
@@ -27,7 +29,9 @@ onMounted(async () => {
   }
 
   ticket.value = response;
-});
+};
+
+onMounted(getTicket);
 </script>
 
 <template>
@@ -59,6 +63,17 @@ onMounted(async () => {
               <p v-if="ticket.allocated">
                 To <username :username="ticket.allocated.by.username" /> at
                 {{ formatDate(ticket.created.at, "date") }}
+              </p>
+
+              <p v-else-if="ticketBusiness.canAllocate(ticket)">
+                Pending (<a
+                  @click="
+                    ticketBusiness
+                      .allocate(ticket._id)
+                      .then((x) => x && getTicket())
+                  "
+                  >Allocate</a
+                >)
               </p>
             </ticket-state>
           </div>
