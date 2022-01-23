@@ -20,7 +20,7 @@ const toggleNavbar = () =>
       role="navigation"
       aria-label="main navigation">
       <div class="navbar-brand">
-        <router-link :to="route({ name: 'home' })" class="navbar-item">
+        <router-link :to="route({ name: 'tickets' })" class="navbar-item">
           <h1 class="title mb-0">ReadBooksOnline</h1>
         </router-link>
 
@@ -45,10 +45,6 @@ const toggleNavbar = () =>
         class="navbar-menu"
         :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
-          <router-link :to="route({ name: 'home' })" class="navbar-item">
-            Home
-          </router-link>
-
           <router-link :to="route({ name: 'tickets' })" class="navbar-item">
             Tickets
           </router-link>

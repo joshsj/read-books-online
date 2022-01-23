@@ -23,7 +23,7 @@ const login = async (router: Router, accountDto: AccountDto): Promise<RBOErrorDt
   }
 
   store.user = toUserStore(response.token);
-  router.push(route({ name: "home" }));
+  router.push(route({ name: "tickets" }));
 };
 
 const logout = (router: Router) => {

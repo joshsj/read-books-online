@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { AccountDto } from "@client/models";
-import { fieldState } from "@frontend/utilities/forms";
+import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import { useLogin } from "@frontend/plugins/login";
 import { useNotifier } from "@frontend/plugins/notifier";
+import { fieldState } from "@frontend/utilities/forms";
 import { useField, useForm } from "vee-validate";
 
 const { notify } = useNotifier();
@@ -24,7 +25,7 @@ const password = useField<string>("password");
 
 <template>
   <div class="container">
-    <h1 class="title">Login</h1>
+    <view-title title="Login" />
 
     <form @submit="onSubmit">
       <o-field

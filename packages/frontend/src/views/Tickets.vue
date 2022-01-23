@@ -6,6 +6,7 @@ import { client, isRBOError } from "@frontend/client";
 import { route } from "@frontend/router";
 import RboFormModal from "@frontend/components/general/FormModal.vue";
 import Username from "@frontend/components/general/Username.vue";
+import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import RboTicketForm, {
   Exposed,
 } from "@frontend/components/ticket/TicketForm.vue";
@@ -63,7 +64,9 @@ onMounted(getTickets);
 
 <template>
   <div class="container">
-    <h1 class="title">Tickets</h1>
+    <view-title title="Tickets">
+      <o-button @click="modal.showing = true">Create</o-button>
+    </view-title>
 
     <o-table :data="tickets" sticky-header>
       <o-table-column label="Information">
@@ -81,14 +84,12 @@ onMounted(getTickets);
         </template>
       </o-table-column>
 
-      <o-table-column label="Actions">
+      <o-table-column label="Actions" position="centered">
         <template v-slot="{ index, row: { _id } }">
           <o-dropdown
             :position="`${index > tickets.length / 2 ? 'top' : 'bottom'}-left`">
             <template #trigger>
-              <o-button outline>
-                <span>!</span>
-              </o-button>
+              <o-button variant="info" outlined icon-right="chevron-down" />
             </template>
 
             <router-link
@@ -101,8 +102,6 @@ onMounted(getTickets);
         </template>
       </o-table-column>
     </o-table>
-
-    <o-button @click="modal.showing = true">Create</o-button>
 
     <rbo-form-modal
       entity="Ticket"

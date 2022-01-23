@@ -44,14 +44,16 @@ onMounted(async () => {
       <div class="column is-5 is-offset-1">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
-            <div class="tile is-child notification is-success">
-              <strong>Created</strong>
+            <article class="tile is-child message is-success">
+              <div class="message-header"><p>Created</p></div>
 
-              <p>
-                By <username :username="ticket.createdBy.username" /> at
-                {{ formatDate(ticket.createdAt) }}
-              </p>
-            </div>
+              <div class="message-body">
+                <p>
+                  By <username :username="ticket.createdBy.username" /> at
+                  {{ formatDate(ticket.createdAt) }}
+                </p>
+              </div>
+            </article>
           </div>
         </div>
       </div>

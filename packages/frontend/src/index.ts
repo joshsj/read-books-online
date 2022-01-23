@@ -35,6 +35,8 @@ createApp(App)
       rootClass: "button",
       variantClass: "is-",
       sizeClass: "is-",
+      roundedClass: "is-rounded",
+      iconClass: "icon",
       outlinedClass: () => "is-outlined",
     },
 
@@ -64,6 +66,8 @@ createApp(App)
       iconRightClass: "input-icon-right",
     },
 
+    icon: { variantClass: "has-text-" },
+
     modal: {
       rootClass: "modal is-active",
       contentClass: "modal-card",
@@ -78,7 +82,8 @@ createApp(App)
     },
 
     table: {
-      rootClass: "table is-striped",
+      rootClass: "table is-hoverable",
+      tdPositionClass: "has-text-",
     },
 
     dropdown: {

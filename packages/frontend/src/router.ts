@@ -1,5 +1,4 @@
 import { store } from "@frontend/store";
-import Home from "@frontend/views/Home.vue";
 import Login from "@frontend/views/Login.vue";
 import Ticket from "@frontend/views/Ticket.vue";
 import Tickets from "@frontend/views/Tickets.vue";
@@ -42,9 +41,14 @@ const route = <T extends object | void = void>(
 };
 
 const routes = {
-  home: route({ path: "/", component: Home, meta: { auth: "any" } }),
-
   login: route({ path: "/login", component: Login, meta: { auth: "none" } }),
+
+  tickets: route({
+    path: "/tickets",
+    alias: "/",
+    component: Tickets,
+    meta: { auth: "any" },
+  }),
 
   ticket: route<{ ticketId: Id }>({
     path: "/tickets/:ticketId",
@@ -52,7 +56,6 @@ const routes = {
     meta: { auth: "any" },
     props: true,
   }),
-  tickets: route({ path: "/tickets", component: Tickets, meta: { auth: "any" } }),
 
   account: route<{ username: string }>({
     path: "/accounts/:username",
