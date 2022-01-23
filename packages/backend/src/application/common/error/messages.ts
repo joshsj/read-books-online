@@ -24,11 +24,11 @@ export const expiredRefreshToken = "Refresh token has expired";
 export const notFound = (id: Id, entity = "Entity") =>
   `${entity} with ID ${q(id.toString())} was not found` as const;
 export const cannotView = (entity = "item") => `You cannot view this ${entity}` as const;
-export const requiresRoles = (role: Role, ...roles: Role[]) => {
-  roles.push(role);
+export const requiresRoles = (...roles: Role[]) =>
+  roles.length
+    ? `This operation requires the following ${plural(roles.length > 1, "role")}: ${q(roles)}`
+    : "You do not have the adequate roles for this operation";
 
-  return `This operation requires the following ${plural(roles.length > 1, "role")}: ${q(roles)}`;
-};
 export const incorrectPassword = (username: string) =>
   `Incorrect password for user ${q(username)}` as const;
 

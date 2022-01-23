@@ -1,3 +1,5 @@
+import { AccountDto } from "@backend/application/common/dtos/accountDto";
+import { JWTPayloadDto } from "@backend/application/common/dtos/jwtPayloadDto";
 import {
   expiredRefreshToken,
   incorrectPassword,
@@ -18,11 +20,9 @@ import {
   IRefreshTokenRepository,
   IUserRepository,
 } from "@backend/application/common/interfaces/repository";
-import { Password, Username } from "@backend/domain/common/constrainedTypes";
 import { Id, newId } from "@backend/domain/common/id";
 import { RefreshToken } from "@backend/domain/entities/refreshToken";
 import { User } from "@backend/domain/entities/user";
-import { JWTPayload } from "@backend/api/common/models/auth";
 import { ensure } from "@core/utilities";
 import jwt from "jsonwebtoken";
 
@@ -47,12 +47,14 @@ class IdentityService implements IIdentityService {
   }
 
   login(refresh: "refresh"): Promise<AuthTokenValue>;
-  login(username: Username, password: Password): Promise<AuthTokenValue>;
-  async login(username: Username, password?: Password): Promise<AuthTokenValue> {
-    return password ? this.loginFromDetails(username, password) : this.loginFromRefresh();
+  login(account: AccountDto): Promise<AuthTokenValue>;
+  async login(accountOrRefresh: AccountDto | "refresh"): Promise<AuthTokenValue> {
+    return typeof accountOrRefresh === "object"
+      ? this.loginFromDetails(accountOrRefresh)
+      : this.loginFromRefresh();
   }
 
-  private async loginFromDetails(username: Username, password: Password): Promise<AuthTokenValue> {
+  private async loginFromDetails({ username, password }: AccountDto): Promise<AuthTokenValue> {
     const user = await this.userRepository.getByUsername(username);
 
     ensure(!!user, new RBOError("missing", userNotFound(username)));
@@ -129,11 +131,12 @@ class IdentityService implements IIdentityService {
     await this.refreshTokenRepository[method](refreshToken);
     this.setRefreshTokenCookie(refreshToken.value, expires);
 
-    const user = (await this.userRepository.get(userId))!;
+    const { username, roles } = (await this.userRepository.get(userId))!;
 
-    const payload: JWTPayload = {
+    const payload: JWTPayloadDto = {
       sub: userId,
-      preferred_username: user.username,
+      preferred_username: username,
+      roles,
     };
 
     return new Promise((resolve, reject) =>
@@ -179,7 +182,7 @@ class IdentityService implements IIdentityService {
     return new Promise(async (resolve, reject) => {
       const payload = jwt.decode(await this.getAuthTokenValue(), { json: true });
 
-      if (!JWTPayload.isValidSync(payload)) {
+      if (!JWTPayloadDto.isValidSync(payload)) {
         return reject(new RBOError("authentication", invalidAuthToken));
       }
 

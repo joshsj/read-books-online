@@ -10,7 +10,20 @@ import jwtDecode from "jwt-decode";
 const toUserStore = (token: string): UserStore => {
   const payload = jwtDecode(token) as JWTPayload;
 
-  return { authenticationToken: token, username: payload.preferred_username };
+  const store: UserStore = {
+    authenticationToken: token,
+    username: payload.preferred_username,
+    roles: payload.roles,
+
+    // TODO move
+    hasRoles: (role, ..._roles) => {
+      _roles.push(role);
+
+      return _roles.every((r) => store.roles.includes(r));
+    },
+  };
+
+  return store;
 };
 
 const isLoggedIn = (): boolean => !!store.user;

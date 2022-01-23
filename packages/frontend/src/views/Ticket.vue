@@ -3,14 +3,14 @@ import { isRBOError } from "@client/index";
 import { TicketDto } from "@client/models";
 import { formatDate } from "@core/utilities/date";
 import { client } from "@frontend/client";
-import { useNotifier } from "@frontend/plugins/notifier";
+import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Username from "@frontend/components/general/Username.vue";
 
-const { notify } = useNotifier();
+const { notify } = useInteractor();
 const router = useRouter();
 const props = defineProps({ ticketId: { type: String, required: true } });
 

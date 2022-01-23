@@ -1,6 +1,7 @@
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { Dependency } from "@backend/application/dependency";
-import { AccountDto, TokenDto } from "@backend/api/common/models/auth";
+import { TokenDto } from "@backend/application/common/dtos/tokenDto";
+import { AccountDto } from "@backend/application/common/dtos/accountDto";
 import {
   AssertSchema,
   assertSchema as _assertSchema,
@@ -45,7 +46,7 @@ routes.post(
 
     const token = await container
       .resolve<IIdentityService>(Dependency.identityService)
-      .login(accountDto.username, accountDto.password);
+      .login(accountDto);
 
     logger.log("authentication", "Login successful using credentials");
 

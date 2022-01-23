@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TicketDto } from "@client/models";
+import { TicketDto, Id } from "@client/models";
 import { formatDate } from "@core/utilities/date";
 import { truncate } from "@core/utilities/string";
 import { client, isRBOError } from "@frontend/client";
@@ -10,12 +10,12 @@ import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import RboTicketForm, {
   Exposed,
 } from "@frontend/components/ticket/TicketForm.vue";
-import { useNotifier } from "@frontend/plugins/notifier";
+import { useInteractor } from "@frontend/plugins/interactor";
 import { delayedRef, ModifyMode } from "@frontend/utilities/component";
 import { onMounted, reactive, ref, shallowRef } from "vue";
 import { store } from "@frontend/store";
 
-const { notify } = useNotifier();
+const { notify, confirm } = useInteractor();
 
 const modal = reactive({
   mode: "create" as ModifyMode,
@@ -59,6 +59,29 @@ const getTickets = async () => {
   tickets.value = response;
 };
 
+const allocateTicket = async (ticketId: Id) => {
+  const confirmation = await confirm(
+    "Are you sure you want to allocate this ticket to yourself?"
+  );
+
+  if (!confirmation) {
+    return;
+  }
+
+  const response = await client.ticket.allocation.create({
+    requestName: "allocateTicketRequest",
+    ticketId,
+  });
+
+  if (isRBOError(response)) {
+    notify(response);
+    return;
+  }
+
+  notify({ message: "Allocation successful", variant: "success" });
+  getTickets();
+};
+
 onMounted(getTickets);
 </script>
 
@@ -96,8 +119,14 @@ onMounted(getTickets);
               :to="route({ name: 'ticket', ticketId: _id })"
               custom
               v-slot="{ navigate }">
-              <o-dropdown-item @click="navigate"> View </o-dropdown-item>
+              <o-dropdown-item tag="a" @click="navigate">View</o-dropdown-item>
             </router-link>
+
+            <o-dropdown-item
+              v-if="store.user?.hasRoles('employee') ?? false"
+              @click="allocateTicket(_id)">
+              Allocate
+            </o-dropdown-item>
           </o-dropdown>
         </template>
       </o-table-column>

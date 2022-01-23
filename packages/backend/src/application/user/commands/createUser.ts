@@ -18,7 +18,7 @@ const CreateUserRequest = object({
 
 type CreateUserRequest = InferType<typeof CreateUserRequest>;
 
-class CreateUserRequestValidator implements IRequestValidator<CreateUserRequest> {
+class CreateUserCommandValidator implements IRequestValidator<CreateUserRequest> {
   requestName = "createUserRequest" as const;
 
   constructor(private readonly userRepository: IUserRepository) {}
@@ -35,7 +35,7 @@ class CreateUserRequestValidator implements IRequestValidator<CreateUserRequest>
   }
 }
 
-class CreateUserRequestHandler implements ICommandHandler<CreateUserRequest> {
+class CreateUserCommandHandler implements ICommandHandler<CreateUserRequest> {
   handles = "createUserRequest" as const;
 
   constructor(
@@ -57,4 +57,4 @@ class CreateUserRequestHandler implements ICommandHandler<CreateUserRequest> {
   }
 }
 
-export { CreateUserRequest, CreateUserRequestValidator, CreateUserRequestHandler };
+export { CreateUserRequest, CreateUserCommandValidator, CreateUserCommandHandler };

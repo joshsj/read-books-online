@@ -1,7 +1,7 @@
 import { RBOError, RBOErrorType } from "@backend/application/common/error/rboError";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
-import { RBOErrorDto } from "@backend/api/common/models/error";
+import { RBOErrorDto } from "@backend/application/common/dtos/errorDto";
 import { getPerRequestContainer } from "@backend/api/common/utilities/container";
 import { ErrorRequestHandler } from "express";
 

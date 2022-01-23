@@ -1,8 +1,11 @@
+import { RBOError } from "@backend/application/common/error/rboError";
+import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
+import { IIdentityService } from "@backend/application/common/interfaces/identityService";
+import { Role } from "@backend/domain/constants/role";
 import { IRequest, IRequestName } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { mixed, object, ObjectSchema } from "yup";
-import { RBOError } from "../error/rboError";
-import { IRequestValidator } from "../interfaces/cqrs";
+import { requiresRoles } from "@backend/application/common/error/messages";
 
 const Request = <T extends IRequestName>(requestName: T): ObjectSchema<IRequest<T>> =>
   object({
@@ -14,7 +17,7 @@ const Request = <T extends IRequestName>(requestName: T): ObjectSchema<IRequest<
 
 type Request<T extends IRequestName> = IRequest<T>;
 
-abstract class BaseRequestValidator<T extends IRequest<any>> implements IRequestValidator<T> {
+abstract class SchemaRequestValidator<T extends IRequest<any>> implements IRequestValidator<T> {
   abstract requestName: T["requestName"];
 
   constructor(private readonly schema: ObjectSchema<T>) {}
@@ -24,4 +27,20 @@ abstract class BaseRequestValidator<T extends IRequest<any>> implements IRequest
   }
 }
 
-export { Request, BaseRequestValidator };
+abstract class RoleRequestAuthorizer<T extends IRequest<any>> implements IRequestAuthorizer<T> {
+  abstract requestName: T["requestName"];
+  abstract readonly requiredRoles: ReadonlyArray<Role>;
+
+  constructor(private readonly identityService: IIdentityService) {}
+
+  async authorize() {
+    const currentUser = await this.identityService.getCurrentUser();
+
+    ensure(
+      this.requiredRoles.every((r) => currentUser.roles.includes(r)),
+      new RBOError("authorization", requiresRoles(...this.requiredRoles))
+    );
+  }
+}
+
+export { Request, SchemaRequestValidator, RoleRequestAuthorizer };

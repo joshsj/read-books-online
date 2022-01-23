@@ -35,7 +35,16 @@
   }
 }
 
-// normally it's really wide
+// normally they're really wide in Bulma
 .dropdown-menu {
   min-width: unset !important;
+}
+.dropdown .dropdown-item {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.o-drop__item--active {
+  color: inherit;
+  background-color: inherit;
 }

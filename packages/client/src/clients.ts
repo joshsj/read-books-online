@@ -1,5 +1,6 @@
 import {
   AccountDto,
+  AllocateTicketRequest,
   CreateTicketRequest,
   Id,
   TicketDto,
@@ -17,7 +18,9 @@ type IAuthClient = {
 type ITicketClient = {
   ticket: Endpoint<"create", CreateTicketRequest> &
     Endpoint<"get", Id, TicketDto> &
-    Endpoint<"get", TicketQuery, TicketDto[]>;
+    Endpoint<"get", TicketQuery, TicketDto[]> & {
+      allocation: Endpoint<"create", AllocateTicketRequest>;
+    };
 };
 
 export { IAuthClient, ITicketClient };

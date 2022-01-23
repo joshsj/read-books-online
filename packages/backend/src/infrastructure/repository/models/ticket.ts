@@ -6,6 +6,7 @@ import { model, Schema } from ".";
 const TicketSchema: Schema<Ticket> = {
   ...EntitySchema,
   ...AuditableSchema("created"),
+  ...AuditableSchema("allocated"),
   information: { type: String },
 };
 

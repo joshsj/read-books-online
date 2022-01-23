@@ -3,13 +3,13 @@ import { RequestLoggerBehavior } from "@backend/application/common/behaviors/req
 import { ValidatorBehavior } from "@backend/application/common/behaviors/validatorBehavior";
 import { resolveAny } from "@backend/application/common/utilities/dependency";
 import {
-  CreateTicketRequestAuthorizer,
-  CreateTicketRequestHandler,
-  CreateTicketRequestValidator,
+  CreateTicketCommandHandler,
+  CreateTicketCommandAuthorizer,
+  CreateTicketCommandValidator,
 } from "@backend/application/ticket/commands/createTicket";
 import {
-  CreateUserRequestHandler,
-  CreateUserRequestValidator,
+  CreateUserCommandHandler,
+  CreateUserCommandValidator,
 } from "@backend/application/user/commands/createUser";
 import { CQRS } from "@core/cqrs";
 import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
@@ -17,15 +17,19 @@ import { toDependencies } from "@core/utilities/dependency";
 import { container, FactoryProvider, InjectionToken } from "tsyringe";
 import { IRequestAuthorizer, IRequestValidator } from "./common/interfaces/cqrs";
 import {
-  GetTicketRequestAuthorizer,
-  GetTicketRequestHandler,
-  GetTicketRequestValidator,
-} from "./ticket/queries/getTicket";
-
+  AllocateTicketRequestAuthorizer,
+  AllocateTicketCommandHandler,
+  AllocateTicketRequestValidator,
+} from "./ticket/commands/allocateTicket";
 import {
-  GetTicketsRequestAuthorizer,
-  GetTicketsRequestHandler,
-  GetTicketsRequestValidator,
+  GetTicketQueryAuthorizer,
+  GetTicketQueryHandler,
+  GetTicketQueryValidator,
+} from "./ticket/queries/getTicket";
+import {
+  GetTicketsQueryAuthorizer,
+  GetTicketsQueryHandler,
+  GetTicketsQueryValidator,
 } from "./ticket/queries/getTickets";
 
 const Dependency = toDependencies([
@@ -91,36 +95,43 @@ const registerApplicationDependencies = () => {
   registerBehaviors();
 
   registerValidators([
-    (c) => new CreateUserRequestValidator(c.resolve(Dependency.userRepository)),
-    () => new CreateTicketRequestValidator(),
-    (c) => new GetTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
-    () => new GetTicketsRequestValidator(),
+    (c) => new CreateUserCommandValidator(c.resolve(Dependency.userRepository)),
+    () => new CreateTicketCommandValidator(),
+    (c) => new GetTicketQueryValidator(c.resolve(Dependency.ticketRepository)),
+    () => new GetTicketsQueryValidator(),
+    (c) => new AllocateTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
-    (c) => new CreateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) => new CreateTicketCommandAuthorizer(c.resolve(Dependency.identityService)),
     (c) =>
-      new GetTicketRequestAuthorizer(
+      new GetTicketQueryAuthorizer(
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
-    (c) => new GetTicketsRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) => new GetTicketsQueryAuthorizer(c.resolve(Dependency.identityService)),
+    (c) => new AllocateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
   ]);
 
   registerHandlers([
     (c) =>
-      new CreateUserRequestHandler(
+      new CreateUserCommandHandler(
         c.resolve(Dependency.hashingService),
         c.resolve(Dependency.userRepository)
       ),
     (c) =>
-      new CreateTicketRequestHandler(
+      new CreateTicketCommandHandler(
         c.resolve(Dependency.ticketRepository),
         c.resolve(Dependency.auditService)
       ),
 
-    (c) => new GetTicketRequestHandler(c.resolve(Dependency.ticketRepository)),
-    (c) => new GetTicketsRequestHandler(c.resolve(Dependency.ticketRepository)),
+    (c) => new GetTicketQueryHandler(c.resolve(Dependency.ticketRepository)),
+    (c) => new GetTicketsQueryHandler(c.resolve(Dependency.ticketRepository)),
+    (c) =>
+      new AllocateTicketCommandHandler(
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.identityService)
+      ),
   ]);
 };
 

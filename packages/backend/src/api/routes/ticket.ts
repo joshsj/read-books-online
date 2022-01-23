@@ -6,9 +6,20 @@ import { GetTicketsRequest } from "@backend/application/ticket/queries/getTicket
 import { ICQRS } from "@core/cqrs/types";
 import { Router } from "express";
 
-const routes = Router().use(authenticator);
+const allocationRoutes = Router();
 
-routes.get(
+allocationRoutes.post(
+  "",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "created" };
+  })
+);
+
+const ticketRoutes = Router().use(authenticator).use("/allocation", allocationRoutes);
+
+ticketRoutes.get(
   "",
   handleAsync(async ({}, {}, { getPerRequestContainer, getParsedQuery }) => {
     const request: GetTicketsRequest = {
@@ -24,7 +35,7 @@ routes.get(
   })
 );
 
-routes.get(
+ticketRoutes.get(
   "/:id",
   handleAsync(async ({ params }, {}, { getPerRequestContainer }) => {
     const request: GetTicketRequest = {
@@ -38,7 +49,7 @@ routes.get(
   })
 );
 
-routes.post(
+ticketRoutes.post(
   "",
   handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
@@ -47,4 +58,4 @@ routes.post(
   })
 );
 
-export { routes as ticketRoutes };
+export { ticketRoutes };

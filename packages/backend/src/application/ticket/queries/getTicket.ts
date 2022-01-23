@@ -16,7 +16,7 @@ const GetTicketRequest = object({
 
 type GetTicketRequest = InferType<typeof GetTicketRequest>;
 
-class GetTicketRequestValidator implements IRequestValidator<GetTicketRequest> {
+class GetTicketQueryValidator implements IRequestValidator<GetTicketRequest> {
   requestName = "getTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
@@ -31,7 +31,7 @@ class GetTicketRequestValidator implements IRequestValidator<GetTicketRequest> {
   }
 }
 
-class GetTicketRequestAuthorizer implements IRequestAuthorizer<GetTicketRequest> {
+class GetTicketQueryAuthorizer implements IRequestAuthorizer<GetTicketRequest> {
   requestName = "getTicketRequest" as const;
 
   constructor(
@@ -55,7 +55,7 @@ class GetTicketRequestAuthorizer implements IRequestAuthorizer<GetTicketRequest>
   }
 }
 
-class GetTicketRequestHandler implements IQueryHandler<GetTicketRequest, TicketDto> {
+class GetTicketQueryHandler implements IQueryHandler<GetTicketRequest, TicketDto> {
   handles = "getTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
@@ -69,7 +69,7 @@ class GetTicketRequestHandler implements IQueryHandler<GetTicketRequest, TicketD
 
 export {
   GetTicketRequest,
-  GetTicketRequestValidator,
-  GetTicketRequestAuthorizer,
-  GetTicketRequestHandler,
+  GetTicketQueryValidator,
+  GetTicketQueryAuthorizer,
+  GetTicketQueryHandler,
 };

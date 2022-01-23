@@ -1,8 +1,12 @@
+import { Role } from "@client/models";
 import { reactive, UnwrapNestedRefs } from "vue";
 
 type UserStore = Readonly<{
   authenticationToken: string;
   username: string;
+  roles: Role[];
+
+  hasRoles(role: Role, ...roles: Role[]): boolean;
 }>;
 
 type Store = {

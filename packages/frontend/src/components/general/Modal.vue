@@ -13,12 +13,7 @@ defineProps({
   loading: { type: Boolean, default: false },
 });
 
-const emit = defineEmits({
-  "update:active": Boolean,
-  open: undefined,
-  main: undefined,
-  alt: undefined,
-});
+const emit = defineEmits(["update:active", "open", "main", "alt"]);
 
 const onMainClick = () => {
   close();

@@ -73,6 +73,7 @@ createApp(App)
       contentClass: "modal-card",
       overlayClass: "modal-background",
       closeClass: "modal-close is-large",
+      canCancel: ["escape", "outside", "button"],
     },
 
     tooltip: {
@@ -87,12 +88,16 @@ createApp(App)
     },
 
     dropdown: {
-      rootClass: ({}: string, vm: { data: { isActive: boolean }; props: { position: string } }) => {
+      override: true,
+      rootClass: (
+        {}: string,
+        vm: { data: { isActive: boolean }; props: { position?: string } }
+      ) => {
         const classes = ["dropdown"];
 
         vm.data.isActive && classes.push("is-active");
-        vm.props.position.includes("left") && classes.push("is-right");
-        vm.props.position.includes("top") && classes.push("is-up");
+        vm.props.position?.includes("left") && classes.push("is-right");
+        vm.props.position?.includes("top") && classes.push("is-up");
 
         return classes.join(" ");
       },
@@ -100,7 +105,6 @@ createApp(App)
       menuClass: "dropdown-menu dropdown-content",
       itemTag: "a",
       itemClass: "dropdown-item",
-      itemActiveClass: "is-active",
       mobileModal: false,
     },
   })

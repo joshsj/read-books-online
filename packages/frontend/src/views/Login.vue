@@ -2,11 +2,11 @@
 import { AccountDto } from "@client/models";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import { useLogin } from "@frontend/plugins/login";
-import { useNotifier } from "@frontend/plugins/notifier";
+import { useInteractor } from "@frontend/plugins/interactor";
 import { fieldState } from "@frontend/utilities/forms";
 import { useField, useForm } from "vee-validate";
 
-const { notify } = useNotifier();
+const { notify } = useInteractor();
 const { login } = useLogin();
 
 const { handleSubmit } = useForm<AccountDto>({ validationSchema: AccountDto });

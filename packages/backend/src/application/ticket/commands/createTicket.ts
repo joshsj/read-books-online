@@ -18,7 +18,7 @@ const CreateTicketRequest = object({
 
 type CreateTicketRequest = InferType<typeof CreateTicketRequest>;
 
-class CreateTicketRequestValidator implements IRequestValidator<CreateTicketRequest> {
+class CreateTicketCommandValidator implements IRequestValidator<CreateTicketRequest> {
   requestName = "createTicketRequest" as const;
 
   async validate(request: unknown) {
@@ -26,7 +26,7 @@ class CreateTicketRequestValidator implements IRequestValidator<CreateTicketRequ
   }
 }
 
-class CreateTicketRequestAuthorizer implements IRequestAuthorizer<CreateTicketRequest> {
+class CreateTicketCommandAuthorizer implements IRequestAuthorizer<CreateTicketRequest> {
   requestName = "createTicketRequest" as const;
 
   constructor(private readonly identityService: IIdentityService) {}
@@ -42,7 +42,7 @@ class CreateTicketRequestAuthorizer implements IRequestAuthorizer<CreateTicketRe
   }
 }
 
-class CreateTicketRequestHandler implements ICommandHandler<CreateTicketRequest> {
+class CreateTicketCommandHandler implements ICommandHandler<CreateTicketRequest> {
   handles = "createTicketRequest" as const;
 
   constructor(
@@ -65,7 +65,7 @@ class CreateTicketRequestHandler implements ICommandHandler<CreateTicketRequest>
 
 export {
   CreateTicketRequest,
-  CreateTicketRequestValidator,
-  CreateTicketRequestAuthorizer,
-  CreateTicketRequestHandler,
+  CreateTicketCommandValidator,
+  CreateTicketCommandAuthorizer,
+  CreateTicketCommandHandler,
 };

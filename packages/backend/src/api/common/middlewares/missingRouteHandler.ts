@@ -1,4 +1,4 @@
-import { RBOErrorDto } from "@backend/api/common/models/error";
+import { RBOErrorDto } from "@backend/application/common/dtos/errorDto";
 import { Handler } from "express";
 
 const missingRouteHandler: Handler = ({}, res) => {
