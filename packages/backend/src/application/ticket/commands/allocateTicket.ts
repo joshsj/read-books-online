@@ -1,4 +1,4 @@
-import { notFound } from "@backend/application/common/error/messages";
+import { notFound, reviewingOwnTicket } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
@@ -15,6 +15,25 @@ type AllocateTicketRequest = InferType<typeof AllocateTicketRequest>;
 class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTicketRequest> {
   requestName = "allocateTicketRequest" as const;
   requiredRoles = ["employee"] as const;
+
+  constructor(
+    identityService: IIdentityService,
+    private readonly ticketRepository: ITicketRepository
+  ) {
+    super(identityService);
+  }
+
+  async authorize(request: AllocateTicketRequest): Promise<void> {
+    await super.authorize(request);
+
+    const ticket = (await this.ticketRepository.get(request.ticketId))!;
+    const currentUser = await this.identityService.getCurrentUser();
+
+    ensure(
+      ticket.created.by._id !== currentUser._id,
+      new RBOError("authorization", reviewingOwnTicket("allocate"))
+    );
+  }
 }
 
 class AllocateTicketRequestValidator implements IRequestValidator<AllocateTicketRequest> {
@@ -44,8 +63,7 @@ class AllocateTicketCommandHandler implements ICommandHandler<AllocateTicketRequ
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
     const currentUser = await this.identityService.getCurrentUser();
 
-    ticket.allocatedAt = new Date();
-    ticket.allocatedBy = currentUser;
+    ticket.allocated = { at: new Date(), by: currentUser };
 
     await this.ticketRepository.update(ticket);
   }

@@ -36,3 +36,6 @@ export const userAlreadyExists = (username: string) =>
   `User already exists with username ${username}`;
 export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
+
+export const reviewingOwnTicket = (action: "allocate") =>
+  `You cannot ${action} your own ticket` as const;

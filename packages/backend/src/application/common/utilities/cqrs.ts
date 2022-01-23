@@ -31,9 +31,9 @@ abstract class RoleRequestAuthorizer<T extends IRequest<any>> implements IReques
   abstract requestName: T["requestName"];
   abstract readonly requiredRoles: ReadonlyArray<Role>;
 
-  constructor(private readonly identityService: IIdentityService) {}
+  constructor(protected readonly identityService: IIdentityService) {}
 
-  async authorize() {
+  async authorize({}: T) {
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(

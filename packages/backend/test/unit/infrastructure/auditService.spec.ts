@@ -21,20 +21,15 @@ describe("Audit Service", () => {
       const sut = newSut();
 
       const result = await sut.init(...fields);
-      const expectedKeys: Array<keyof Auditable<Field>> = [
-        "aFieldAt",
-        "anotherFieldAt",
-        "aFieldBy",
-        "anotherFieldBy",
-      ];
+      const expectedKeys: Array<keyof Auditable<Field>> = ["aField", "anotherField"];
 
       expect(result).to.have.all.keys(expectedKeys);
 
-      expect(result.aFieldAt).to.be.instanceOf(Date);
-      expect(result.anotherFieldAt).to.be.instanceOf(Date);
+      expect(result.aField.at).to.be.instanceOf(Date);
+      expect(result.anotherField.at).to.be.instanceOf(Date);
 
-      expect(result.aFieldBy).to.equal(user);
-      expect(result.anotherFieldBy).to.equal(user);
+      expect(result.aField.by).to.equal(user);
+      expect(result.anotherField.by).to.equal(user);
     });
   });
 
@@ -43,11 +38,8 @@ describe("Audit Service", () => {
       const epoch = new Date(0);
 
       const auditable: Auditable<Field> = {
-        aFieldAt: epoch,
-        aFieldBy: {} as User,
-
-        anotherFieldAt: epoch,
-        anotherFieldBy: {} as User,
+        aField: { at: epoch, by: {} as User },
+        anotherField: { at: epoch, by: {} as User },
       };
 
       const auditedField = fields[0];
@@ -56,11 +48,11 @@ describe("Audit Service", () => {
 
       await sut.audit(auditable, auditedField);
 
-      expect(auditable.aFieldAt).to.be.greaterThan(epoch);
-      expect(auditable.anotherFieldAt).to.equal(epoch);
+      expect(auditable.aField.at).to.be.greaterThan(epoch);
+      expect(auditable.anotherField.at).to.equal(epoch);
 
-      expect(auditable.aFieldBy).to.equal(user);
-      expect(auditable.anotherFieldBy).not.to.equal(user);
+      expect(auditable.aField.by).to.equal(user);
+      expect(auditable.anotherField.by).not.to.equal(user);
     });
   });
 });

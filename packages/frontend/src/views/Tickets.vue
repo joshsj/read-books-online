@@ -14,6 +14,7 @@ import { useInteractor } from "@frontend/plugins/interactor";
 import { delayedRef, ModifyMode } from "@frontend/utilities/component";
 import { onMounted, reactive, ref, shallowRef } from "vue";
 import { store } from "@frontend/store";
+import { ticketLogic, userLogic } from "@frontend/logic";
 
 const { notify, confirm } = useInteractor();
 
@@ -99,32 +100,43 @@ onMounted(getTickets);
       </o-table-column>
 
       <o-table-column label="Created">
-        <template v-slot="{ row: { createdAt, createdBy } }">
+        <template v-slot="{ row: { created } }">
           <span>
-            {{ formatDate(createdAt, "date") }}
-            <username :username="createdBy.username" />
+            {{ formatDate(created.at, "date") }}
+            <username :username="created.by.username" />
+          </span>
+        </template>
+      </o-table-column>
+
+      <o-table-column label="Allocated">
+        <template v-slot="{ row: { allocated } }">
+          <span v-if="allocated">
+            {{ formatDate(allocated.at, "date") }}
+            <username :username="allocated.by.username" />
           </span>
         </template>
       </o-table-column>
 
       <o-table-column label="Actions" position="centered">
-        <template v-slot="{ index, row: { _id } }">
+        <template v-slot="{ index, row: ticket }">
           <o-dropdown
-            :position="`${index > tickets.length / 2 ? 'top' : 'bottom'}-left`">
+            :position="`${
+              index >= tickets.length / 2 ? 'top' : 'bottom'
+            }-left`">
             <template #trigger>
               <o-button variant="info" outlined icon-right="chevron-down" />
             </template>
 
             <router-link
-              :to="route({ name: 'ticket', ticketId: _id })"
+              :to="route({ name: 'ticket', ticketId: ticket._id })"
               custom
               v-slot="{ navigate }">
               <o-dropdown-item tag="a" @click="navigate">View</o-dropdown-item>
             </router-link>
 
             <o-dropdown-item
-              v-if="store.user?.hasRoles('employee') ?? false"
-              @click="allocateTicket(_id)">
+              v-if="ticketLogic.canAllocate(ticket)"
+              @click="allocateTicket(ticket._id)">
               Allocate
             </o-dropdown-item>
           </o-dropdown>

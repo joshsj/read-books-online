@@ -14,15 +14,14 @@ class AuditService implements IAuditService {
   }
 
   private async persistFields<T extends string>(obj: any, fields: T[]): Promise<Auditable<T>> {
-    if (!fields) {
+    if (!fields.length) {
       return obj;
     }
 
     const user = await this.identityService.getCurrentUser();
 
     return fields.reduce<any>((prev, field) => {
-      prev[`${field}At`] = new Date();
-      prev[`${field}By`] = user;
+      prev[field] = { at: new Date(), by: user };
 
       return prev;
     }, obj);

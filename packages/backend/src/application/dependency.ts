@@ -110,7 +110,11 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository)
       ),
     (c) => new GetTicketsQueryAuthorizer(c.resolve(Dependency.identityService)),
-    (c) => new AllocateTicketRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) =>
+      new AllocateTicketRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.ticketRepository)
+      ),
   ]);
 
   registerHandlers([

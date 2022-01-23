@@ -1,5 +1,5 @@
 import { isRBOError } from "@client/index";
-import { AccountDto, JWTPayload } from "@client/models";
+import { AccountDto, JWTPayloadDto } from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client } from "@frontend/client";
 import { route } from "@frontend/router";
@@ -8,19 +8,14 @@ import { Router, useRouter } from "vue-router";
 import jwtDecode from "jwt-decode";
 
 const toUserStore = (token: string): UserStore => {
-  const payload = jwtDecode(token) as JWTPayload;
+  const payload = jwtDecode(token) as JWTPayloadDto;
 
   const store: UserStore = {
     authenticationToken: token,
+
+    _id: payload.sub,
     username: payload.preferred_username,
     roles: payload.roles,
-
-    // TODO move
-    hasRoles: (role, ..._roles) => {
-      _roles.push(role);
-
-      return _roles.every((r) => store.roles.includes(r));
-    },
   };
 
   return store;

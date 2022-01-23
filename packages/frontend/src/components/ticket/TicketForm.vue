@@ -1,4 +1,6 @@
 <script setup lang="ts">
+export type Exposed = { form: FormContext<CreateTicketRequest> };
+
 import { CreateTicketRequest } from "@client/models";
 import { fieldState } from "@frontend/utilities/forms";
 import { FormContext, useField, useForm } from "vee-validate";
@@ -12,8 +14,6 @@ const information = useField<string>("information");
 const onSubmit = form.handleSubmit(() => void 0);
 
 defineExpose<Exposed>({ form });
-
-export type Exposed = { form: FormContext<CreateTicketRequest> };
 </script>
 
 <template>

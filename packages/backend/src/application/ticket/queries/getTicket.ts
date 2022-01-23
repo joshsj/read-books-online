@@ -49,7 +49,7 @@ class GetTicketQueryAuthorizer implements IRequestAuthorizer<GetTicketRequest> {
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
 
     ensure(
-      ticket.createdBy._id === currentUser._id,
+      ticket.created.by._id === currentUser._id,
       new RBOError("authorization", cannotView("ticket"))
     );
   }

@@ -9,6 +9,7 @@ import { store } from "@frontend/store";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Username from "@frontend/components/general/Username.vue";
+import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
 
 const { notify } = useInteractor();
 const router = useRouter();
@@ -41,19 +42,25 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="column is-5 is-offset-1">
+      <div class="column is-4 is-offset-2">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
-            <article class="tile is-child message is-success">
-              <div class="message-header"><p>Created</p></div>
+            <ticket-state title="Created" class="tile is-child" state="passed">
+              <p>
+                By <username :username="ticket.created.by.username" /> at
+                {{ formatDate(ticket.created.at, "date") }}
+              </p>
+            </ticket-state>
 
-              <div class="message-body">
-                <p>
-                  By <username :username="ticket.createdBy.username" /> at
-                  {{ formatDate(ticket.createdAt) }}
-                </p>
-              </div>
-            </article>
+            <ticket-state
+              title="Allocated"
+              class="tile is-child"
+              :state="ticket.allocated ? 'passed' : 'pending'">
+              <p v-if="ticket.allocated">
+                To <username :username="ticket.allocated.by.username" /> at
+                {{ formatDate(ticket.created.at, "date") }}
+              </p>
+            </ticket-state>
           </div>
         </div>
       </div>

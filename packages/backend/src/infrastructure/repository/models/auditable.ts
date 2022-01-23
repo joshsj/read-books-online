@@ -2,17 +2,16 @@ import { Auditable } from "@backend/domain/common/auditable";
 import { UserModel } from "@backend/infrastructure/repository/models/user";
 import { Schema } from ".";
 
-const AuditableSchema = <T extends string>(t: T): Schema<Auditable<T>> =>
+const AuditableSchema = <T extends string>(t: T) =>
   ({
-    [`${t}At`]: {
-      type: Date,
+    [t]: {
+      at: { type: Date },
+      by: {
+        type: String,
+        ref: UserModel,
+        autopopulate: true,
+      },
     },
-
-    [`${t}By`]: {
-      type: String,
-      ref: UserModel,
-      autopopulate: true,
-    },
-  } as Schema<Auditable<T>>);
+  } as unknown as Schema<Auditable<T>>);
 
 export { AuditableSchema };
