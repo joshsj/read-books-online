@@ -2,7 +2,7 @@
 @import "bulma/bulma.sass";
 @import "@mdi/font/css/materialdesignicons.css";
 
-.overlay-background {
+.loading-overlay-background {
   background-color: rgba($color: $white, $alpha: 0.5);
 }
 
@@ -35,8 +35,7 @@
   }
 }
 
-.table-mobile {
-  td::before {
-    @extend .has-text-weight-bold;
-  }
+// normally it's really wide
+.dropdown-menu {
+  min-width: unset !important;
 }
