@@ -47,11 +47,7 @@ const createTicket = async () => {
 };
 
 const getTickets = async () => {
-  const response = await store.pageLoad(
-    client.ticket.get({
-      filter: { createdAt: {}, createdBy: [] },
-    })
-  );
+  const response = await store.pageLoad(client.ticket.get({ filter: {} }));
 
   if (isRBOError(response)) {
     notify(response);
