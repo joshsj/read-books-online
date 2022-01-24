@@ -2,16 +2,18 @@
 import { isRBOError } from "@client/index";
 import { TicketDto } from "@client/models";
 import { formatDate } from "@core/utilities/date";
+import { capitalize } from "@core/utilities/string";
 import { client } from "@frontend/client";
+import Username from "@frontend/components/general/Username.vue";
+import ViewTitle from "@frontend/components/general/ViewTitle.vue";
+import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
+import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
+import { reviewStateVariant } from "@frontend/utilities/ticket";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import Username from "@frontend/components/general/Username.vue";
-import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
-import ViewTitle from "@frontend/components/general/ViewTitle.vue";
-import { useBusiness } from "@frontend/plugins/business";
 
 const { ticketBusiness } = useBusiness();
 const { notify } = useInteractor();
@@ -44,7 +46,7 @@ onMounted(getTicket);
         label="Cancel"
         @click="
           ticketBusiness
-            .cancel(ticket._id)
+            .cancel(ticket)
             .then((x) => x && router.push(route({ name: 'tickets' })))
         " />
     </view-title>
@@ -58,7 +60,7 @@ onMounted(getTicket);
       <div class="column is-4 is-offset-2">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
-            <ticket-state title="Created" class="tile is-child" state="passed">
+            <ticket-state title="Created" class="tile is-child" state="success">
               <p>
                 By <username :username="ticket.created.by.username" /> at
                 {{ formatDate(ticket.created.at, "date") }}
@@ -68,7 +70,7 @@ onMounted(getTicket);
             <ticket-state
               title="Allocated"
               class="tile is-child"
-              :state="ticket.allocated ? 'passed' : 'pending'">
+              :state="ticket.allocated ? 'success' : 'info'">
               <p v-if="ticket.allocated">
                 To <username :username="ticket.allocated.by.username" /> at
                 {{ formatDate(ticket.created.at, "date") }}
@@ -78,10 +80,29 @@ onMounted(getTicket);
                 Pending (<a
                   @click="
                     ticketBusiness
-                      .allocate(ticket._id)
+                      .allocate(ticket)
                       .then((x) => x && getTicket())
                   "
                   >Allocate</a
+                >)
+              </p>
+            </ticket-state>
+
+            <ticket-state
+              title="Review"
+              class="tile is-child"
+              :state="reviewStateVariant(ticket.reviewState)"
+              v-if="!!ticket.allocated">
+              <p v-if="ticket.reviewState && ticket.reviewed">
+                {{ capitalize(ticket.reviewState) }} at
+                {{ formatDate(ticket.created.at, "date") }}
+              </p>
+              <p v-else-if="ticketBusiness.canReview(ticket)">
+                Pending (<a
+                  @click="
+                    ticketBusiness.review(ticket).then((x) => x && getTicket())
+                  "
+                  >Review</a
                 >)
               </p>
             </ticket-state>

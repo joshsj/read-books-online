@@ -85,7 +85,14 @@ createApp(App)
     },
 
     table: {
-      tableClass: "table is-hoverable",
+      tableClass: ({}: string, { data }: { data: { isMatchMedia: boolean } }) => {
+        const classes = ["table"];
+
+        classes.push(data.isMatchMedia ? "is-striped" : "is-hoverable");
+
+        return classes.join(" ");
+      },
+
       tdPositionClass: "has-text-",
       narrowedClass: "is-narrow",
     },

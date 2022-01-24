@@ -1,13 +1,7 @@
 <script setup lang="ts">
-export type TicketFieldState = "passed" | "failed" | "pending";
+export type TicketFieldState = "success" | "danger" | "info";
 
 import { PropType } from "vue";
-
-const variants = {
-  passed: "success",
-  failed: "danger",
-  pending: "info",
-};
 
 defineProps({
   title: { type: String, required: true },
@@ -16,13 +10,13 @@ defineProps({
 </script>
 
 <template>
-  <article :class="`message is-${variants[state]}`">
+  <article :class="`message is-${state}`">
     <div class="message-header">
       <p>{{ title }}</p>
     </div>
 
     <div class="message-body">
-      <slot>{{ state === "pending" ? "Pending" : "" }}</slot>
+      <slot>{{ state === "info" ? "Pending" : "" }}</slot>
     </div>
   </article>
 </template>

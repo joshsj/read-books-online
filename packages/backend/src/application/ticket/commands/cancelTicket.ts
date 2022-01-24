@@ -1,6 +1,7 @@
 import {
   cancelAllocatedTicket,
   cancelOtherTicket,
+  notFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -23,7 +24,10 @@ class CancelTicketRequestValidator implements IRequestValidator<CancelTicketRequ
   async validate(request: unknown) {
     ensure(CancelTicketRequest.isValidSync(request), new RBOError("validation"));
 
-    ensure(await this.ticketRepository.exists(request.ticketId), new RBOError("missing"));
+    ensure(
+      await this.ticketRepository.exists(request.ticketId),
+      new RBOError("missing", notFound(request.ticketId, "Ticket"))
+    );
   }
 }
 

@@ -12,8 +12,8 @@ import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
 const CreateUserRequest = object({
-  username: Username,
-  password: Password,
+  username: Username.required(),
+  password: Password.required(),
 }).concat(Request("createUserRequest"));
 
 type CreateUserRequest = InferType<typeof CreateUserRequest>;

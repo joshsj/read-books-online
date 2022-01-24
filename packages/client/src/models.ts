@@ -6,5 +6,7 @@ export { CreateUserRequest } from "@backend/application/user/commands/createUser
 export { AllocateTicketRequest } from "@backend/application/ticket/commands/allocateTicket";
 export { TicketDto } from "@backend/application/ticket/queries/ticketDto";
 export { TicketQuery } from "@backend/application/ticket/queries/ticketQuery";
+export { ReviewTicketRequest } from "@backend/application/ticket/commands/reviewTicket";
 export { Id } from "@backend/domain/common/id";
 export { Role } from "@backend/domain/constants/role";
+export { ReviewState } from "@backend/domain/constants/reviewState";

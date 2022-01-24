@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TicketDto, Id } from "@client/models";
+import { TicketDto, ReviewState } from "@client/models";
 import { formatDate } from "@core/utilities/date";
-import { truncate } from "@core/utilities/string";
+import { truncate, capitalize } from "@core/utilities/string";
 import { client, isRBOError } from "@frontend/client";
 import { route } from "@frontend/router";
 import RboFormModal from "@frontend/components/general/FormModal.vue";
@@ -16,6 +16,7 @@ import { onMounted, reactive, ref, shallowRef } from "vue";
 import { store } from "@frontend/store";
 import { useBusiness } from "@frontend/plugins/business";
 import { ModifyMode } from "@frontend/utilities/types";
+import { reviewStateVariant } from "@frontend/utilities/ticket";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
@@ -68,6 +69,9 @@ const getTickets = async () => {
   tickets.value = response;
 };
 
+const reviewStateClass = (reviewState?: ReviewState) =>
+  "tag is-light is-" + reviewStateVariant(reviewState);
+
 onMounted(getTickets);
 </script>
 
@@ -82,14 +86,16 @@ onMounted(getTickets);
     <o-table :data="tickets">
       <o-table-column label="Information">
         <template v-slot="{ row: { information } }">
-          <span>{{ truncate(information, 250) }}</span>
+          <span>
+            {{ truncate(information, 250) }}
+          </span>
         </template>
       </o-table-column>
 
       <o-table-column label="Created">
         <template v-slot="{ row: { created } }">
           <span>
-            {{ formatDate(created.at, "date") }}
+            {{ formatDate(created.at, "date") }},
             <username :username="created.by.username" />
           </span>
         </template>
@@ -98,8 +104,21 @@ onMounted(getTickets);
       <o-table-column label="Allocated">
         <template v-slot="{ row: { allocated } }">
           <span v-if="allocated">
-            {{ formatDate(allocated.at, "date") }}
+            {{ formatDate(allocated.at, "date") }},
             <username :username="allocated.by.username" />
+          </span>
+        </template>
+      </o-table-column>
+
+      <o-table-column label="Reviewed">
+        <template v-slot="{ row: { reviewed, reviewState } }">
+          <span>
+            <template v-if="reviewed">
+              {{ formatDate(reviewed.at, "date") }},
+            </template>
+            <span :class="reviewStateClass(reviewState)">
+              {{ capitalize(reviewState ?? "pending") }}
+            </span>
           </span>
         </template>
       </o-table-column>
@@ -124,17 +143,23 @@ onMounted(getTickets);
             <o-dropdown-item
               v-if="ticketBusiness.canAllocate(ticket)"
               @click="
-                ticketBusiness
-                  .allocate(ticket._id)
-                  .then((x) => x && getTickets())
+                ticketBusiness.allocate(ticket).then((x) => x && getTickets())
               ">
               Allocate
             </o-dropdown-item>
 
             <o-dropdown-item
+              v-if="ticketBusiness.canReview(ticket)"
+              @click="
+                ticketBusiness.review(ticket).then((x) => x && getTickets())
+              ">
+              Review
+            </o-dropdown-item>
+
+            <o-dropdown-item
               v-if="ticketBusiness.canCancel(ticket)"
               @click="
-                ticketBusiness.cancel(ticket._id).then((x) => x && getTickets())
+                ticketBusiness.cancel(ticket).then((x) => x && getTickets())
               ">
               Cancel
             </o-dropdown-item>

@@ -5,9 +5,11 @@ import { model, Schema } from ".";
 
 const TicketSchema: Schema<Ticket> = {
   ...EntitySchema,
+  information: { type: String },
+  reviewState: { type: String },
   ...AuditableSchema("created"),
   ...AuditableSchema("allocated"),
-  information: { type: String },
+  ...AuditableSchema("reviewed"),
 };
 
 const TicketModel = model("Ticket", Ticket, TicketSchema, true);

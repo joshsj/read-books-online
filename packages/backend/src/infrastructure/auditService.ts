@@ -18,10 +18,11 @@ class AuditService implements IAuditService {
       return obj;
     }
 
-    const user = await this.identityService.getCurrentUser();
+    const by = await this.identityService.getCurrentUser();
+    const at = new Date();
 
     return fields.reduce<any>((prev, field) => {
-      prev[field] = { at: new Date(), by: user };
+      prev[field] = { at, by };
 
       return prev;
     }, obj);

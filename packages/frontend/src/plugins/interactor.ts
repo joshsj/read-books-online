@@ -1,7 +1,8 @@
 import { isRBOError } from "@client/index";
 import { RBOErrorDto } from "@client/types";
 import Modal from "@frontend/components/general/Modal.vue";
-import { createVNode, getCurrentInstance, render } from "vue";
+import { ModalProps } from "@frontend/utilities/types";
+import { h, getCurrentInstance, render, VNode, VNodeArrayChildren } from "vue";
 import { useOrugaMixin } from "./orugaMixin";
 
 type NotifyVariant = "info" | "success" | "danger";
@@ -43,8 +44,12 @@ const useInteractor = () => {
     });
   };
 
-  const confirm = (message: string) =>
-    new Promise<boolean>((resolve) => {
+  const modal = <T>(
+    props: ModalProps & Record<string, any>,
+    payload: T,
+    children?: (() => string) | VNode | VNodeArrayChildren
+  ) =>
+    new Promise<{ from: "main" | "alt" | "close"; payload: T }>((resolve) => {
       const el: Element = (() => {
         const rootEl = vm.vnode.el as Element;
         const childEl = document.createElement("div");
@@ -58,27 +63,26 @@ const useInteractor = () => {
         setTimeout(() => render(null, el), 100);
       };
 
-      const vnode = createVNode(
+      const vnode = h(
         Modal,
-
         {
-          title: "Confirmation",
-          mainButtonText: "Yes",
-          mainButtonVariant: "success",
-          altButtonText: "No",
-          altButtonVariant: "danger",
+          ...props,
           active: true,
 
           onMain: () => {
-            resolve(true);
+            resolve({ from: "main", payload });
             destroy();
           },
           onAlt: () => {
-            resolve(false);
+            resolve({ from: "alt", payload });
+            destroy();
+          },
+          onClose: () => {
+            resolve({ from: "close", payload });
             destroy();
           },
         },
-        () => message
+        children
       );
 
       vnode.appContext = vm.appContext;
@@ -86,7 +90,20 @@ const useInteractor = () => {
       render(vnode, el);
     });
 
-  return { notify, confirm };
+  const confirm = (message: string): Promise<boolean> =>
+    modal(
+      {
+        title: "Confirmation",
+        mainButtonText: "Yes",
+        mainButtonVariant: "success",
+        altButtonText: "No",
+        altButtonVariant: "danger",
+      },
+      undefined,
+      () => message
+    ).then(({ from }) => from === "main");
+
+  return { modal, notify, confirm };
 };
 
 type Interactor = ReturnType<typeof useInteractor>;

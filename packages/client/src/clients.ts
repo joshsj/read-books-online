@@ -4,6 +4,7 @@ import {
   CreateTicketRequest,
   CreateUserRequest,
   Id,
+  ReviewTicketRequest,
   TicketDto,
   TicketQuery,
   TokenDto,
@@ -26,6 +27,8 @@ type ITicketClient = {
     Endpoint<"get", TicketQuery, TicketDto[]> &
     Endpoint<"delete", Id> & {
       allocation: Endpoint<"create", AllocateTicketRequest>;
+    } & {
+      review: Endpoint<"put", ReviewTicketRequest>;
     };
 };
 

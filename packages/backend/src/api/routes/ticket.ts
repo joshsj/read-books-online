@@ -7,19 +7,7 @@ import { GetTicketsRequest } from "@backend/application/ticket/queries/getTicket
 import { ICQRS } from "@core/cqrs/types";
 import { Router } from "express";
 
-const allocationRoutes = Router();
-
-allocationRoutes.post(
-  "",
-  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
-    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
-
-    return { state: "created" };
-    1;
-  })
-);
-
-const ticketRoutes = Router().use(authenticator).use("/allocation", allocationRoutes);
+const ticketRoutes = Router().use(authenticator);
 
 ticketRoutes.get(
   "",
@@ -69,6 +57,25 @@ ticketRoutes.delete(
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(request);
 
     return { state: "noContent" };
+  })
+);
+
+ticketRoutes.post(
+  "/allocation",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "created" };
+    1;
+  })
+);
+
+ticketRoutes.put(
+  "/review",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "ok", value: undefined };
   })
 );
 

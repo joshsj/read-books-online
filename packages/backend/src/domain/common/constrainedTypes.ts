@@ -1,13 +1,13 @@
 import { string, number, InferType, mixed } from "yup";
 import { Algorithm } from "jsonwebtoken";
 
-const PositiveNumber = number().strict().required().min(0);
+const PositiveNumber = number().strict().min(0);
 type PositiveNumber = InferType<typeof PositiveNumber>;
 
-const Username = string().strict().required().min(3);
+const Username = string().strict().min(3);
 type Username = InferType<typeof Username>;
 
-const Password = string().strict().required().min(8);
+const Password = string().strict().min(8);
 type Password = InferType<typeof Password>;
 
 // library offers no validation for algorithm values, length is the best we can do

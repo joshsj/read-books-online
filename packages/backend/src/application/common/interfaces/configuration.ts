@@ -9,11 +9,11 @@ const IConfiguration = object({
   mongo: object({ uri: string().strict().required(), databaseName: string().strict().required() }),
 
   auth: object({
-    expiresInMs: PositiveNumber,
+    expiresInMs: PositiveNumber.required(),
 
     jwt: object({
       secret: string().strict().required(),
-      algorithm: JWTAlgorithm,
+      algorithm: JWTAlgorithm.required(),
       issuer: string().strict().required(),
       audience: string().strict().required(),
     }),

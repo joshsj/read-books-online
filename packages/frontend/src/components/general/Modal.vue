@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, useAttrs } from "vue";
+
 defineProps({
   title: { type: String, required: true },
 
@@ -13,24 +15,30 @@ defineProps({
   loading: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["update:active", "open", "main", "alt"]);
+const emit = defineEmits(["update:active", "close", "open", "main", "alt"]);
 
 const onMainClick = () => {
-  close();
   emit("main");
+  close();
 };
 
 const onOtherClick = () => {
-  close();
   emit("alt");
+  close();
 };
 
-const close = () => emit("update:active", false);
+const attrs = useAttrs();
+onMounted(() => console.log(attrs));
+
+const close = () => {
+  emit("update:active", false);
+  emit("close");
+};
 </script>
 
 <template>
   <!-- TODO check why update:active doesn't emit on close -->
-  <o-modal v-bind="$attrs" @close="close">
+  <o-modal @close="close">
     <header class="modal-card-head">
       <p class="modal-card-title">{{ title }}</p>
     </header>

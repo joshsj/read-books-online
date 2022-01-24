@@ -1,7 +1,8 @@
 import {
   notFound,
-  allocatingOwnTicket,
-  allocatingAllocatedTicket,
+  reviewingApprovedTicket,
+  reviewingNonAllocatedTicket,
+  reviewingOtherTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IAuditService } from "@backend/application/common/interfaces/auditService";
@@ -10,20 +11,25 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
+import { ReviewState } from "@backend/domain/constants/reviewState";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
-const AllocateTicketRequest = object({ ticketId: Id }).concat(Request("allocateTicketRequest"));
-type AllocateTicketRequest = InferType<typeof AllocateTicketRequest>;
+const ReviewTicketRequest = object({
+  ticketId: Id,
+  reviewState: ReviewState,
+}).concat(Request("reviewTicketRequest"));
 
-class AllocateTicketRequestValidator implements IRequestValidator<AllocateTicketRequest> {
-  requestName = "allocateTicketRequest" as const;
+type ReviewTicketRequest = InferType<typeof ReviewTicketRequest>;
+
+class ReviewTicketRequestValidator implements IRequestValidator<ReviewTicketRequest> {
+  requestName = "reviewTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
   async validate(request: unknown) {
-    ensure(AllocateTicketRequest.isValidSync(request), new RBOError("validation"));
+    ensure(ReviewTicketRequest.isValidSync(request), new RBOError("validation"));
 
     const ticket = await this.ticketRepository.get(request.ticketId);
 
@@ -31,8 +37,8 @@ class AllocateTicketRequestValidator implements IRequestValidator<AllocateTicket
   }
 }
 
-class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTicketRequest> {
-  requestName = "allocateTicketRequest" as const;
+class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRequest> {
+  requestName = "reviewTicketRequest" as const;
   requiredRoles = ["employee"] as const;
 
   constructor(
@@ -42,41 +48,45 @@ class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTick
     super(identityService);
   }
 
-  async authorize(request: AllocateTicketRequest): Promise<void> {
+  async authorize(request: ReviewTicketRequest) {
     await super.authorize(request);
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
+
+    ensure(!!ticket.allocated, new RBOError("authorization", reviewingNonAllocatedTicket));
+    ensure(
+      ticket.reviewState !== "approved",
+      new RBOError("authorization", reviewingApprovedTicket)
+    );
+
     const currentUser = await this.identityService.getCurrentUser();
 
-    ensure(!ticket.allocated, new RBOError("validation", allocatingAllocatedTicket));
-
     ensure(
-      ticket.created.by._id !== currentUser._id,
-      new RBOError("authorization", allocatingOwnTicket)
+      ticket.allocated.by._id === currentUser._id,
+      new RBOError("authorization", reviewingOtherTicket)
     );
   }
 }
 
-class AllocateTicketCommandHandler implements ICommandHandler<AllocateTicketRequest> {
-  handles = "allocateTicketRequest" as const;
-
+class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest> {
+  handles = "reviewTicketRequest" as const;
   constructor(
     private readonly ticketRepository: ITicketRepository,
     private readonly auditService: IAuditService
   ) {}
-
-  async handle({ ticketId }: AllocateTicketRequest) {
+  async handle({ ticketId, reviewState }: ReviewTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    await this.auditService.audit(ticket, "allocated");
+    await this.auditService.audit(ticket, "reviewed");
+    ticket.reviewState = reviewState;
 
     await this.ticketRepository.update(ticket);
   }
 }
 
 export {
-  AllocateTicketRequest,
-  AllocateTicketRequestAuthorizer,
-  AllocateTicketRequestValidator,
-  AllocateTicketCommandHandler,
+  ReviewTicketCommandHandler,
+  ReviewTicketRequest,
+  ReviewTicketRequestAuthorizer,
+  ReviewTicketRequestValidator,
 };

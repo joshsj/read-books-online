@@ -37,7 +37,13 @@ export const userAlreadyExists = (username: string) =>
 export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
 
-export const reviewingOwnTicket = (action: "allocate") =>
-  `You cannot ${action} your own ticket` as const;
-export const cancelOtherTicket = "You cannot delete a ticket created by another user";
+export const allocatingOwnTicket = "You cannot allocate your own ticket";
+export const allocatingAllocatedTicket =
+  "You cannot allocate a ticket which has already been allocated";
+export const cancelOtherTicket = "You cannot delete a ticket which was created by another user";
 export const cancelAllocatedTicket = "You cannot delete a ticket which has been allocated";
+export const reviewingApprovedTicket = "You cannot review a ticket which has been approved";
+export const reviewingNonAllocatedTicket =
+  "You cannot review a ticket which has not been allocated";
+export const reviewingOtherTicket =
+  "You cannot review a ticket which is allocated to another employee";

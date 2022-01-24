@@ -44,6 +44,8 @@
   padding-right: 1rem;
 }
 
+// active dropdown items look strange, basically permanently hovered
+// revert oruga css
 .o-drop__item--active {
   color: inherit;
   background-color: inherit;
@@ -51,4 +53,8 @@
 
 .display-none {
   display: none;
+}
+
+.content blockquote {
+  @extend .is-italic;
 }

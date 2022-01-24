@@ -1,21 +1,46 @@
 import { Id, Role, TicketDto } from "@client/models";
+import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
+import { h } from "vue";
 import { Interactor, useInteractor } from "./interactor";
 
 const userBusiness = {
-  hasRoles: (_roles: Role[], user?: UserStore) => {
+  hasRoles: (_roles: Role[], user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
     if (!(_roles.length && resolvedUser)) {
-      return;
+      return false;
     }
 
     return _roles.every((r) => resolvedUser.roles.includes(r));
   },
 };
 
-const createTicketBusiness = ({ notify, confirm }: Interactor) => ({
+const execTicketAction = async (
+  { notify, confirm }: Interactor,
+  confirmMessage: string,
+  request: () => Promise<RBOErrorDto | void>,
+  successMessage: string
+): Promise<boolean> => {
+  const confirmation = await confirm(confirmMessage);
+
+  if (!confirmation) {
+    return false;
+  }
+
+  const response = await request();
+
+  if (isRBOError(response)) {
+    notify(response);
+    return false;
+  }
+
+  notify({ message: successMessage, variant: "success" });
+  return true;
+};
+
+const createTicketBusiness = (interactor: Interactor) => ({
   canAllocate: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
@@ -26,32 +51,21 @@ const createTicketBusiness = ({ notify, confirm }: Interactor) => ({
     return (
       !ticket.allocated &&
       ticket.created.by._id !== resolvedUser._id &&
-      (userBusiness.hasRoles(["employee"], user) ?? false)
+      userBusiness.hasRoles(["employee"], user)
     );
   },
 
-  allocate: async (ticketId: Id): Promise<boolean> => {
-    const confirmation = await confirm(
-      "Are you sure you want to allocate this ticket to yourself?"
-    );
-
-    if (!confirmation) {
-      return false;
-    }
-
-    const response = await client.ticket.allocation.create({
-      requestName: "allocateTicketRequest",
-      ticketId,
-    });
-
-    if (isRBOError(response)) {
-      notify(response);
-      return false;
-    }
-
-    notify({ message: "Allocation successful", variant: "success" });
-    return true;
-  },
+  allocate: async ({ _id }: TicketDto) =>
+    execTicketAction(
+      interactor,
+      "Are you sure you want to allocate this ticket to yourself?",
+      () =>
+        client.ticket.allocation.create({
+          requestName: "allocateTicketRequest",
+          ticketId: _id,
+        }),
+      "Allocation successful"
+    ),
 
   canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
@@ -63,21 +77,57 @@ const createTicketBusiness = ({ notify, confirm }: Interactor) => ({
     return !ticket.allocated && ticket.created.by._id === resolvedUser._id;
   },
 
-  cancel: async (ticketId: Id): Promise<boolean> => {
-    const confirmation = await confirm("Are you sure you want to cancel this ticket?");
+  cancel: async ({ _id }: TicketDto) =>
+    execTicketAction(
+      interactor,
+      "Are you sure you want to cancel this ticket?",
+      () => client.ticket.delete(_id),
+      "Ticket cancelled"
+    ),
 
-    if (!confirmation) {
+  canReview: (ticket: TicketDto, user?: UserStore): boolean => {
+    const resolvedUser = user ?? store.user;
+
+    if (!resolvedUser) {
       return false;
     }
 
-    const response = await client.ticket.delete(ticketId);
+    return (
+      !!ticket.allocated &&
+      ticket.allocated.by._id === resolvedUser._id &&
+      (!ticket.reviewed || ticket.reviewState !== "approved")
+    );
+  },
+
+  review: async (ticket: TicketDto): Promise<boolean> => {
+    const { from } = await interactor.modal(
+      {
+        title: "Confirmation",
+        mainButtonText: "Approve",
+      },
+      undefined,
+      h("div", { class: "content" }, [
+        h("p", {}, "Are you sure you want to review this ticket?"),
+        h("blockquote", {}, ticket.information),
+      ])
+    );
+
+    if (from !== "main") {
+      return false;
+    }
+
+    const response = await client.ticket.review.put({
+      requestName: "reviewTicketRequest",
+      ticketId: ticket._id,
+      reviewState: "approved",
+    });
 
     if (isRBOError(response)) {
-      notify(response);
+      interactor.notify(response);
       return false;
     }
 
-    notify({ message: "Ticket cancelled", variant: "success" });
+    interactor.notify({ message: "Review successful", variant: "success" });
     return true;
   },
 });
