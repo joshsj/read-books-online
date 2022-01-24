@@ -16,17 +16,17 @@ const userBusiness = {
 };
 
 const createTicketBusiness = ({ notify, confirm }: Interactor) => ({
-  canAllocate: (ticket: TicketDto, user?: UserStore) => {
+  canAllocate: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
     if (!resolvedUser) {
-      return;
+      return false;
     }
 
     return (
       !ticket.allocated &&
       ticket.created.by._id !== resolvedUser._id &&
-      userBusiness.hasRoles(["employee"], user)
+      (userBusiness.hasRoles(["employee"], user) ?? false)
     );
   },
 
@@ -50,6 +50,34 @@ const createTicketBusiness = ({ notify, confirm }: Interactor) => ({
     }
 
     notify({ message: "Allocation successful", variant: "success" });
+    return true;
+  },
+
+  canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
+    const resolvedUser = user ?? store.user;
+
+    if (!resolvedUser) {
+      return false;
+    }
+
+    return !ticket.allocated && ticket.created.by._id === resolvedUser._id;
+  },
+
+  cancel: async (ticketId: Id): Promise<boolean> => {
+    const confirmation = await confirm("Are you sure you want to cancel this ticket?");
+
+    if (!confirmation) {
+      return false;
+    }
+
+    const response = await client.ticket.delete(ticketId);
+
+    if (isRBOError(response)) {
+      notify(response);
+      return false;
+    }
+
+    notify({ message: "Ticket cancelled", variant: "success" });
     return true;
   },
 });

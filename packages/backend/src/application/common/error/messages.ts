@@ -39,3 +39,5 @@ export const userNotFound = (username?: string) =>
 
 export const reviewingOwnTicket = (action: "allocate") =>
   `You cannot ${action} your own ticket` as const;
+export const cancelOtherTicket = "You cannot delete a ticket created by another user";
+export const cancelAllocatedTicket = "You cannot delete a ticket which has been allocated";

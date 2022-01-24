@@ -10,6 +10,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Username from "@frontend/components/general/Username.vue";
 import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
+import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import { useBusiness } from "@frontend/plugins/business";
 
 const { ticketBusiness } = useBusiness();
@@ -36,14 +37,22 @@ onMounted(getTicket);
 
 <template>
   <div v-if="ticket" class="container">
+    <view-title title="Ticket">
+      <o-button
+        v-if="ticketBusiness.canCancel(ticket)"
+        variant="danger"
+        label="Cancel"
+        @click="
+          ticketBusiness
+            .cancel(ticket._id)
+            .then((x) => x && router.push(route({ name: 'tickets' })))
+        " />
+    </view-title>
+
     <div class="columns is-6">
       <div class="column">
-        <div class="content">
-          <h1 class="title">Ticket</h1>
-
-          <strong>Information</strong>
-          <p>{{ ticket.information }}</p>
-        </div>
+        <strong>Information</strong>
+        <p>{{ ticket.information }}</p>
       </div>
 
       <div class="column is-4 is-offset-2">

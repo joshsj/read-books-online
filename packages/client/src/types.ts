@@ -5,7 +5,7 @@ import { IAuthClient, ITicketClient, IUserClient } from "@client/clients";
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
 type ResponseData = object | void;
-type RequestData<T extends EndpointName> = ResponseData | (T extends "get" ? Id : never);
+type RequestData<T extends EndpointName> = ResponseData | (T extends "get" | "delete" ? Id : never);
 
 type Endpoint<
   TName extends EndpointName,

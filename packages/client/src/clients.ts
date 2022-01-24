@@ -23,7 +23,8 @@ type IAuthClient = {
 type ITicketClient = {
   ticket: Endpoint<"create", CreateTicketRequest> &
     Endpoint<"get", Id, TicketDto> &
-    Endpoint<"get", TicketQuery, TicketDto[]> & {
+    Endpoint<"get", TicketQuery, TicketDto[]> &
+    Endpoint<"delete", Id> & {
       allocation: Endpoint<"create", AllocateTicketRequest>;
     };
 };

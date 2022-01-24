@@ -11,10 +11,11 @@ import RboTicketForm, {
   Exposed,
 } from "@frontend/components/ticket/TicketForm.vue";
 import { useInteractor } from "@frontend/plugins/interactor";
-import { delayedRef, ModifyMode } from "@frontend/utilities/component";
+import { delayedRef } from "@frontend/utilities/component";
 import { onMounted, reactive, ref, shallowRef } from "vue";
 import { store } from "@frontend/store";
 import { useBusiness } from "@frontend/plugins/business";
+import { ModifyMode } from "@frontend/utilities/types";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
@@ -117,12 +118,21 @@ onMounted(getTickets);
               ">
               Allocate
             </o-dropdown-item>
+
+            <o-dropdown-item
+              v-if="ticketBusiness.canCancel(ticket)"
+              @click="
+                ticketBusiness.cancel(ticket._id).then((x) => x && getTickets())
+              ">
+              Cancel
+            </o-dropdown-item>
           </o-dropdown>
         </template>
       </o-table-column>
     </o-table>
 
     <rbo-form-modal
+      id="modify-ticket-modal"
       entity="Ticket"
       v-model:active="modal.showing"
       :mode="modal.mode"
@@ -133,3 +143,9 @@ onMounted(getTickets);
     </rbo-form-modal>
   </div>
 </template>
+
+<style>
+#modify-ticket-modal textarea {
+  height: 5rem;
+}
+</style>

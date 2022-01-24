@@ -22,6 +22,11 @@ import {
   AllocateTicketRequestValidator,
 } from "./ticket/commands/allocateTicket";
 import {
+  CancelTicketCommandHandler,
+  CancelTicketRequestAuthorizer,
+  CancelTicketRequestValidator,
+} from "./ticket/commands/cancelTicket";
+import {
   GetTicketQueryAuthorizer,
   GetTicketQueryHandler,
   GetTicketQueryValidator,
@@ -100,6 +105,7 @@ const registerApplicationDependencies = () => {
     (c) => new GetTicketQueryValidator(c.resolve(Dependency.ticketRepository)),
     () => new GetTicketsQueryValidator(),
     (c) => new AllocateTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new CancelTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -112,6 +118,11 @@ const registerApplicationDependencies = () => {
     (c) => new GetTicketsQueryAuthorizer(c.resolve(Dependency.identityService)),
     (c) =>
       new AllocateTicketRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.ticketRepository)
+      ),
+    (c) =>
+      new CancelTicketRequestAuthorizer(
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
@@ -136,6 +147,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository),
         c.resolve(Dependency.identityService)
       ),
+    (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);
 };
 

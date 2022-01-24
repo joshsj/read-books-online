@@ -1,6 +1,7 @@
 import { authenticator } from "@backend/api/common/middlewares/authenticator";
 import { handleAsync } from "@backend/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
+import { CancelTicketRequest } from "@backend/application/ticket/commands/cancelTicket";
 import { GetTicketRequest } from "@backend/application/ticket/queries/getTicket";
 import { GetTicketsRequest } from "@backend/application/ticket/queries/getTickets";
 import { ICQRS } from "@core/cqrs/types";
@@ -14,6 +15,7 @@ allocationRoutes.post(
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
 
     return { state: "created" };
+    1;
   })
 );
 
@@ -53,6 +55,20 @@ ticketRoutes.post(
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
 
     return { state: "created" };
+  })
+);
+
+ticketRoutes.delete(
+  "/:id",
+  handleAsync(async ({ params }, {}, { getPerRequestContainer }) => {
+    const request: CancelTicketRequest = {
+      requestName: "cancelTicketRequest",
+      ticketId: params.id!,
+    };
+
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(request);
+
+    return { state: "noContent" };
   })
 );
 
