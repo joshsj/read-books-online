@@ -1,5 +1,6 @@
 import { notFound, reviewingOwnTicket } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
+import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -56,14 +57,13 @@ class AllocateTicketCommandHandler implements ICommandHandler<AllocateTicketRequ
 
   constructor(
     private readonly ticketRepository: ITicketRepository,
-    private readonly identityService: IIdentityService
+    private readonly auditService: IAuditService
   ) {}
 
-  async handle(request: AllocateTicketRequest) {
-    const ticket = (await this.ticketRepository.get(request.ticketId))!;
-    const currentUser = await this.identityService.getCurrentUser();
+  async handle({ ticketId }: AllocateTicketRequest) {
+    const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    ticket.allocated = { at: new Date(), by: currentUser };
+    await this.auditService.audit(ticket, "allocated");
 
     await this.ticketRepository.update(ticket);
   }

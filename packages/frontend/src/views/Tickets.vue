@@ -48,7 +48,17 @@ const createTicket = async () => {
 };
 
 const getTickets = async () => {
-  const response = await store.pageLoad(client.ticket.get({ filter: {} }));
+  const response = await store.pageLoad(
+    client.ticket.get({
+      filter: {
+        created: {
+          by: store.user!.roles.every((r) => r === "client")
+            ? [store.user!._id]
+            : [],
+        },
+      },
+    })
+  );
 
   if (isRBOError(response)) {
     notify(response);
@@ -64,7 +74,9 @@ onMounted(getTickets);
 <template>
   <div class="container">
     <view-title title="Tickets">
-      <o-button @click="modal.showing = true">Create</o-button>
+      <o-button variant="primary" @click="modal.showing = true">
+        Create
+      </o-button>
     </view-title>
 
     <o-table :data="tickets">

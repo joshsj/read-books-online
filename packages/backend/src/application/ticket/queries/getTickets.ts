@@ -33,7 +33,7 @@ class GetTicketsQueryAuthorizer implements IRequestAuthorizer<GetTicketsRequest>
     }
 
     ensure(
-      !!filter?.created?.by && filter.created.by.every((r) => r === "client"),
+      !!filter?.created?.by && filter.created.by.every((r) => r === currentUser._id),
       new RBOError("authorization")
     );
   }

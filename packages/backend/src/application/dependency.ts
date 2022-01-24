@@ -145,7 +145,7 @@ const registerApplicationDependencies = () => {
     (c) =>
       new AllocateTicketCommandHandler(
         c.resolve(Dependency.ticketRepository),
-        c.resolve(Dependency.identityService)
+        c.resolve(Dependency.auditService)
       ),
     (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);

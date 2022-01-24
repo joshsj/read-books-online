@@ -23,8 +23,6 @@ abstract class SchemaRequestValidator<T extends IRequest<any>> implements IReque
   constructor(private readonly schema: ObjectSchema<T>) {}
 
   async validate(request: unknown) {
-    console.log(this.schema.validateSync(request));
-
     ensure(this.schema.isValidSync(request), new RBOError("validation"));
   }
 }

@@ -9,7 +9,7 @@ class AuditService implements IAuditService {
     return await this.persistFields({}, fields);
   }
 
-  async audit<T extends string>(auditable: Auditable<T>, ...fields: T[]) {
+  async audit<T extends string>(auditable: Partial<Auditable<T>>, ...fields: T[]) {
     await this.persistFields(auditable, fields);
   }
 
