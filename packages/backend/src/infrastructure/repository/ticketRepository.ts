@@ -11,22 +11,27 @@ class TicketRepository extends MongoRepository<Ticket> implements ITicketReposit
   }
 
   public async filtered({ filter }: TicketQuery) {
+    if (!filter) {
+      return this.get();
+    }
+
     const builder = new FilterBuilder<Ticket>();
 
     if (filter.information) {
-      builder.add({ information: { $regex: new RegExp(filter.information), $options: "i" } });
+      builder.add("string", "information", filter.information);
     }
 
-    if (filter.createdAt.from) {
-      builder.add({ createdAt: { $gte: filter.createdAt.from } });
+    if (filter.created?.at) {
+      builder.add({
+        "created.at": {
+          $gte: filter.created.at.from,
+          $lte: filter.created.at.to,
+        },
+      });
     }
 
-    if (filter.createdAt.to) {
-      builder.add({ createdAt: { $lte: filter.createdAt.to } });
-    }
-
-    if (filter.createdBy?.length) {
-      builder.add({ createdBy: { $in: filter.createdBy } });
+    if (filter.created?.by?.length) {
+      builder.add({ "created.by": { $in: filter.created.by } });
     }
 
     return this._filtered(builder.getFilter());

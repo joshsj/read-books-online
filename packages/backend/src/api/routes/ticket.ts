@@ -27,9 +27,7 @@ ticketRoutes.get(
       ...getParsedQuery(),
     };
 
-    const value = await getPerRequestContainer()
-      .resolve<ICQRS>(Dependency.cqrs)
-      .send(request ?? { requestName: "getTicketsRequest" });
+    const value = await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(request);
 
     return { state: "ok", value };
   })

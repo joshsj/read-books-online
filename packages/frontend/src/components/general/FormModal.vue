@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { ModifyMode } from "@frontend/utilities/component";
+import { ModifyMode } from "@frontend/utilities/types";
 import RboModal from "@frontend/components/general/Modal.vue";
 import { capitalize } from "@core/utilities/string";
 

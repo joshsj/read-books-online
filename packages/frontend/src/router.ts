@@ -41,7 +41,12 @@ const route = <T extends object | void = void>(
 };
 
 const routes = {
-  login: route({ path: "/login", component: Login, meta: { auth: "none" } }),
+  authorize: route({
+    path: "/auth",
+    alias: ["/signup", "/login"],
+    component: Login,
+    meta: { auth: "none" },
+  }),
 
   tickets: route({
     path: "/tickets",
@@ -83,7 +88,7 @@ const createRouter = () => {
     }
 
     if (!store.user) {
-      return routeHelper({ name: "login" });
+      return routeHelper({ name: "authorize" });
     }
 
     return;

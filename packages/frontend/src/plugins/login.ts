@@ -23,6 +23,16 @@ const toUserStore = (token: string): UserStore => {
 
 const isLoggedIn = (): boolean => !!store.user;
 
+const signUp = async (router: Router, accountDto: AccountDto) => {
+  const response = await client.user.create({ requestName: "createUserRequest", ...accountDto });
+
+  if (isRBOError(response)) {
+    return response;
+  }
+
+  return await login(router, accountDto);
+};
+
 const login = async (router: Router, accountDto: AccountDto): Promise<RBOErrorDto | void> => {
   const response = await client.auth.post(accountDto);
 
@@ -39,13 +49,14 @@ const logout = (router: Router) => {
 
   client.auth.delete();
 
-  router.push(route({ name: "login" }));
+  router.push(route({ name: "authorize" }));
 };
 
 const useLogin = () => {
   const router = useRouter();
 
   return {
+    signUp: (accountDto: AccountDto) => signUp(router, accountDto),
     login: (accountDto: AccountDto) => login(router, accountDto),
     logout: () => logout(router),
     isLoggedIn,

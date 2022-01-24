@@ -26,14 +26,14 @@ class GetTicketsQueryAuthorizer implements IRequestAuthorizer<GetTicketsRequest>
   constructor(private readonly identityService: IIdentityService) {}
 
   async authorize({ filter }: GetTicketsRequest) {
-    if (!(filter && filter.createdBy && filter.createdBy.length)) {
+    const currentUser = await this.identityService.getCurrentUser();
+
+    if (currentUser.roles.some((r) => r !== "client")) {
       return;
     }
 
-    const currentUser = await this.identityService.getCurrentUser();
-
     ensure(
-      currentUser.roles.some((x) => x !== "client"),
+      !!filter?.created?.by && filter.created.by.every((r) => r === "client"),
       new RBOError("authorization")
     );
   }

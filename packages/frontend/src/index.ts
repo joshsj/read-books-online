@@ -7,15 +7,16 @@ import "@frontend/styles.scss";
 import {
   Button,
   Config as OrugaConfig,
+  Dropdown,
   Field,
   Icon,
   Input,
   Loading,
   Modal,
   Notification,
-  Tooltip,
+  Pagination,
   Table,
-  Dropdown,
+  Tooltip,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -48,8 +49,8 @@ createApp(App)
     },
 
     loading: {
-      overlayClass: "overlay-background",
-      fullPageClass: "overlay-background",
+      overlayClass: "loading-overlay-background",
+      fullPageClass: "loading-overlay-background",
     },
 
     field: {
@@ -109,6 +110,23 @@ createApp(App)
       itemClass: "dropdown-item",
       mobileModal: false,
     },
+
+    pagination: {
+      override: true,
+      rootClass: ({}: string, { props }: { props: { rounded?: boolean } }) => {
+        const classes = ["pagination"];
+        props.rounded && classes.push("is-rounded");
+        return classes.join(" ");
+      },
+      sizeClass: "is-",
+      simpleClass: "is-simple",
+      linkClass: "pagination-link",
+      linkCurrentClass: "is-current",
+      linkDisabledClass: "is-disabled",
+      nextBtnClass: "pagination-next",
+      prevBtnClass: "pagination-previous",
+      infoClass: "display-none",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -120,4 +138,5 @@ createApp(App)
   .use(Icon)
   .use(Table)
   .use(Dropdown)
+  .use(Pagination)
   .mount("#app");

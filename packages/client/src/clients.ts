@@ -2,12 +2,17 @@ import {
   AccountDto,
   AllocateTicketRequest,
   CreateTicketRequest,
+  CreateUserRequest,
   Id,
   TicketDto,
   TicketQuery,
   TokenDto,
 } from "@client/models";
 import { Endpoint } from "@client/types";
+
+type IUserClient = {
+  user: Endpoint<"create", CreateUserRequest>;
+};
 
 type IAuthClient = {
   auth: Endpoint<"get", void, TokenDto> &
@@ -23,4 +28,4 @@ type ITicketClient = {
     };
 };
 
-export { IAuthClient, ITicketClient };
+export { IAuthClient, ITicketClient, IUserClient };

@@ -1,6 +1,6 @@
 import { RBOErrorDto } from "@backend/application/common/dtos/errorDto";
 import { Id } from "@backend/domain/common/id";
-import { IAuthClient, ITicketClient } from "@client/clients";
+import { IAuthClient, ITicketClient, IUserClient } from "@client/clients";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
@@ -26,7 +26,7 @@ type RBOClientRequestState = {
 
 type RBOClientRequester = (state: RBOClientRequestState) => Promise<any>;
 
-type RBOClient = IAuthClient & ITicketClient;
+type RBOClient = IAuthClient & ITicketClient & IUserClient;
 
 export {
   Endpoint,

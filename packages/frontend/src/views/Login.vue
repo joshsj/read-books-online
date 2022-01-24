@@ -5,18 +5,21 @@ import { useLogin } from "@frontend/plugins/login";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { fieldState } from "@frontend/utilities/forms";
 import { useField, useForm } from "vee-validate";
+import { reactive } from "vue";
+import { fakeLoad } from "@frontend/utilities/component";
 
 const { notify } = useInteractor();
-const { login } = useLogin();
+const { login, signUp } = useLogin();
 
 const { handleSubmit } = useForm<AccountDto>({ validationSchema: AccountDto });
 
-const onSubmit = handleSubmit(async (dto) => {
-  const error = await login(dto);
+const titles = reactive(["Login", "Sign Up"]);
+const swap = () => fakeLoad().then(() => titles.reverse());
 
-  if (error) {
-    notify(error);
-  }
+const onSubmit = handleSubmit(async (dto) => {
+  const error = await (titles[0]! === "Sign Up" ? signUp : login)(dto);
+
+  error && notify(error);
 });
 
 const username = useField<string>("username");
@@ -25,7 +28,12 @@ const password = useField<string>("password");
 
 <template>
   <div class="container">
-    <view-title title="Login" />
+    <view-title :title="titles[0]!">
+      <span class="is-size-5">
+        (or <a @click="swap">{{ titles[1] }}</a
+        >)
+      </span>
+    </view-title>
 
     <form @submit="onSubmit">
       <o-field
@@ -53,7 +61,9 @@ const password = useField<string>("password");
       </o-field>
 
       <o-field>
-        <o-button native-type="submit" variant="primary">Login</o-button>
+        <o-button native-type="submit" variant="primary">
+          {{ titles[0] }}
+        </o-button>
       </o-field>
     </form>
   </div>

@@ -1,8 +1,5 @@
+import { store } from "@frontend/store";
 import { ComponentInternalInstance, ShallowRef, VNode } from "vue";
-
-type ModalPath = "main" | "other";
-
-type ModifyMode = "create" | "update";
 
 const delayedRef =
   <T = ComponentInternalInstance["exposed"]>(_value: ShallowRef<T>) =>
@@ -10,4 +7,14 @@ const delayedRef =
     _value.value = vnode.component?.exposed as T;
   };
 
-export { ModifyMode, ModalPath, delayedRef };
+const fakeLoad = () =>
+  new Promise<void>((resolve) => {
+    store.pageLoading = true;
+
+    setTimeout(() => {
+      store.pageLoading = false;
+      resolve();
+    }, 150);
+  });
+
+export { delayedRef, fakeLoad };
