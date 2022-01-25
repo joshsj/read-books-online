@@ -72,8 +72,6 @@ const getTickets = async () => {
 const approvalStateClass = (state: TicketState) =>
   "tag is-light is-medium is-" + approvalState.variant(state);
 
-const hmm = console.log;
-
 onMounted(getTickets);
 </script>
 
