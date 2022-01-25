@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, useAttrs } from "vue";
-
 defineProps({
   title: { type: String, required: true },
 
@@ -26,9 +24,6 @@ const onOtherClick = () => {
   emit("alt");
   close();
 };
-
-const attrs = useAttrs();
-onMounted(() => console.log(attrs));
 
 const close = () => {
   emit("update:active", false);

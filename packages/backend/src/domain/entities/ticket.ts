@@ -1,22 +1,31 @@
-import { Auditable } from "@backend/domain/common/auditable";
 import { Entity } from "@backend/domain/common/entity";
 import { ReviewState } from "@backend/domain/constants/reviewState";
-import { object, ObjectSchema, string } from "yup";
+import { date, InferType, object, string } from "yup";
+import { User } from "./user";
 
-type Ticket = Entity &
-  Auditable<"created"> &
-  Partial<Auditable<"allocated" | "reviewed">> & {
-    information: string;
-    reviewState?: ReviewState;
-  };
-
-const Ticket: ObjectSchema<Ticket> = object({
+const InitialFields = object({
   information: string().strict().required(),
-  reviewState: ReviewState.optional(),
-})
-  .concat(Entity)
-  .concat(Auditable("created"))
-  .concat(Auditable("allocated").partial())
-  .concat(Auditable("reviewed").partial());
+
+  created: object({
+    at: date().strict().required(),
+    by: User.required(),
+  }),
+});
+
+const AdditionalFields = object({
+  allocated: object({
+    at: date().strict().required(),
+    to: User.required(),
+  }),
+
+  reviewed: object({
+    at: date().strict().required(),
+    state: ReviewState.required(),
+  }),
+}).partial();
+
+const Ticket = Entity.concat(InitialFields).concat(AdditionalFields);
+
+type Ticket = InferType<typeof Ticket>;
 
 export { Ticket };

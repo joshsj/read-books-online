@@ -1,4 +1,3 @@
-import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
@@ -10,7 +9,6 @@ import {
   IUserRepository,
 } from "@backend/application/common/interfaces/repository";
 import { Dependency } from "@backend/application/dependency";
-import { AuditService } from "@backend/infrastructure/auditService";
 import { HashingService } from "@backend/infrastructure/hashingService";
 import { IdentityService } from "@backend/infrastructure/identityService";
 import { Logger } from "@backend/infrastructure/logger";
@@ -42,10 +40,6 @@ const registerInfrastructureDependencies = () => {
 
   container.register<IHashingService>(Dependency.hashingService, {
     useFactory: (c) => new HashingService(c.resolve<IConfiguration>(Dependency.configuration)),
-  });
-
-  container.register<IAuditService>(Dependency.auditService, {
-    useFactory: (c) => new AuditService(c.resolve(Dependency.identityService)),
   });
 
   container

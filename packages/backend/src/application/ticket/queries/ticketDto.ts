@@ -1,32 +1,20 @@
-import { AuditableDto } from "@backend/application/common/dtos/auditableDto";
 import { UserDto } from "@backend/application/common/dtos/userDto";
+import { ReviewState } from "@backend/domain/constants/reviewState";
 import { Ticket } from "@backend/domain/entities/ticket";
 
-type TicketDto = Pick<Ticket, "_id" | "information" | "reviewState"> &
-  AuditableDto<"created"> &
-  Partial<AuditableDto<"allocated" | "reviewed">>;
+type TicketDto = Pick<Ticket, "_id" | "information"> & {
+  created: { at: Date; by: UserDto };
+  allocated?: { at: Date; to: UserDto };
+  reviewed?: { at: Date; state: ReviewState };
+};
 
 const TicketDto = {
-  fromTicket: ({
+  fromTicket: ({ _id, information, created, allocated, reviewed }: Ticket): TicketDto => ({
     _id,
     information,
-    created,
-    allocated,
+    created: { at: created.at, by: UserDto.fromUser(created.by) },
+    allocated: allocated ? { at: allocated.at, to: UserDto.fromUser(allocated.to) } : undefined,
     reviewed,
-    reviewState,
-  }: Ticket): TicketDto => ({
-    _id,
-    information,
-
-    created: {
-      at: created.at,
-      by: UserDto.fromUser(created.by),
-    },
-
-    allocated: allocated ? { at: allocated.at, by: UserDto.fromUser(allocated.by) } : undefined,
-
-    reviewState,
-    reviewed: reviewed ? { at: reviewed.at, by: UserDto.fromUser(reviewed.by) } : undefined,
   }),
 };
 

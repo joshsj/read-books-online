@@ -4,7 +4,6 @@ import {
   allocatingAllocatedTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
-import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -62,13 +61,17 @@ class AllocateTicketCommandHandler implements ICommandHandler<AllocateTicketRequ
 
   constructor(
     private readonly ticketRepository: ITicketRepository,
-    private readonly auditService: IAuditService
+    private readonly identityService: IIdentityService
   ) {}
 
   async handle({ ticketId }: AllocateTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
+    const currentUser = await this.identityService.getCurrentUser();
 
-    await this.auditService.audit(ticket, "allocated");
+    ticket.allocated = {
+      at: new Date(),
+      to: currentUser,
+    };
 
     await this.ticketRepository.update(ticket);
   }

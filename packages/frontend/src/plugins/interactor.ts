@@ -47,7 +47,7 @@ const useInteractor = () => {
   const modal = <T>(
     props: ModalProps & Record<string, any>,
     payload: T,
-    children?: (() => string) | VNode | VNodeArrayChildren
+    children?: (() => string) | VNode
   ) =>
     new Promise<{ from: "main" | "alt" | "close"; payload: T }>((resolve) => {
       const el: Element = (() => {

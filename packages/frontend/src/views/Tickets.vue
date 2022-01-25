@@ -70,7 +70,7 @@ const getTickets = async () => {
 };
 
 const reviewStateClass = (reviewState?: ReviewState) =>
-  "tag is-light is-" + reviewStateVariant(reviewState);
+  "tag is-light is-medium is-" + reviewStateVariant(reviewState);
 
 onMounted(getTickets);
 </script>
@@ -83,7 +83,7 @@ onMounted(getTickets);
       </o-button>
     </view-title>
 
-    <o-table :data="tickets">
+    <o-table rootClass="block" :data="tickets">
       <o-table-column label="Information">
         <template v-slot="{ row: { information } }">
           <span>
@@ -105,21 +105,24 @@ onMounted(getTickets);
         <template v-slot="{ row: { allocated } }">
           <span v-if="allocated">
             {{ formatDate(allocated.at, "date") }},
-            <username :username="allocated.by.username" />
+            <username :username="allocated.to.username" />
           </span>
         </template>
       </o-table-column>
 
       <o-table-column label="Reviewed">
-        <template v-slot="{ row: { reviewed, reviewState } }">
-          <span>
-            <template v-if="reviewed">
-              {{ formatDate(reviewed.at, "date") }},
-            </template>
-            <span :class="reviewStateClass(reviewState)">
-              {{ capitalize(reviewState ?? "pending") }}
+        <template v-slot="{ row: { allocated, reviewed } }">
+          <template v-if="allocated">
+            <span>
+              <template v-if="reviewed">
+                {{ formatDate(reviewed.at, "date") + " " }}
+              </template>
+
+              <span :class="reviewStateClass(reviewed?.state)">
+                {{ capitalize(reviewed?.state ?? "pending") }}
+              </span>
             </span>
-          </span>
+          </template>
         </template>
       </o-table-column>
 
@@ -166,6 +169,12 @@ onMounted(getTickets);
           </o-dropdown>
         </template>
       </o-table-column>
+
+      <template #empty>
+        <div class="notification is-info is-light" v-if="!tickets.length">
+          No tickets found
+        </div>
+      </template>
     </o-table>
 
     <rbo-form-modal

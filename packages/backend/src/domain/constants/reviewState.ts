@@ -1,6 +1,6 @@
 import { mixed } from "yup";
 
-const ReviewStates = ["approved", "rejected"] as const;
+const ReviewStates = ["approved", "rejected", "pending"] as const;
 
 type ReviewState = typeof ReviewStates[number];
 

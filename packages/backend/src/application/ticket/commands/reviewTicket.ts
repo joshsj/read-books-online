@@ -5,7 +5,6 @@ import {
   reviewingOtherTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
-import { IAuditService } from "@backend/application/common/interfaces/auditService";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -18,7 +17,7 @@ import { InferType, object } from "yup";
 
 const ReviewTicketRequest = object({
   ticketId: Id,
-  reviewState: ReviewState,
+  reviewState: ReviewState.required(),
 }).concat(Request("reviewTicketRequest"));
 
 type ReviewTicketRequest = InferType<typeof ReviewTicketRequest>;
@@ -55,14 +54,14 @@ class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRe
 
     ensure(!!ticket.allocated, new RBOError("authorization", reviewingNonAllocatedTicket));
     ensure(
-      ticket.reviewState !== "approved",
+      ticket.reviewed?.state !== "approved",
       new RBOError("authorization", reviewingApprovedTicket)
     );
 
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
-      ticket.allocated.by._id === currentUser._id,
+      ticket.allocated.to._id === currentUser._id,
       new RBOError("authorization", reviewingOtherTicket)
     );
   }
@@ -70,15 +69,14 @@ class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRe
 
 class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest> {
   handles = "reviewTicketRequest" as const;
-  constructor(
-    private readonly ticketRepository: ITicketRepository,
-    private readonly auditService: IAuditService
-  ) {}
+  constructor(private readonly ticketRepository: ITicketRepository) {}
   async handle({ ticketId, reviewState }: ReviewTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    await this.auditService.audit(ticket, "reviewed");
-    ticket.reviewState = reviewState;
+    ticket.reviewed = {
+      at: new Date(),
+      state: reviewState,
+    };
 
     await this.ticketRepository.update(ticket);
   }

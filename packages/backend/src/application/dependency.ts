@@ -50,7 +50,6 @@ const Dependency = toDependencies([
   "hashingService",
   "identityService",
   "httpContextService",
-  "auditService",
   // repository
   "userRepository",
   "refreshTokenRepository",
@@ -148,7 +147,7 @@ const registerApplicationDependencies = () => {
     (c) =>
       new CreateTicketCommandHandler(
         c.resolve(Dependency.ticketRepository),
-        c.resolve(Dependency.auditService)
+        c.resolve(Dependency.identityService)
       ),
 
     (c) => new GetTicketQueryHandler(c.resolve(Dependency.ticketRepository)),
@@ -156,15 +155,10 @@ const registerApplicationDependencies = () => {
     (c) =>
       new AllocateTicketCommandHandler(
         c.resolve(Dependency.ticketRepository),
-        c.resolve(Dependency.auditService)
+        c.resolve(Dependency.identityService)
       ),
     (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
-    (c) =>
-      new ReviewTicketCommandHandler(
-        c.resolve(Dependency.ticketRepository),
-
-        c.resolve(Dependency.auditService)
-      ),
+    (c) => new ReviewTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);
 };
 

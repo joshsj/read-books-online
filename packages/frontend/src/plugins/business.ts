@@ -94,8 +94,8 @@ const createTicketBusiness = (interactor: Interactor) => ({
 
     return (
       !!ticket.allocated &&
-      ticket.allocated.by._id === resolvedUser._id &&
-      (!ticket.reviewed || ticket.reviewState !== "approved")
+      ticket.allocated.to._id === resolvedUser._id &&
+      (!ticket.reviewed || ticket.reviewed.state !== "approved")
     );
   },
 

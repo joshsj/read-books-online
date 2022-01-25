@@ -63,7 +63,7 @@ onMounted(getTicket);
             <ticket-state title="Created" class="tile is-child" state="success">
               <p>
                 By <username :username="ticket.created.by.username" /> at
-                {{ formatDate(ticket.created.at, "date") }}
+                {{ formatDate(ticket.created.at) }}
               </p>
             </ticket-state>
 
@@ -72,8 +72,8 @@ onMounted(getTicket);
               class="tile is-child"
               :state="ticket.allocated ? 'success' : 'info'">
               <p v-if="ticket.allocated">
-                To <username :username="ticket.allocated.by.username" /> at
-                {{ formatDate(ticket.created.at, "date") }}
+                To <username :username="ticket.allocated.to.username" /> at
+                {{ formatDate(ticket.allocated.at) }}
               </p>
 
               <p v-else-if="ticketBusiness.canAllocate(ticket)">
@@ -89,14 +89,15 @@ onMounted(getTicket);
             </ticket-state>
 
             <ticket-state
+              v-if="ticket.allocated"
               title="Review"
               class="tile is-child"
-              :state="reviewStateVariant(ticket.reviewState)"
-              v-if="!!ticket.allocated">
-              <p v-if="ticket.reviewState && ticket.reviewed">
-                {{ capitalize(ticket.reviewState) }} at
-                {{ formatDate(ticket.created.at, "date") }}
+              :state="reviewStateVariant(ticket.reviewed.state)">
+              <p v-if="ticket.reviewed">
+                {{ capitalize(ticket.reviewed.state) }} at
+                {{ formatDate(ticket.reviewed.at) }}
               </p>
+
               <p v-else-if="ticketBusiness.canReview(ticket)">
                 Pending (<a
                   @click="
