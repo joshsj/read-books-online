@@ -4,7 +4,14 @@ import { Algorithm } from "jsonwebtoken";
 const PositiveNumber = number().strict().min(0);
 type PositiveNumber = InferType<typeof PositiveNumber>;
 
-const Username = string().strict().min(3);
+const UsernamePattern = /^[\w]+$/;
+const Username = string()
+  .strict()
+  .min(3)
+  .test({
+    test: (s) => (s ? UsernamePattern.test(s) : true),
+    message: "username can only contain letters, numbers, and underscores",
+  });
 type Username = InferType<typeof Username>;
 
 const Password = string().strict().min(8);
