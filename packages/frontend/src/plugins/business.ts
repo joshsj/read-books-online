@@ -1,4 +1,10 @@
-import { TicketState, Role, TicketDto, CreateTicketRequest } from "@client/models";
+import {
+  TicketState,
+  Role,
+  TicketDto,
+  CreateTicketRequest,
+  ProvideNewInformationRequest,
+} from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
@@ -151,6 +157,9 @@ const createTicketBusiness = (interactor: Interactor) => ({
       ticket.created.by._id === resolvedUser._id
     );
   },
+
+  provideNewInfo: (request: ProvideNewInformationRequest) =>
+    execTicketAction(interactor, () => client.ticket.update(request), "Ticket updated"),
 });
 
 const useBusiness = () => {

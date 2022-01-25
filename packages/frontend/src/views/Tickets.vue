@@ -1,39 +1,42 @@
 <script setup lang="ts">
-import { CreateTicketRequest, TicketDto, TicketState } from "@client/models";
+import { TicketDto } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
+import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
 import TicketTable from "@frontend/components/ticket/TicketTable.vue";
-import ModifyTicketModal from "@frontend/components/ticket/TicketInformationModal.vue";
+import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { store } from "@frontend/store";
-import { ModifyMode } from "@frontend/utilities/types";
-import { onMounted, reactive, ref } from "vue";
-import { useBusiness } from "@frontend/plugins/business";
-import { FormContext } from "vee-validate";
 import { TicketInformationModel } from "@frontend/utilities/ticket";
-
-const { ticketBusiness } = useBusiness();
+import { ModifyMode } from "@frontend/utilities/types";
+import { FormContext } from "vee-validate";
+import { onMounted, ref } from "vue";
 
 const { notify } = useInteractor();
 
-const modal = reactive({
-  mode: "create" as ModifyMode,
-  active: false,
-});
-const modalForm = ref<
-  { form: FormContext<TicketInformationModel> } | undefined
->();
+const { ticketBusiness } = useBusiness();
+
+const modal = ref<{ form: FormContext<TicketInformationModel> } | undefined>();
+const modalActive = ref(false);
+const modalMode = ref<ModifyMode>("create");
+
 const onModalMain = async () => {
-  if (!modalForm.value) {
+  if (!modal.value) {
     return;
   }
 
-  const { information } = modalForm.value.form.values;
+  const { ticketId, information } = modal.value.form.values;
 
-  const result = await ticketBusiness.create({
-    requestName: "createTicketRequest",
-    information,
-  });
+  const result = await (modalMode.value === "create"
+    ? ticketBusiness.create({
+        requestName: "createTicketRequest",
+        information,
+      })
+    : ticketBusiness.provideNewInfo({
+        requestName: "provideNewInformationRequest",
+        ticketId,
+        information,
+      }));
 
   result && getTickets();
 };
@@ -61,6 +64,22 @@ const getTickets = async () => {
   tickets.value = response;
 };
 
+const onCreateClick = () => {
+  modalMode.value = "create";
+  modalActive.value = true;
+};
+
+const onProvideNewInfo = ({ _id, information }: TicketDto) => {
+  if (!modal.value) {
+    return;
+  }
+
+  modal.value.form.values.ticketId = _id;
+  modal.value.form.values.information = information;
+  modalMode.value = "update";
+  modalActive.value = true;
+};
+
 onMounted(getTickets);
 </script>
 
@@ -71,18 +90,18 @@ onMounted(getTickets);
         v-if="ticketBusiness.canCreate()"
         variant="primary"
         label="Create"
-        @click="
-          modal.mode = 'create';
-          modal.active = true;
-        " />
+        @click="onCreateClick" />
     </view-title>
 
-    <ticket-table :tickets="tickets" @need-tickets="getTickets" />
-
-    <modify-ticket-modal
-      ref="modalForm"
-      v-model:active="modal.active"
-      :mode="modal.mode"
-      @main="onModalMain" />
+    <ticket-table
+      :tickets="tickets"
+      @need-tickets="getTickets"
+      @provide-new-info="onProvideNewInfo" />
   </div>
+
+  <ticket-information-modal
+    ref="modal"
+    v-model:active="modalActive"
+    :mode="modalMode"
+    @main="onModalMain" />
 </template>

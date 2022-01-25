@@ -15,7 +15,7 @@ defineProps({
   },
 });
 
-const emit = defineEmits(["needTickets"]);
+const emit = defineEmits(["needTickets", "provideNewInfo"]);
 
 const { ticketBusiness } = useBusiness();
 
@@ -98,6 +98,12 @@ const approvalStateClass = (state: TicketState) =>
                 .then((x) => x && emit('needTickets'))
             ">
             Approve
+          </o-dropdown-item>
+
+          <o-dropdown-item
+            v-if="ticketBusiness.canProvideNewInfo(ticket)"
+            @click="emit('provideNewInfo', ticket)">
+            Provide
           </o-dropdown-item>
 
           <o-dropdown-item

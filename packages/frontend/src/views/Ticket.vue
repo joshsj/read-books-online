@@ -14,14 +14,21 @@ import {
   approvalState,
   PendingVariant,
   prettyTicketState,
+  TicketInformationModel,
 } from "@frontend/utilities/ticket";
+import { FormContext } from "vee-validate";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
 
+const props = defineProps({ ticketId: { type: String, required: true } });
+
+const router = useRouter();
 const { ticketBusiness } = useBusiness();
 const { notify } = useInteractor();
-const router = useRouter();
-const props = defineProps({ ticketId: { type: String, required: true } });
+
+const modal = ref<{ form: FormContext<TicketInformationModel> } | undefined>();
+const modalActive = ref(false);
 
 const ticket = ref<TicketDto | undefined>();
 
@@ -35,6 +42,32 @@ const getTicket = async () => {
   }
 
   ticket.value = response;
+};
+
+const onProvideNewInfo = ({ _id, information }: TicketDto) => {
+  if (!modal.value) {
+    return;
+  }
+
+  modal.value.form.values.ticketId = _id;
+  modal.value.form.values.information = information;
+  modalActive.value = true;
+};
+
+const onModalMain = async () => {
+  if (!modal.value) {
+    return;
+  }
+
+  const { ticketId, information } = modal.value.form.values;
+
+  const result = await ticketBusiness.provideNewInfo({
+    requestName: "provideNewInformationRequest",
+    ticketId,
+    information,
+  });
+
+  result && getTicket();
 };
 
 onMounted(getTicket);
@@ -123,7 +156,7 @@ onMounted(getTicket);
                 </template>
 
                 <template v-else-if="ticketBusiness.canProvideNewInfo(ticket)">
-                  (<a>Provide</a>)
+                  (<a @click="onProvideNewInfo(ticket!)">Provide</a>)
                 </template>
               </p>
             </ticket-state>
@@ -132,4 +165,10 @@ onMounted(getTicket);
       </div>
     </div>
   </div>
+
+  <ticket-information-modal
+    ref="modal"
+    mode="Update"
+    v-model:active="modalActive"
+    @main="onModalMain" />
 </template>

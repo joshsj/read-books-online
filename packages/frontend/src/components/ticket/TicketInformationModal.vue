@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RboFormModal from "@frontend/components/general/FormModal.vue";
+import { BlankId } from "@frontend/utilities/constants";
 import { fieldState } from "@frontend/utilities/forms";
 import { TicketInformationModel } from "@frontend/utilities/ticket";
 import { useField, useForm } from "vee-validate";
@@ -8,10 +9,14 @@ const emit = defineEmits(["main"]);
 
 const form = useForm<TicketInformationModel>({
   validationSchema: TicketInformationModel,
+  initialValues: { ticketId: BlankId },
 });
 const information = useField<string>("information");
 
-const onSubmit = form.handleSubmit(() => emit("main"));
+const onSubmit = form.handleSubmit(() => {
+  emit("main");
+  form.resetForm();
+});
 
 defineExpose({ form });
 </script>

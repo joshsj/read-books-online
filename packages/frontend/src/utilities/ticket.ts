@@ -1,4 +1,4 @@
-import { CreateTicketRequest, TicketState } from "@client/models";
+import { ProvideNewInformationRequest, TicketState } from "@client/models";
 import { capitalize } from "@core/utilities/string";
 import { InferType } from "yup";
 
@@ -18,7 +18,7 @@ const approvalState = {
   variant: (state: TicketState): string => variants[state] ?? "info",
 };
 
-const TicketInformationModel = CreateTicketRequest.pick(["information"]);
+const TicketInformationModel = ProvideNewInformationRequest.pick(["ticketId", "information"]);
 type TicketInformationModel = InferType<typeof TicketInformationModel>;
 
 export { approvalState, prettyTicketState, PendingVariant, TicketInformationModel };
