@@ -1,4 +1,4 @@
-import { TicketState, Role, TicketDto } from "@client/models";
+import { TicketState, Role, TicketDto, CreateTicketRequest } from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
@@ -19,14 +19,16 @@ const userBusiness = {
 
 const execTicketAction = async (
   { notify, confirm }: Interactor,
-  confirmMessage: string,
   request: () => Promise<RBOErrorDto | void>,
-  successMessage: string
+  successMessage: string,
+  confirmMessage?: string
 ): Promise<boolean> => {
-  const confirmation = await confirm(confirmMessage);
+  if (confirmMessage) {
+    const confirmation = await confirm(confirmMessage);
 
-  if (!confirmation) {
-    return false;
+    if (!confirmation) {
+      return false;
+    }
   }
 
   const response = await request();
@@ -41,6 +43,11 @@ const execTicketAction = async (
 };
 
 const createTicketBusiness = (interactor: Interactor) => ({
+  canCreate: (user?: UserStore): boolean => (user ?? store.user)?.roles.includes("client") ?? false,
+
+  create: async (request: CreateTicketRequest) =>
+    execTicketAction(interactor, () => client.ticket.create(request), "Ticket created"),
+
   canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
@@ -56,9 +63,9 @@ const createTicketBusiness = (interactor: Interactor) => ({
   cancel: async ({ _id }: TicketDto) =>
     execTicketAction(
       interactor,
-      "Are you sure you want to cancel this ticket?",
       () => client.ticket.delete(_id),
-      "Ticket cancelled"
+      "Ticket cancelled",
+      "Are you sure you want to cancel this ticket?"
     ),
 
   canAllocate: (ticket: TicketDto, user?: UserStore): boolean => {
@@ -78,13 +85,13 @@ const createTicketBusiness = (interactor: Interactor) => ({
   allocate: async ({ _id }: TicketDto) =>
     execTicketAction(
       interactor,
-      "Are you sure you want to allocate this ticket to yourself?",
       () =>
         client.ticket.allocation.create({
           requestName: "allocateTicketRequest",
           ticketId: _id,
         }),
-      "Allocation successful"
+      "Allocation successful",
+      "Are you sure you want to allocate this ticket to yourself?"
     ),
 
   canApprove: (ticket: TicketDto, user?: UserStore): boolean => {
@@ -130,6 +137,19 @@ const createTicketBusiness = (interactor: Interactor) => ({
 
     interactor.notify({ message: "Approval successful", variant: "success" });
     return true;
+  },
+
+  canProvideNewInfo: (ticket: TicketDto, user?: UserStore) => {
+    const resolvedUser = user ?? store.user;
+
+    if (!resolvedUser) {
+      return false;
+    }
+
+    return (
+      ticket.states.at(-1)! === "requiresNewInformation" &&
+      ticket.created.by._id === resolvedUser._id
+    );
   },
 });
 

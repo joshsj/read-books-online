@@ -24,7 +24,7 @@ const approvalStateClass = (state: TicketState) =>
 </script>
 
 <template>
-  <o-table rootClass="block" :data="tickets">
+  <o-table :data="tickets">
     <o-table-column label="Information" width="50%">
       <template v-slot="{ row: { information } }">
         <span>

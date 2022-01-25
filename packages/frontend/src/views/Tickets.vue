@@ -1,46 +1,44 @@
 <script setup lang="ts">
-import { TicketDto, TicketState } from "@client/models";
+import { CreateTicketRequest, TicketDto, TicketState } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
-import RboFormModal from "@frontend/components/general/FormModal.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketTable from "@frontend/components/ticket/TicketTable.vue";
-import RboTicketForm, {
-  Exposed,
-} from "@frontend/components/ticket/TicketForm.vue";
+import ModifyTicketModal from "@frontend/components/ticket/TicketInformationModal.vue";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { store } from "@frontend/store";
-import { delayedRef } from "@frontend/utilities/component";
 import { ModifyMode } from "@frontend/utilities/types";
-import { onMounted, reactive, ref, shallowRef } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import { useBusiness } from "@frontend/plugins/business";
+import { FormContext } from "vee-validate";
+import { TicketInformationModel } from "@frontend/utilities/ticket";
+
+const { ticketBusiness } = useBusiness();
 
 const { notify } = useInteractor();
 
 const modal = reactive({
   mode: "create" as ModifyMode,
-  showing: false,
-  loading: false,
+  active: false,
 });
-const ticketForm = shallowRef<Exposed | undefined>(undefined);
-const getFormRef = delayedRef(ticketForm);
-const tickets = ref<TicketDto[]>([]);
-
-const createTicket = async () => {
-  if (!ticketForm.value) {
-    return;
-  }
-  const { form } = ticketForm.value;
-  const response = await client.ticket.create(form.values);
-
-  if (response) {
-    notify(response);
+const modalForm = ref<
+  { form: FormContext<TicketInformationModel> } | undefined
+>();
+const onModalMain = async () => {
+  if (!modalForm.value) {
     return;
   }
 
-  modal.showing = false;
-  form.resetForm();
-  notify({ message: "Ticket created", variant: "success", duration: "short" });
-  getTickets();
+  const { information } = modalForm.value.form.values;
+
+  const result = await ticketBusiness.create({
+    requestName: "createTicketRequest",
+    information,
+  });
+
+  result && getTickets();
 };
+
+const tickets = ref<TicketDto[]>([]);
 
 const getTickets = async () => {
   const response = await store.pageLoad(
@@ -69,28 +67,22 @@ onMounted(getTickets);
 <template>
   <div class="container">
     <view-title title="Tickets">
-      <o-button variant="primary" @click="modal.showing = true">
-        Create
-      </o-button>
+      <o-button
+        v-if="ticketBusiness.canCreate()"
+        variant="primary"
+        label="Create"
+        @click="
+          modal.mode = 'create';
+          modal.active = true;
+        " />
     </view-title>
 
     <ticket-table :tickets="tickets" @need-tickets="getTickets" />
 
-    <rbo-form-modal
-      id="modify-ticket-modal"
-      entity="Ticket"
-      v-model:active="modal.showing"
+    <modify-ticket-modal
+      ref="modalForm"
+      v-model:active="modal.active"
       :mode="modal.mode"
-      :valid="ticketForm?.form?.meta?.value?.valid ?? true"
-      :loading="modal.loading"
-      @main="createTicket">
-      <rbo-ticket-form @vnode-mounted="getFormRef" />
-    </rbo-form-modal>
+      @main="onModalMain" />
   </div>
 </template>
-
-<style>
-#modify-ticket-modal textarea {
-  height: 5rem;
-}
-</style>

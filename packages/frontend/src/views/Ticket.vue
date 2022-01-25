@@ -121,6 +121,10 @@ onMounted(getTicket);
                     >Approve</a
                   >)
                 </template>
+
+                <template v-else-if="ticketBusiness.canProvideNewInfo(ticket)">
+                  (<a>Provide</a>)
+                </template>
               </p>
             </ticket-state>
           </div>
