@@ -42,13 +42,11 @@ export const allocatingAllocatedTicket =
   "You cannot allocate a ticket which has already been allocated";
 export const cancellingOtherTicket = "You cannot delete a ticket which was created by another user";
 export const cancellingAllocatedTicket = "You cannot delete a ticket which has been allocated";
-export const approveOtherTicket =
-  "You cannot approve a ticket which is allocated to another employee";
-export const approvingApprovedTicket =
-  "You cannot approve a ticket which has already been approved";
-export const approvingNonAllocatedTicket =
-  "You cannot approve a ticket which has not been allocated";
-export const providingNewInformationNotRequired =
-  "This ticket does not require additional information";
-export const providingNewInformationOtherTicket =
+export const reviewingOtherTicket = "You cannot review which is allocated to another employee";
+export const reviewingCompletedTicket =
+  "You cannot complete a ticket which has already been completed";
+export const reviewingNonAllocatedTicket =
+  "You cannot review a ticket which has not been allocated";
+export const reviewingTicketNotRequired = "This ticket does not require additional information";
+export const completingOtherTicket =
   "You cannot provide additional information to a ticket created by another user";

@@ -17,7 +17,7 @@ const TicketSchema: Schema<Ticket> = {
     to: { type: String, ref: UserModel, autopopulate: true },
   },
 
-  approved: {
+  reviewed: {
     at: { type: Date },
     state: { type: String },
   },

@@ -3,7 +3,7 @@ import {
   Role,
   TicketDto,
   CreateTicketRequest,
-  ProvideNewInformationRequest,
+  CompleteTicketRequest,
 } from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
@@ -100,26 +100,26 @@ const createTicketBusiness = (interactor: Interactor) => ({
       "Are you sure you want to allocate this ticket to yourself?"
     ),
 
-  canApprove: (ticket: TicketDto, user?: UserStore): boolean => {
+  canReview: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
     if (!resolvedUser) {
       return false;
     }
 
-    const validStates: TicketState[] = ["allocated", "requiresNewInformation"];
+    const validStates: TicketState[] = ["allocated", "incomplete"];
 
     return (
       validStates.includes(ticket.states.at(-1)!) && ticket.allocated!.to._id === resolvedUser._id
     );
   },
 
-  approve: async (ticket: TicketDto): Promise<boolean> => {
+  review: async (ticket: TicketDto): Promise<boolean> => {
     const { from } = await interactor.modal(
       {
-        title: "Confirmation",
-        mainButtonText: "Approve",
-        altButtonText: "Request Additional Information",
+        title: "Review Ticket",
+        mainButtonText: "Complete",
+        altButtonText: "Incomplete",
         altButtonVariant: "danger",
       },
       undefined,
@@ -130,10 +130,10 @@ const createTicketBusiness = (interactor: Interactor) => ({
       return false;
     }
 
-    const response = await client.ticket.approval.put({
-      requestName: "approveTicketRequest",
+    const response = await client.ticket.review.put({
+      requestName: "reviewTicketRequest",
       ticketId: ticket._id,
-      requiresAdditionalInformation: from === "alt",
+      complete: from === "main",
     });
 
     if (isRBOError(response)) {
@@ -141,24 +141,21 @@ const createTicketBusiness = (interactor: Interactor) => ({
       return false;
     }
 
-    interactor.notify({ message: "Approval successful", variant: "success" });
+    interactor.notify({ message: "Review successful", variant: "success" });
     return true;
   },
 
-  canProvideNewInfo: (ticket: TicketDto, user?: UserStore) => {
+  canComplete: (ticket: TicketDto, user?: UserStore) => {
     const resolvedUser = user ?? store.user;
 
     if (!resolvedUser) {
       return false;
     }
 
-    return (
-      ticket.states.at(-1)! === "requiresNewInformation" &&
-      ticket.created.by._id === resolvedUser._id
-    );
+    return ticket.states.at(-1)! === "incomplete" && ticket.created.by._id === resolvedUser._id;
   },
 
-  provideNewInfo: (request: ProvideNewInformationRequest) =>
+  complete: (request: CompleteTicketRequest) =>
     execTicketAction(interactor, () => client.ticket.update(request), "Ticket updated"),
 });
 

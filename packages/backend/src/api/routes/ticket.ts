@@ -80,7 +80,7 @@ ticketRoutes.post(
 );
 
 ticketRoutes.put(
-  "/approval",
+  "/review",
   handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
 

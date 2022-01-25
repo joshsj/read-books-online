@@ -1,6 +1,6 @@
 import { Entity } from "@backend/domain/common/entity";
 import { date, InferType, object, string } from "yup";
-import { ApprovalState } from "../constants/approvalState";
+import { CompletionState } from "../constants/completionState";
 import { TicketState } from "../constants/ticketState";
 import { User } from "./user";
 
@@ -19,9 +19,9 @@ const AdditionalFields = object({
     to: User.required(),
   }).nullable(),
 
-  approved: object({
+  reviewed: object({
     at: date().strict().required(),
-    state: ApprovalState.required(),
+    state: CompletionState.required(),
   }).nullable(),
 });
 
@@ -34,7 +34,7 @@ const getTicketStates = (ticket: Ticket): TicketState[] => {
 
   ticket.allocated && states.push("allocated");
 
-  ticket.approved && states.push(ticket.approved.state);
+  ticket.reviewed && states.push(ticket.reviewed.state);
 
   return states;
 };

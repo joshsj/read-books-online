@@ -1,24 +1,23 @@
-import { ProvideNewInformationRequest, TicketState } from "@client/models";
+import { CompleteTicketRequest, TicketState } from "@client/models";
 import { capitalize } from "@core/utilities/string";
 import { InferType } from "yup";
 
 const PendingVariant = "info" as const;
 
-const prettyTicketState = (state: TicketState) =>
-  state === "requiresNewInformation" ? "Requires New Information" : capitalize(state);
+const prettyTicketState = (state: TicketState) => capitalize(state);
 
 const variants: { [K in TicketState]?: string } = {
-  approved: "success",
-  requiresNewInformation: "danger",
+  complete: "success",
+  incomplete: "danger",
 };
 
-const approvalState = {
+const reviewState = {
   displayText: (state: TicketState): string =>
     state === "allocated" ? "Pending" : prettyTicketState(state),
   variant: (state: TicketState): string => variants[state] ?? "info",
 };
 
-const TicketInformationModel = ProvideNewInformationRequest.pick(["ticketId", "information"]);
+const TicketInformationModel = CompleteTicketRequest.pick(["ticketId", "information"]);
 type TicketInformationModel = InferType<typeof TicketInformationModel>;
 
-export { approvalState, prettyTicketState, PendingVariant, TicketInformationModel };
+export { reviewState, prettyTicketState, PendingVariant, TicketInformationModel };

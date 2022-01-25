@@ -32,8 +32,8 @@ const onModalMain = async () => {
         requestName: "createTicketRequest",
         information,
       })
-    : ticketBusiness.provideNewInfo({
-        requestName: "provideNewInformationRequest",
+    : ticketBusiness.complete({
+        requestName: "completeTicketRequest",
         ticketId,
         information,
       }));
@@ -69,7 +69,7 @@ const onCreateClick = () => {
   modalActive.value = true;
 };
 
-const onProvideNewInfo = ({ _id, information }: TicketDto) => {
+const onCompleteClick = ({ _id, information }: TicketDto) => {
   if (!modal.value) {
     return;
   }
@@ -96,12 +96,12 @@ onMounted(getTickets);
     <ticket-table
       :tickets="tickets"
       @need-tickets="getTickets"
-      @provide-new-info="onProvideNewInfo" />
-  </div>
+      @complete="onCompleteClick" />
 
-  <ticket-information-modal
-    ref="modal"
-    v-model:active="modalActive"
-    :mode="modalMode"
-    @main="onModalMain" />
+    <ticket-information-modal
+      ref="modal"
+      v-model:active="modalActive"
+      :mode="modalMode"
+      @main="onModalMain" />
+  </div>
 </template>

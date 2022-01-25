@@ -11,7 +11,7 @@ import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import {
-  approvalState,
+  reviewState,
   PendingVariant,
   prettyTicketState,
   TicketInformationModel,
@@ -44,7 +44,7 @@ const getTicket = async () => {
   ticket.value = response;
 };
 
-const onProvideNewInfo = ({ _id, information }: TicketDto) => {
+const onCompleteClick = ({ _id, information }: TicketDto) => {
   if (!modal.value) {
     return;
   }
@@ -54,15 +54,15 @@ const onProvideNewInfo = ({ _id, information }: TicketDto) => {
   modalActive.value = true;
 };
 
-const onModalMain = async () => {
+const onCompleted = async () => {
   if (!modal.value) {
     return;
   }
 
   const { ticketId, information } = modal.value.form.values;
 
-  const result = await ticketBusiness.provideNewInfo({
-    requestName: "provideNewInformationRequest",
+  const result = await ticketBusiness.complete({
+    requestName: "completeTicketRequest",
     ticketId,
     information,
   });
@@ -137,26 +137,26 @@ onMounted(getTicket);
             </ticket-state>
 
             <ticket-state
-              title="Approval"
+              title="Review"
               class="tile is-child"
               v-if="ticket.states.includes('allocated')"
-              :variant="approvalState.variant(ticket.states.at(-1)!)">
+              :variant="reviewState.variant(ticket.states.at(-1)!)">
               <p>
-                {{ approvalState.displayText(ticket.states.at(-1)!)  }}
+                {{ reviewState.displayText(ticket.states.at(-1)!)  }}
 
-                <template v-if="ticketBusiness.canApprove(ticket)">
+                <template v-if="ticketBusiness.canReview(ticket)">
                   (<a
                     @click="
-                      ticketBusiness.approve(ticket!).then((x) => {
+                      ticketBusiness.review(ticket!).then((x) => {
                         x && getTicket();
                       })
                     "
-                    >Approve</a
+                    >Review</a
                   >)
                 </template>
 
-                <template v-else-if="ticketBusiness.canProvideNewInfo(ticket)">
-                  (<a @click="onProvideNewInfo(ticket!)">Provide</a>)
+                <template v-else-if="ticketBusiness.canComplete(ticket)">
+                  (<a @click="onCompleteClick(ticket!)">Complete</a>)
                 </template>
               </p>
             </ticket-state>
@@ -164,11 +164,11 @@ onMounted(getTicket);
         </div>
       </div>
     </div>
-  </div>
 
-  <ticket-information-modal
-    ref="modal"
-    mode="Update"
-    v-model:active="modalActive"
-    @main="onModalMain" />
+    <ticket-information-modal
+      ref="modal"
+      mode="Update"
+      v-model:active="modalActive"
+      @main="onCompleted" />
+  </div>
 </template>

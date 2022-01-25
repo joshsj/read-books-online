@@ -5,7 +5,7 @@ import { truncate } from "@core/utilities/string";
 import Username from "@frontend/components/general/Username.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { route } from "@frontend/router";
-import { approvalState } from "@frontend/utilities/ticket";
+import { reviewState } from "@frontend/utilities/ticket";
 import { PropType } from "vue";
 
 defineProps({
@@ -15,12 +15,12 @@ defineProps({
   },
 });
 
-const emit = defineEmits(["needTickets", "provideNewInfo"]);
+const emit = defineEmits(["needTickets", "complete"]);
 
 const { ticketBusiness } = useBusiness();
 
-const approvalStateClass = (state: TicketState) =>
-  "tag is-light is-medium is-" + approvalState.variant(state);
+const reviewStateClass = (state: TicketState) =>
+  "tag is-light is-medium is-" + reviewState.variant(state);
 </script>
 
 <template>
@@ -53,14 +53,14 @@ const approvalStateClass = (state: TicketState) =>
       </template>
     </o-table-column>
 
-    <o-table-column label="Approval">
-      <template v-slot="{ row: { states, approved } }">
+    <o-table-column label="Review">
+      <template v-slot="{ row: { states, reviewed } }">
         <span v-if="states.includes('allocated')">
-          <span :class="approvalStateClass(states.at(-1)!)">
-            {{ approvalState.displayText(states.at(-1)!) }}
+          <span :class="reviewStateClass(states.at(-1)!)">
+            {{ reviewState.displayText(states.at(-1)!) }}
           </span>
           <br />
-          {{ approved ? formatDate(approved.at, "date") + " " : "" }}
+          {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
         </span>
       </template>
     </o-table-column>
@@ -91,19 +91,19 @@ const approvalStateClass = (state: TicketState) =>
           </o-dropdown-item>
 
           <o-dropdown-item
-            v-if="ticketBusiness.canApprove(ticket)"
+            v-if="ticketBusiness.canReview(ticket)"
             @click="
               ticketBusiness
-                .approve(ticket)
+                .review(ticket)
                 .then((x) => x && emit('needTickets'))
             ">
-            Approve
+            Review
           </o-dropdown-item>
 
           <o-dropdown-item
-            v-if="ticketBusiness.canProvideNewInfo(ticket)"
-            @click="emit('provideNewInfo', ticket)">
-            Provide
+            v-if="ticketBusiness.canComplete(ticket)"
+            @click="emit('complete', ticket)">
+            Complete
           </o-dropdown-item>
 
           <o-dropdown-item

@@ -1,11 +1,11 @@
 import {
   AccountDto,
   AllocateTicketRequest,
-  ApproveTicketRequest,
+  ReviewTicketRequest,
   CreateTicketRequest,
   CreateUserRequest,
   Id,
-  ProvideNewInformationRequest,
+  CompleteTicketRequest,
   TicketDto,
   TicketQuery,
   TokenDto,
@@ -24,13 +24,13 @@ type IAuthClient = {
 
 type ITicketClient = {
   ticket: Endpoint<"create", CreateTicketRequest> &
-    Endpoint<"update", ProvideNewInformationRequest> &
+    Endpoint<"update", CompleteTicketRequest> &
     Endpoint<"get", Id, TicketDto> &
     Endpoint<"get", TicketQuery, TicketDto[]> &
     Endpoint<"delete", Id> & {
       allocation: Endpoint<"create", AllocateTicketRequest>;
     } & {
-      approval: Endpoint<"put", ApproveTicketRequest>;
+      review: Endpoint<"put", ReviewTicketRequest>;
     };
 };
 

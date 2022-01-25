@@ -1,7 +1,7 @@
 import {
   notFound,
-  providingNewInformationNotRequired,
-  providingNewInformationOtherTicket,
+  reviewingTicketNotRequired,
+  completingOtherTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -13,22 +13,20 @@ import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object, string } from "yup";
 
-const ProvideNewInformationRequest = object({
+const CompleteTicketRequest = object({
   ticketId: Id,
   information: string().strict().required(),
-}).concat(Request("provideNewInformationRequest"));
+}).concat(Request("completeTicketRequest"));
 
-type ProvideNewInformationRequest = InferType<typeof ProvideNewInformationRequest>;
+type CompleteTicketRequest = InferType<typeof CompleteTicketRequest>;
 
-class ProvideNewInformationRequestValidator
-  implements IRequestValidator<ProvideNewInformationRequest>
-{
-  requestName = "provideNewInformationRequest" as const;
+class CompleteTicketRequestValidator implements IRequestValidator<CompleteTicketRequest> {
+  requestName = "completeTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
   async validate(request: unknown) {
-    ensure(ProvideNewInformationRequest.isValidSync(request), new RBOError("validation"));
+    ensure(CompleteTicketRequest.isValidSync(request), new RBOError("validation"));
 
     const ticket = await this.ticketRepository.get(request.ticketId);
 
@@ -36,8 +34,8 @@ class ProvideNewInformationRequestValidator
   }
 }
 
-class ProvideNewInformationRequestAuthorizer extends RoleRequestAuthorizer<ProvideNewInformationRequest> {
-  requestName = "provideNewInformationRequest" as const;
+class CompleteTicketRequestAuthorizer extends RoleRequestAuthorizer<CompleteTicketRequest> {
+  requestName = "completeTicketRequest" as const;
   requiredRoles = ["client"] as const;
 
   constructor(
@@ -47,34 +45,34 @@ class ProvideNewInformationRequestAuthorizer extends RoleRequestAuthorizer<Provi
     super(identityService);
   }
 
-  async authorize(request: ProvideNewInformationRequest) {
+  async authorize(request: CompleteTicketRequest) {
     await super.authorize(request);
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
-      ticket.approved?.state === "requiresNewInformation",
-      new RBOError("authorization", providingNewInformationNotRequired)
+      ticket.reviewed?.state === "incomplete",
+      new RBOError("authorization", reviewingTicketNotRequired)
     );
 
     ensure(
       ticket.created.by._id === currentUser._id,
-      new RBOError("authorization", providingNewInformationOtherTicket)
+      new RBOError("authorization", completingOtherTicket)
     );
   }
 }
 
-class ProvideNewInformationCommandHandler implements ICommandHandler<ProvideNewInformationRequest> {
-  handles = "provideNewInformationRequest" as const;
+class ProvideNewInformationCommandHandler implements ICommandHandler<CompleteTicketRequest> {
+  handles = "completeTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
-  async handle(request: ProvideNewInformationRequest) {
+  async handle(request: CompleteTicketRequest) {
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
 
     ticket.information = request.information;
-    ticket.approved = null;
+    ticket.reviewed = null;
 
     await this.ticketRepository.update(ticket);
   }
@@ -82,7 +80,7 @@ class ProvideNewInformationCommandHandler implements ICommandHandler<ProvideNewI
 
 export {
   ProvideNewInformationCommandHandler,
-  ProvideNewInformationRequest,
-  ProvideNewInformationRequestAuthorizer,
-  ProvideNewInformationRequestValidator,
+  CompleteTicketRequest,
+  CompleteTicketRequestAuthorizer,
+  CompleteTicketRequestValidator,
 };

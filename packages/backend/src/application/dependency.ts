@@ -27,10 +27,10 @@ import {
   CancelTicketRequestValidator,
 } from "./ticket/commands/cancelTicket";
 import {
-  ApproveTicketCommandHandler,
-  ApproveTicketRequestAuthorizer,
-  ApproveTicketRequestValidator,
-} from "./ticket/commands/approveTicket";
+  ReviewTicketCommandHandler,
+  ReviewTicketRequestAuthorizer,
+  ReviewTicketRequestValidator,
+} from "./ticket/commands/reviewTicket";
 import {
   GetTicketQueryAuthorizer,
   GetTicketQueryHandler,
@@ -42,10 +42,10 @@ import {
   GetTicketsQueryValidator,
 } from "./ticket/queries/getTickets";
 import {
-  ProvideNewInformationRequestAuthorizer,
-  ProvideNewInformationRequestValidator,
+  CompleteTicketRequestAuthorizer,
+  CompleteTicketRequestValidator,
   ProvideNewInformationCommandHandler,
-} from "./ticket/commands/provideNewInformation";
+} from "./ticket/commands/completeTicket";
 
 const Dependency = toDependencies([
   // general
@@ -115,8 +115,8 @@ const registerApplicationDependencies = () => {
     () => new GetTicketsQueryValidator(),
     (c) => new AllocateTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new CancelTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
-    (c) => new ApproveTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
-    (c) => new ProvideNewInformationRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new ReviewTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new CompleteTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -138,12 +138,12 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository)
       ),
     (c) =>
-      new ApproveTicketRequestAuthorizer(
+      new ReviewTicketRequestAuthorizer(
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
     (c) =>
-      new ProvideNewInformationRequestAuthorizer(
+      new CompleteTicketRequestAuthorizer(
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
@@ -169,7 +169,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService)
       ),
     (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
-    (c) => new ApproveTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
+    (c) => new ReviewTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
     (c) => new ProvideNewInformationCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);
 };

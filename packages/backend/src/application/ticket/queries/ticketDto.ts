@@ -6,12 +6,12 @@ type TicketDto = Pick<Ticket, "_id" | "information"> & {
   states: TicketState[];
   created: { at: Date; by: UserDto };
   allocated?: { at: Date; to: UserDto };
-  approved?: NonNullable<Ticket["approved"]>;
+  reviewed?: NonNullable<Ticket["reviewed"]>;
 };
 
 const TicketDto = {
   fromTicket: (ticket: Ticket): TicketDto => {
-    const { _id, information, created, allocated, approved } = ticket;
+    const { _id, information, created, allocated, reviewed } = ticket;
 
     return {
       _id,
@@ -19,7 +19,7 @@ const TicketDto = {
       states: getTicketStates(ticket),
       created: { at: created.at, by: UserDto.fromUser(created.by) },
       allocated: allocated ? { at: allocated.at, to: UserDto.fromUser(allocated.to) } : undefined,
-      approved: approved ?? undefined,
+      reviewed: reviewed ?? undefined,
     };
   },
 };

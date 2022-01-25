@@ -1,7 +1,7 @@
 import {
-  approveOtherTicket,
-  approvingApprovedTicket,
-  approvingNonAllocatedTicket,
+  reviewingOtherTicket,
+  reviewingCompletedTicket,
+  reviewingNonAllocatedTicket,
   notFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
@@ -15,20 +15,19 @@ import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { bool, InferType, object } from "yup";
 
-const ApproveTicketRequest = object({
-  ticketId: Id,
-  requiresAdditionalInformation: bool().required(),
-}).concat(Request("approveTicketRequest"));
+const ReviewTicketRequest = object({ ticketId: Id, complete: bool().required() }).concat(
+  Request("reviewTicketRequest")
+);
 
-type ApproveTicketRequest = InferType<typeof ApproveTicketRequest>;
+type ReviewTicketRequest = InferType<typeof ReviewTicketRequest>;
 
-class ApproveTicketRequestValidator implements IRequestValidator<ApproveTicketRequest> {
-  requestName = "approveTicketRequest" as const;
+class ReviewTicketRequestValidator implements IRequestValidator<ReviewTicketRequest> {
+  requestName = "reviewTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
   async validate(request: unknown) {
-    ensure(ApproveTicketRequest.isValidSync(request), new RBOError("validation"));
+    ensure(ReviewTicketRequest.isValidSync(request), new RBOError("validation"));
 
     const ticket = await this.ticketRepository.get(request.ticketId);
 
@@ -36,8 +35,8 @@ class ApproveTicketRequestValidator implements IRequestValidator<ApproveTicketRe
   }
 }
 
-class ApproveTicketRequestAuthorizer extends RoleRequestAuthorizer<ApproveTicketRequest> {
-  requestName = "approveTicketRequest" as const;
+class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRequest> {
+  requestName = "reviewTicketRequest" as const;
   requiredRoles = ["employee"] as const;
 
   constructor(
@@ -47,40 +46,40 @@ class ApproveTicketRequestAuthorizer extends RoleRequestAuthorizer<ApproveTicket
     super(identityService);
   }
 
-  async authorize(request: ApproveTicketRequest) {
+  async authorize(request: ReviewTicketRequest) {
     await super.authorize(request);
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
     const states = getTicketStates(ticket);
 
-    // allows approval of tickets currently requiring new information
-    ensure(!states.includes("approved"), new RBOError("authorization", approvingApprovedTicket));
+    // allows completion of tickets currently requiring new information
+    ensure(!states.includes("complete"), new RBOError("authorization", reviewingCompletedTicket));
 
     ensure(
       states.includes("allocated"),
-      new RBOError("authorization", approvingNonAllocatedTicket)
+      new RBOError("authorization", reviewingNonAllocatedTicket)
     );
 
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
       ticket.allocated!.to._id === currentUser._id,
-      new RBOError("authorization", approveOtherTicket)
+      new RBOError("authorization", reviewingOtherTicket)
     );
   }
 }
 
-class ApproveTicketCommandHandler implements ICommandHandler<ApproveTicketRequest> {
-  handles = "approveTicketRequest" as const;
+class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest> {
+  handles = "reviewTicketRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
-  async handle({ ticketId, requiresAdditionalInformation }: ApproveTicketRequest) {
+  async handle({ ticketId, complete }: ReviewTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    ticket.approved = {
+    ticket.reviewed = {
       at: new Date(),
-      state: requiresAdditionalInformation ? "requiresNewInformation" : "approved",
+      state: complete ? "complete" : "incomplete",
     };
 
     await this.ticketRepository.update(ticket);
@@ -88,8 +87,8 @@ class ApproveTicketCommandHandler implements ICommandHandler<ApproveTicketReques
 }
 
 export {
-  ApproveTicketCommandHandler,
-  ApproveTicketRequest,
-  ApproveTicketRequestAuthorizer,
-  ApproveTicketRequestValidator,
+  ReviewTicketCommandHandler,
+  ReviewTicketRequest,
+  ReviewTicketRequestAuthorizer,
+  ReviewTicketRequestValidator,
 };
