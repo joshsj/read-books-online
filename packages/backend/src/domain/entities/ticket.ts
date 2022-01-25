@@ -17,13 +17,13 @@ const AdditionalFields = object({
   allocated: object({
     at: date().strict().required(),
     to: User.required(),
-  }),
+  }).nullable(),
 
   approved: object({
     at: date().strict().required(),
     state: ApprovalState.required(),
-  }),
-}).partial();
+  }).nullable(),
+});
 
 const Ticket = Entity.concat(InitialFields).concat(AdditionalFields);
 

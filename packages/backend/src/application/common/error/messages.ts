@@ -37,7 +37,7 @@ export const userAlreadyExists = (username: string) =>
 export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
 
-export const allocatingOwnTicket = "You cannot allocate your own ticket";
+export const allocatingOwnTicket = "You cannot be allocated to your own ticket";
 export const allocatingAllocatedTicket =
   "You cannot allocate a ticket which has already been allocated";
 export const cancellingOtherTicket = "You cannot delete a ticket which was created by another user";
@@ -48,3 +48,7 @@ export const approvingApprovedTicket =
   "You cannot approve a ticket which has already been approved";
 export const approvingNonAllocatedTicket =
   "You cannot approve a ticket which has not been allocated";
+export const providingNewInformationNotRequired =
+  "This ticket does not require additional information";
+export const providingNewInformationOtherTicket =
+  "You cannot provide additional information to a ticket created by another user";

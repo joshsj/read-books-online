@@ -28,10 +28,7 @@ class CreateUserCommandValidator implements IRequestValidator<CreateUserRequest>
 
     const existingUser = await this.userRepository.getByUsername(request.username);
 
-    ensure(
-      typeof existingUser === "undefined",
-      new RBOError("validation", userAlreadyExists(request.username))
-    );
+    ensure(!existingUser, new RBOError("validation", userAlreadyExists(request.username)));
   }
 }
 

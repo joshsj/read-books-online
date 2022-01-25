@@ -1,10 +1,11 @@
 import {
   AccountDto,
   AllocateTicketRequest,
+  ApproveTicketRequest,
   CreateTicketRequest,
   CreateUserRequest,
   Id,
-  ApproveTicketRequest,
+  ProvideNewInformationRequest,
   TicketDto,
   TicketQuery,
   TokenDto,
@@ -23,6 +24,7 @@ type IAuthClient = {
 
 type ITicketClient = {
   ticket: Endpoint<"create", CreateTicketRequest> &
+    Endpoint<"update", ProvideNewInformationRequest> &
     Endpoint<"get", Id, TicketDto> &
     Endpoint<"get", TicketQuery, TicketDto[]> &
     Endpoint<"delete", Id> & {

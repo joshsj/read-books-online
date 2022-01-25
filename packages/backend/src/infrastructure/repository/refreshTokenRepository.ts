@@ -12,12 +12,12 @@ class RefreshTokenRepository
     super(RefreshToken, RefreshTokenModel);
   }
 
-  async getByValue(value: RefreshTokenValue): Promise<RefreshToken | undefined> {
-    return (await this.model.findOne({ value })) ?? undefined;
+  async getByValue(value: RefreshTokenValue): Promise<RefreshToken | null> {
+    return await this.model.findOne({ value }).lean<RefreshToken>().exec();
   }
 
-  async getByUserId(userId: Id): Promise<RefreshToken | undefined> {
-    return (await this.model.findOne({ userId })) ?? undefined;
+  async getByUserId(userId: Id): Promise<RefreshToken | null> {
+    return await this.model.findOne({ userId }).lean<RefreshToken>().exec();
   }
 }
 

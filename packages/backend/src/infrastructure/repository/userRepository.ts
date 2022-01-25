@@ -9,12 +9,12 @@ class UserRepository extends MongoRepository<User> implements IUserRepository {
     super(User, UserModel);
   }
 
-  async getByRefreshToken(value: RefreshTokenValue): Promise<User | undefined> {
-    return (await this.model.findOne({ value })) ?? undefined;
+  async getByRefreshToken(value: RefreshTokenValue) {
+    return await this.model.findOne({ value }).lean<User>().exec();
   }
 
   async getByUsername(username: string) {
-    return (await this.model.findOne({ username })) ?? undefined;
+    return await this.model.findOne({ username }).lean<User>().exec();
   }
 }
 

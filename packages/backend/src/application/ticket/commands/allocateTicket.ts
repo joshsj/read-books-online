@@ -53,7 +53,7 @@ class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTick
     );
 
     const currentUser = await this.identityService.getCurrentUser();
-    
+
     ensure(
       ticket.created.by._id !== currentUser._id,
       new RBOError("authorization", allocatingOwnTicket)

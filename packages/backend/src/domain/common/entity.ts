@@ -7,6 +7,6 @@ const Entity = object({ [IdKey]: Id }).strict();
 type Entity = InferType<typeof Entity>;
 
 const isEntity = (obj: any): obj is Entity =>
-  typeof obj === "object" && obj[IdKey] && isId(obj[IdKey]);
+  obj && typeof obj === "object" && obj[IdKey] && isId(obj[IdKey]);
 
 export { Entity, isEntity };

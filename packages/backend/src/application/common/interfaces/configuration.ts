@@ -13,7 +13,7 @@ const IConfiguration = object({
 
     jwt: object({
       secret: string().strict().required(),
-      algorithm: JWTAlgorithm.required(),
+      algorithm: JWTAlgorithm,
       issuer: string().strict().required(),
       audience: string().strict().required(),
     }),

@@ -14,7 +14,7 @@ type IWritableRepository<T extends Entity> = {
 
 type IReadableRepository<T extends Entity> = {
   get(): Promise<T[]>;
-  get(id: Id): Promise<T | undefined>;
+  get(id: Id): Promise<T | null>;
   get(id: Id[]): Promise<T[]>;
   exists(id: Id): Promise<boolean>;
 };
@@ -22,12 +22,12 @@ type IReadableRepository<T extends Entity> = {
 type IRepository<T extends Entity> = IReadableRepository<T> & IWritableRepository<T>;
 
 type IUserRepository = IRepository<User> & {
-  getByUsername(username: string): Promise<User | undefined>;
+  getByUsername(username: string): Promise<User | null>;
 };
 
 type IRefreshTokenRepository = IRepository<RefreshToken> & {
-  getByUserId(userId: Id): Promise<RefreshToken | undefined>;
-  getByValue(value: RefreshTokenValue): Promise<RefreshToken | undefined>;
+  getByUserId(userId: Id): Promise<RefreshToken | null>;
+  getByValue(value: RefreshTokenValue): Promise<RefreshToken | null>;
 };
 
 type ITicketRepository = IRepository<Ticket> & {

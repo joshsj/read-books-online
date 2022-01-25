@@ -46,6 +46,15 @@ ticketRoutes.post(
   })
 );
 
+ticketRoutes.put(
+  "",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "created" };
+  })
+);
+
 ticketRoutes.delete(
   "/:id",
   handleAsync(async ({ params }, {}, { getPerRequestContainer }) => {

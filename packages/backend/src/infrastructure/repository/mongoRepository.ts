@@ -24,20 +24,19 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   constructor(protected readonly helper: ObjectSchema<T>, protected readonly model: Model<T>) {}
 
   get(): Promise<T[]>;
-  get(id: Id): Promise<T | undefined>;
+  get(id: Id): Promise<T | null>;
   get(id: Id[]): Promise<T[]>;
-  async get(_id?: Some<Id>): Promise<Some<T> | undefined> {
+  async get(_id?: Some<Id>): Promise<Some<T> | null> {
     if (isId(_id)) {
-      return ((await this.model.findById(_id).lean({ autopopulate: true }).exec()) ??
-        undefined) as T;
+      return await this.model.findById(_id).lean<T>({ autopopulate: true }).exec();
     }
 
     const filter = _id ? { _id: { $in: _id } } : {};
-    return (await this.model.find(filter).lean({ autopopulate: true }).exec()) as T[];
+    return await this.model.find(filter).lean<T[]>({ autopopulate: true }).exec();
   }
 
   protected async _filtered(filter: FilterQuery<T>): Promise<T[]> {
-    return (await this.model.find(filter).lean({ autopopulate: true }).exec()) as T[];
+    return await this.model.find(filter).lean<T[]>({ autopopulate: true }).exec();
   }
 
   async exists(_id: Id): Promise<boolean> {
@@ -83,7 +82,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
       const [key, value] = curr as [any, any];
       let newValue: any = value;
 
-      if (typeof value === "object") {
+      if (typeof value === "object" && value !== null) {
         if (isEntity(value)) {
           newValue = value._id;
         }

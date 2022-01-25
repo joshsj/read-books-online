@@ -53,6 +53,7 @@ class ApproveTicketRequestAuthorizer extends RoleRequestAuthorizer<ApproveTicket
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
     const states = getTicketStates(ticket);
 
+    // allows approval of tickets currently requiring new information
     ensure(!states.includes("approved"), new RBOError("authorization", approvingApprovedTicket));
 
     ensure(
@@ -79,7 +80,7 @@ class ApproveTicketCommandHandler implements ICommandHandler<ApproveTicketReques
 
     ticket.approved = {
       at: new Date(),
-      state: requiresAdditionalInformation ? "requiresAdditionalInformation" : "approved",
+      state: requiresAdditionalInformation ? "requiresNewInformation" : "approved",
     };
 
     await this.ticketRepository.update(ticket);

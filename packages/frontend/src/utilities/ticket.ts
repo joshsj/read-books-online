@@ -4,11 +4,11 @@ import { capitalize } from "@core/utilities/string";
 const PendingVariant = "info" as const;
 
 const prettyTicketState = (state: TicketState) =>
-  state === "requiresAdditionalInformation" ? "Requires Additional Information" : capitalize(state);
+  state === "requiresNewInformation" ? "Requires New Information" : capitalize(state);
 
 const variants: { [K in TicketState]?: string } = {
   approved: "success",
-  requiresAdditionalInformation: "danger",
+  requiresNewInformation: "danger",
 };
 
 const approvalState = {

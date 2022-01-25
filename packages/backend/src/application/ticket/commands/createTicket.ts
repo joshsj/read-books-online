@@ -46,6 +46,8 @@ class CreateTicketCommandHandler implements ICommandHandler<CreateTicketRequest>
         at: new Date(),
         by: currentUser,
       },
+      allocated: null,
+      approved: null,
     };
 
     await this.ticketRepository.insert(ticket);

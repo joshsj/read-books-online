@@ -1,6 +1,6 @@
 import { mixed } from "yup";
 
-const ApprovalStates = ["requiresAdditionalInformation", "approved"] as const;
+const ApprovalStates = ["requiresNewInformation", "approved"] as const;
 
 type ApprovalState = typeof ApprovalStates[number];
 

@@ -6,7 +6,7 @@ import { Username } from "@backend/domain/common/constrainedTypes";
 const User = Entity.concat(
   object({
     username: Username.required(),
-    roles: array().of(Role).strict().required(),
+    roles: array().of(Role.required()).strict().required(),
     passwordHash: string().strict().required(),
   })
 );

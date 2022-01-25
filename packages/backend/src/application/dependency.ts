@@ -41,6 +41,11 @@ import {
   GetTicketsQueryHandler,
   GetTicketsQueryValidator,
 } from "./ticket/queries/getTickets";
+import {
+  ProvideNewInformationRequestAuthorizer,
+  ProvideNewInformationRequestValidator,
+  ProvideNewInformationCommandHandler,
+} from "./ticket/commands/provideNewInformation";
 
 const Dependency = toDependencies([
   // general
@@ -111,6 +116,7 @@ const registerApplicationDependencies = () => {
     (c) => new AllocateTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new CancelTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new ApproveTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new ProvideNewInformationRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -133,6 +139,11 @@ const registerApplicationDependencies = () => {
       ),
     (c) =>
       new ApproveTicketRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.ticketRepository)
+      ),
+    (c) =>
+      new ProvideNewInformationRequestAuthorizer(
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
@@ -159,6 +170,7 @@ const registerApplicationDependencies = () => {
       ),
     (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
     (c) => new ApproveTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
+    (c) => new ProvideNewInformationCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);
 };
 

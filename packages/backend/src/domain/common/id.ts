@@ -6,6 +6,6 @@ type Id = string;
 const isId = (id: any): id is Id => Types.ObjectId.isValid(id);
 const newId = (from?: string | Types.ObjectId): Id => new Types.ObjectId(from).toString();
 
-const Id = mixed(isId).required().strict();
+const Id = mixed(isId).strict().required();
 
 export { Id, isId, newId };

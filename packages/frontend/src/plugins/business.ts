@@ -94,7 +94,7 @@ const createTicketBusiness = (interactor: Interactor) => ({
       return false;
     }
 
-    const validStates: TicketState[] = ["allocated", "requiresAdditionalInformation"];
+    const validStates: TicketState[] = ["allocated", "requiresNewInformation"];
 
     return (
       validStates.includes(ticket.states.at(-1)!) && ticket.allocated!.to._id === resolvedUser._id
