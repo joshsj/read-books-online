@@ -1,7 +1,13 @@
 import { mixed } from "yup";
+import { AuthorizationStates } from "./authorizationState";
 import { CompletionStates } from "./completionState";
 
-const TicketStates = ["unallocated", "allocated", ...CompletionStates] as const;
+const TicketStates = [
+  "unallocated",
+  "allocated",
+  ...CompletionStates,
+  ...AuthorizationStates,
+] as const;
 
 type TicketState = typeof TicketStates[number];
 

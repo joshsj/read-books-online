@@ -21,6 +21,12 @@ const TicketSchema: Schema<Ticket> = {
     at: { type: Date },
     state: { type: String },
   },
+
+  authorized: {
+    at: { type: Date },
+    by: { type: String, ref: UserModel, autopopulate: true },
+    state: { type: String },
+  },
 };
 
 const TicketModel = model("Ticket", Ticket, TicketSchema, true);

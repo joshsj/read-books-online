@@ -12,3 +12,7 @@ export { Id } from "@backend/domain/common/id";
 export { Role } from "@backend/domain/constants/role";
 export { TicketState, TicketStates } from "@backend/domain/constants/ticketState";
 export { CompletionState, CompletionStates } from "@backend/domain/constants/completionState";
+export {
+  AuthorizationState,
+  AuthorizationStates,
+} from "@backend/domain/constants/authorizationState";

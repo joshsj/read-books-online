@@ -5,13 +5,13 @@ import { formatDate } from "@core/utilities/date";
 import { client } from "@frontend/client";
 import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
-import TicketState from "@frontend/components/ticket/TicketFieldState.vue";
+import TicketField from "@frontend/components/ticket/TicketField.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import {
-  reviewState,
+  ticketProgressState,
   PendingVariant,
   prettyTicketState,
   TicketInformationModel,
@@ -99,18 +99,18 @@ onMounted(getTicket);
       <div class="column is-4 is-offset-2">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
-            <ticket-state
-              title="Created"
+            <ticket-field
+              title="Creation"
               class="tile is-child"
               variant="success">
               <p>
                 By <username :username="ticket.created.by.username" /> at
                 {{ formatDate(ticket.created.at) }}
               </p>
-            </ticket-state>
+            </ticket-field>
 
-            <ticket-state
-              title="Allocated"
+            <ticket-field
+              title="Allocation"
               class="tile is-child"
               :variant="
                 ticket.states.includes('allocated') ? 'success' : PendingVariant
@@ -134,15 +134,15 @@ onMounted(getTicket);
                   </template>
                 </template>
               </p>
-            </ticket-state>
+            </ticket-field>
 
-            <ticket-state
+            <ticket-field
               title="Review"
               class="tile is-child"
               v-if="ticket.states.includes('allocated')"
-              :variant="reviewState.variant(ticket.states.at(-1)!)">
+              :variant="ticketProgressState.variant(ticket.reviewed?.state)">
               <p>
-                {{ reviewState.displayText(ticket.states.at(-1)!)  }}
+                {{ ticketProgressState.displayText(ticket.reviewed?.state) }}
 
                 <template v-if="ticketBusiness.canReview(ticket)">
                   (<a
@@ -159,7 +159,17 @@ onMounted(getTicket);
                   (<a @click="onCompleteClick(ticket!)">Complete</a>)
                 </template>
               </p>
-            </ticket-state>
+            </ticket-field>
+
+            <ticket-field
+              title="Purchase"
+              class="tile is-child"
+              v-if="ticket.states.includes('complete')"
+              :variant="ticketProgressState.variant(ticket.authorized?.state)">
+              <p>
+                {{ ticketProgressState.displayText(ticket.authorized?.state) }}
+              </p>
+            </ticket-field>
           </div>
         </div>
       </div>
