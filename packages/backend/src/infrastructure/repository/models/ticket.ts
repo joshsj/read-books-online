@@ -6,6 +6,7 @@ import { UserModel } from "./user";
 const TicketSchema: Schema<Ticket> = {
   ...EntitySchema,
   information: { type: String },
+
   created: {
     at: { type: Date },
     by: { type: String, ref: UserModel, autopopulate: true },
@@ -16,7 +17,7 @@ const TicketSchema: Schema<Ticket> = {
     to: { type: String, ref: UserModel, autopopulate: true },
   },
 
-  reviewed: {
+  approved: {
     at: { type: Date },
     state: { type: String },
   },

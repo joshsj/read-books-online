@@ -40,10 +40,11 @@ export const userNotFound = (username?: string) =>
 export const allocatingOwnTicket = "You cannot allocate your own ticket";
 export const allocatingAllocatedTicket =
   "You cannot allocate a ticket which has already been allocated";
-export const cancelOtherTicket = "You cannot delete a ticket which was created by another user";
-export const cancelAllocatedTicket = "You cannot delete a ticket which has been allocated";
-export const reviewingApprovedTicket = "You cannot review a ticket which has been approved";
-export const reviewingNonAllocatedTicket =
-  "You cannot review a ticket which has not been allocated";
-export const reviewingOtherTicket =
-  "You cannot review a ticket which is allocated to another employee";
+export const cancellingOtherTicket = "You cannot delete a ticket which was created by another user";
+export const cancellingAllocatedTicket = "You cannot delete a ticket which has been allocated";
+export const approveOtherTicket =
+  "You cannot approve a ticket which is allocated to another employee";
+export const approvingApprovedTicket =
+  "You cannot approve a ticket which has already been approved";
+export const approvingNonAllocatedTicket =
+  "You cannot approve a ticket which has not been allocated";

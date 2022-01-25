@@ -1,7 +1,7 @@
 import {
-  notFound,
-  allocatingOwnTicket,
   allocatingAllocatedTicket,
+  allocatingOwnTicket,
+  notFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -9,6 +9,7 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
+import { getTicketStates } from "@backend/domain/entities/ticket";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
@@ -45,10 +46,14 @@ class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTick
     await super.authorize(request);
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
+
+    ensure(
+      !getTicketStates(ticket).includes("allocated"),
+      new RBOError("validation", allocatingAllocatedTicket)
+    );
+
     const currentUser = await this.identityService.getCurrentUser();
-
-    ensure(!ticket.allocated, new RBOError("validation", allocatingAllocatedTicket));
-
+    
     ensure(
       ticket.created.by._id !== currentUser._id,
       new RBOError("authorization", allocatingOwnTicket)

@@ -1,11 +1,9 @@
-import { requiresRoles } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
-import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
+import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
-import { Request } from "@backend/application/common/utilities/cqrs";
+import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { newId } from "@backend/domain/common/id";
-import { Role } from "@backend/domain/constants/role";
 import { Ticket } from "@backend/domain/entities/ticket";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
@@ -25,20 +23,9 @@ class CreateTicketCommandValidator implements IRequestValidator<CreateTicketRequ
   }
 }
 
-class CreateTicketCommandAuthorizer implements IRequestAuthorizer<CreateTicketRequest> {
+class CreateTicketCommandAuthorizer extends RoleRequestAuthorizer<CreateTicketRequest> {
   requestName = "createTicketRequest" as const;
-
-  constructor(private readonly identityService: IIdentityService) {}
-
-  async authorize() {
-    const requiredRole: Role = "client";
-    const currentUser = await this.identityService.getCurrentUser();
-
-    ensure(
-      currentUser.roles.includes(requiredRole),
-      new RBOError("authentication", requiresRoles(requiredRole))
-    );
-  }
+  requiredRoles = ["client"] as const;
 }
 
 class CreateTicketCommandHandler implements ICommandHandler<CreateTicketRequest> {

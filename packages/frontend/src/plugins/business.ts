@@ -1,4 +1,4 @@
-import { Id, Role, TicketDto } from "@client/models";
+import { TicketState, Role, TicketDto } from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
@@ -41,6 +41,26 @@ const execTicketAction = async (
 };
 
 const createTicketBusiness = (interactor: Interactor) => ({
+  canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
+    const resolvedUser = user ?? store.user;
+
+    if (!resolvedUser) {
+      return false;
+    }
+
+    return (
+      ticket.states.every((s) => s === "unallocated") && ticket.created.by._id === resolvedUser._id
+    );
+  },
+
+  cancel: async ({ _id }: TicketDto) =>
+    execTicketAction(
+      interactor,
+      "Are you sure you want to cancel this ticket?",
+      () => client.ticket.delete(_id),
+      "Ticket cancelled"
+    ),
+
   canAllocate: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
@@ -49,7 +69,7 @@ const createTicketBusiness = (interactor: Interactor) => ({
     }
 
     return (
-      !ticket.allocated &&
+      ticket.states.at(-1) === "unallocated" &&
       ticket.created.by._id !== resolvedUser._id &&
       userBusiness.hasRoles(["employee"], user)
     );
@@ -67,59 +87,40 @@ const createTicketBusiness = (interactor: Interactor) => ({
       "Allocation successful"
     ),
 
-  canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
+  canApprove: (ticket: TicketDto, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
 
     if (!resolvedUser) {
       return false;
     }
 
-    return !ticket.allocated && ticket.created.by._id === resolvedUser._id;
-  },
-
-  cancel: async ({ _id }: TicketDto) =>
-    execTicketAction(
-      interactor,
-      "Are you sure you want to cancel this ticket?",
-      () => client.ticket.delete(_id),
-      "Ticket cancelled"
-    ),
-
-  canReview: (ticket: TicketDto, user?: UserStore): boolean => {
-    const resolvedUser = user ?? store.user;
-
-    if (!resolvedUser) {
-      return false;
-    }
+    const validStates: TicketState[] = ["allocated", "requiresAdditionalInformation"];
 
     return (
-      !!ticket.allocated &&
-      ticket.allocated.to._id === resolvedUser._id &&
-      (!ticket.reviewed || ticket.reviewed.state !== "approved")
+      validStates.includes(ticket.states.at(-1)!) && ticket.allocated!.to._id === resolvedUser._id
     );
   },
 
-  review: async (ticket: TicketDto): Promise<boolean> => {
+  approve: async (ticket: TicketDto): Promise<boolean> => {
     const { from } = await interactor.modal(
       {
         title: "Confirmation",
         mainButtonText: "Approve",
+        altButtonText: "Request Additional Information",
+        altButtonVariant: "danger",
       },
       undefined,
-      h("div", { class: "content" }, [
-        h("p", {}, "Are you sure you want to review this ticket?"),
-        h("blockquote", {}, ticket.information),
-      ])
+      h("div", { class: "content" }, [h("blockquote", {}, ticket.information)])
     );
 
-    if (from !== "main") {
+    if (from === "close") {
       return false;
     }
 
-    const response = await client.ticket.review.put({
-      requestName: "reviewTicketRequest",
+    const response = await client.ticket.approval.put({
+      requestName: "approveTicketRequest",
       ticketId: ticket._id,
-      reviewState: "approved",
+      requiresAdditionalInformation: from === "alt",
     });
 
     if (isRBOError(response)) {
@@ -127,7 +128,7 @@ const createTicketBusiness = (interactor: Interactor) => ({
       return false;
     }
 
-    interactor.notify({ message: "Review successful", variant: "success" });
+    interactor.notify({ message: "Approval successful", variant: "success" });
     return true;
   },
 });

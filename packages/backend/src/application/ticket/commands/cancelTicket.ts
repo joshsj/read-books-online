@@ -1,6 +1,6 @@
 import {
-  cancelAllocatedTicket,
-  cancelOtherTicket,
+  cancellingAllocatedTicket,
+  cancellingOtherTicket,
   notFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
@@ -9,6 +9,7 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
+import { getTicketStates } from "@backend/domain/entities/ticket";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
@@ -47,13 +48,16 @@ class CancelTicketRequestAuthorizer extends RoleRequestAuthorizer<CancelTicketRe
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
 
-    ensure(!ticket.allocated, new RBOError("authorization", cancelAllocatedTicket));
+    ensure(
+      !getTicketStates(ticket).includes("allocated"),
+      new RBOError("authorization", cancellingAllocatedTicket)
+    );
 
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
       ticket.created.by._id === currentUser._id,
-      new RBOError("authorization", cancelOtherTicket)
+      new RBOError("authorization", cancellingOtherTicket)
     );
   }
 }

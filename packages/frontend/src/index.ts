@@ -75,7 +75,7 @@ createApp(App)
       contentClass: "modal-card",
       overlayClass: "modal-background",
       closeClass: "modal-close is-large",
-      canCancel: ["escape", "outside", "button"],
+      canCancel: ["escape", "x", "outside", "button"],
     },
 
     tooltip: {

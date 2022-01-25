@@ -2,7 +2,6 @@
 import { isRBOError } from "@client/index";
 import { TicketDto } from "@client/models";
 import { formatDate } from "@core/utilities/date";
-import { capitalize } from "@core/utilities/string";
 import { client } from "@frontend/client";
 import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
@@ -11,7 +10,11 @@ import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
-import { reviewStateVariant } from "@frontend/utilities/ticket";
+import {
+  approvalState,
+  PendingVariant,
+  prettyTicketState,
+} from "@frontend/utilities/ticket";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -46,13 +49,16 @@ onMounted(getTicket);
         label="Cancel"
         @click="
           ticketBusiness
-            .cancel(ticket)
-            .then((x) => x && router.push(route({ name: 'tickets' })))
+            .cancel(ticket!)
+            .then((x) => {x && router.push(route({ name: 'tickets' }))})
         " />
     </view-title>
 
     <div class="columns is-6">
-      <div class="column">
+      <div class="column content">
+        <strong>Status</strong>
+        <p>{{ prettyTicketState(ticket.states.at(-1)!) }}</p>
+
         <strong>Information</strong>
         <p>{{ ticket.information }}</p>
       </div>
@@ -60,7 +66,10 @@ onMounted(getTicket);
       <div class="column is-4 is-offset-2">
         <div class="tile is-ancestor">
           <div class="tile is-parent is-vertical">
-            <ticket-state title="Created" class="tile is-child" state="success">
+            <ticket-state
+              title="Created"
+              class="tile is-child"
+              variant="success">
               <p>
                 By <username :username="ticket.created.by.username" /> at
                 {{ formatDate(ticket.created.at) }}
@@ -70,41 +79,48 @@ onMounted(getTicket);
             <ticket-state
               title="Allocated"
               class="tile is-child"
-              :state="ticket.allocated ? 'success' : 'info'">
-              <p v-if="ticket.allocated">
-                To <username :username="ticket.allocated.to.username" /> at
-                {{ formatDate(ticket.allocated.at) }}
-              </p>
+              :variant="
+                ticket.states.includes('allocated') ? 'success' : PendingVariant
+              ">
+              <p>
+                <template v-if="ticket.states.includes('allocated')">
+                  To <username :username="ticket.allocated!.to.username" /> at
+                  {{ formatDate(ticket.allocated!.at) }}
+                </template>
 
-              <p v-else-if="ticketBusiness.canAllocate(ticket)">
-                Pending (<a
-                  @click="
+                <template v-else>
+                  Pending
+                  <template v-if="ticketBusiness.canAllocate(ticket)">
+                    (<a
+                      @click="
                     ticketBusiness
-                      .allocate(ticket)
-                      .then((x) => x && getTicket())
-                  "
-                  >Allocate</a
-                >)
+                      .allocate(ticket!)
+                      .then((x) => {x && getTicket()})"
+                      >Allocate</a
+                    >)
+                  </template>
+                </template>
               </p>
             </ticket-state>
 
             <ticket-state
-              v-if="ticket.allocated"
-              title="Review"
+              title="Approval"
               class="tile is-child"
-              :state="reviewStateVariant(ticket.reviewed.state)">
-              <p v-if="ticket.reviewed">
-                {{ capitalize(ticket.reviewed.state) }} at
-                {{ formatDate(ticket.reviewed.at) }}
-              </p>
+              v-if="ticket.states.includes('allocated')"
+              :variant="approvalState.variant(ticket.states.at(-1)!)">
+              <p>
+                {{ approvalState.displayText(ticket.states.at(-1)!)  }}
 
-              <p v-else-if="ticketBusiness.canReview(ticket)">
-                Pending (<a
-                  @click="
-                    ticketBusiness.review(ticket).then((x) => x && getTicket())
-                  "
-                  >Review</a
-                >)
+                <template v-if="ticketBusiness.canApprove(ticket)">
+                  (<a
+                    @click="
+                      ticketBusiness.approve(ticket!).then((x) => {
+                        x && getTicket();
+                      })
+                    "
+                    >Approve</a
+                  >)
+                </template>
               </p>
             </ticket-state>
           </div>

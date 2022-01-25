@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { TicketDto, ReviewState } from "@client/models";
+import { TicketDto, TicketState } from "@client/models";
 import { formatDate } from "@core/utilities/date";
-import { truncate, capitalize } from "@core/utilities/string";
+import { truncate } from "@core/utilities/string";
 import { client, isRBOError } from "@frontend/client";
-import { route } from "@frontend/router";
 import RboFormModal from "@frontend/components/general/FormModal.vue";
 import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import RboTicketForm, {
   Exposed,
 } from "@frontend/components/ticket/TicketForm.vue";
-import { useInteractor } from "@frontend/plugins/interactor";
-import { delayedRef } from "@frontend/utilities/component";
-import { onMounted, reactive, ref, shallowRef } from "vue";
-import { store } from "@frontend/store";
 import { useBusiness } from "@frontend/plugins/business";
+import { useInteractor } from "@frontend/plugins/interactor";
+import { route } from "@frontend/router";
+import { store } from "@frontend/store";
+import { delayedRef } from "@frontend/utilities/component";
+import { approvalState } from "@frontend/utilities/ticket";
 import { ModifyMode } from "@frontend/utilities/types";
-import { reviewStateVariant } from "@frontend/utilities/ticket";
+import { onMounted, reactive, ref, shallowRef } from "vue";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
@@ -69,8 +69,10 @@ const getTickets = async () => {
   tickets.value = response;
 };
 
-const reviewStateClass = (reviewState?: ReviewState) =>
-  "tag is-light is-medium is-" + reviewStateVariant(reviewState);
+const approvalStateClass = (state: TicketState) =>
+  "tag is-light is-medium is-" + approvalState.variant(state);
+
+const hmm = console.log;
 
 onMounted(getTickets);
 </script>
@@ -84,10 +86,10 @@ onMounted(getTickets);
     </view-title>
 
     <o-table rootClass="block" :data="tickets">
-      <o-table-column label="Information">
+      <o-table-column label="Information" width="50%">
         <template v-slot="{ row: { information } }">
           <span>
-            {{ truncate(information, 250) }}
+            {{ truncate(information, 150) }}
           </span>
         </template>
       </o-table-column>
@@ -95,34 +97,32 @@ onMounted(getTickets);
       <o-table-column label="Created">
         <template v-slot="{ row: { created } }">
           <span>
-            {{ formatDate(created.at, "date") }},
             <username :username="created.by.username" />
+            <br />
+            {{ formatDate(created.at, "date") }}
           </span>
         </template>
       </o-table-column>
 
       <o-table-column label="Allocated">
-        <template v-slot="{ row: { allocated } }">
-          <span v-if="allocated">
-            {{ formatDate(allocated.at, "date") }},
+        <template v-slot="{ row: { states, allocated } }">
+          <span v-if="states.includes('allocated')">
             <username :username="allocated.to.username" />
+            <br />
+            {{ formatDate(allocated.at, "date") }}
           </span>
         </template>
       </o-table-column>
 
-      <o-table-column label="Reviewed">
-        <template v-slot="{ row: { allocated, reviewed } }">
-          <template v-if="allocated">
-            <span>
-              <template v-if="reviewed">
-                {{ formatDate(reviewed.at, "date") + " " }}
-              </template>
-
-              <span :class="reviewStateClass(reviewed?.state)">
-                {{ capitalize(reviewed?.state ?? "pending") }}
-              </span>
+      <o-table-column label="Approval">
+        <template v-slot="{ row: { states, approved } }">
+          <span v-if="states.includes('allocated')">
+            <span :class="approvalStateClass(states.at(-1)!)">
+              {{ approvalState.displayText(states.at(-1)!) }}
             </span>
-          </template>
+            <br />
+            {{ approved ? formatDate(approved.at, "date") + " " : "" }}
+          </span>
         </template>
       </o-table-column>
 
@@ -146,23 +146,29 @@ onMounted(getTickets);
             <o-dropdown-item
               v-if="ticketBusiness.canAllocate(ticket)"
               @click="
-                ticketBusiness.allocate(ticket).then((x) => x && getTickets())
+                ticketBusiness.allocate(ticket).then((x) => {
+                  x && getTickets();
+                })
               ">
               Allocate
             </o-dropdown-item>
 
             <o-dropdown-item
-              v-if="ticketBusiness.canReview(ticket)"
+              v-if="ticketBusiness.canApprove(ticket)"
               @click="
-                ticketBusiness.review(ticket).then((x) => x && getTickets())
+                ticketBusiness.approve(ticket).then((x) => {
+                  x && getTickets();
+                })
               ">
-              Review
+              Approve
             </o-dropdown-item>
 
             <o-dropdown-item
               v-if="ticketBusiness.canCancel(ticket)"
               @click="
-                ticketBusiness.cancel(ticket).then((x) => x && getTickets())
+                ticketBusiness.cancel(ticket).then((x) => {
+                  x && getTickets();
+                })
               ">
               Cancel
             </o-dropdown-item>

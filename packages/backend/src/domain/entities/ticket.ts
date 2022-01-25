@@ -1,6 +1,7 @@
 import { Entity } from "@backend/domain/common/entity";
-import { ReviewState } from "@backend/domain/constants/reviewState";
 import { date, InferType, object, string } from "yup";
+import { ApprovalState } from "../constants/approvalState";
+import { TicketState } from "../constants/ticketState";
 import { User } from "./user";
 
 const InitialFields = object({
@@ -18,9 +19,9 @@ const AdditionalFields = object({
     to: User.required(),
   }),
 
-  reviewed: object({
+  approved: object({
     at: date().strict().required(),
-    state: ReviewState.required(),
+    state: ApprovalState.required(),
   }),
 }).partial();
 
@@ -28,4 +29,14 @@ const Ticket = Entity.concat(InitialFields).concat(AdditionalFields);
 
 type Ticket = InferType<typeof Ticket>;
 
-export { Ticket };
+const getTicketStates = (ticket: Ticket): TicketState[] => {
+  const states: TicketState[] = ["unallocated"];
+
+  ticket.allocated && states.push("allocated");
+
+  ticket.approved && states.push(ticket.approved.state);
+
+  return states;
+};
+
+export { Ticket, getTicketStates };
