@@ -28,7 +28,7 @@ const reviewStateClass = (state: TicketState) =>
     <o-table-column label="Information" width="50%">
       <template v-slot="{ row: { information } }">
         <span>
-          {{ truncate(information, 150) }}
+          {{ truncate(information, 200) }}
         </span>
       </template>
     </o-table-column>
@@ -65,7 +65,7 @@ const reviewStateClass = (state: TicketState) =>
       </template>
     </o-table-column>
 
-    <o-table-column label="Actions" position="centered">
+    <o-table-column label="Actions" position="centered" width="7.5%">
       <template v-slot="{ index, row: ticket }">
         <o-dropdown
           :position="`${index >= tickets.length / 2 ? 'top' : 'bottom'}-left`">
