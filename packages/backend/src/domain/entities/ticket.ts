@@ -2,7 +2,7 @@ import { Entity } from "@backend/domain/common/entity";
 import { date, InferType, object, string } from "yup";
 import { Authorizer } from "../common/authorizer";
 import { AuthorizationState } from "../constants/authorizationState";
-import { CompletionState } from "../constants/completionState";
+import { ReviewState } from "../constants/reviewState";
 import { TicketState } from "../constants/ticketState";
 import { User } from "./user";
 
@@ -23,7 +23,7 @@ const AdditionalFields = object({
 
   reviewed: object({
     at: date().strict().required(),
-    state: CompletionState.required(),
+    state: ReviewState.required(),
   }).nullable(),
 
   authorized: object({

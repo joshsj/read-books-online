@@ -1,7 +1,7 @@
 import {
   CompleteTicketRequest,
   TicketState,
-  CompletionState,
+  ReviewState,
   AuthorizationState,
 } from "@client/models";
 import { capitalize } from "@core/utilities/string";
@@ -11,7 +11,7 @@ const PendingVariant = "info" as const;
 
 const prettyTicketState = (state: TicketState) => capitalize(state);
 
-const ticketStateVariants: { [K in CompletionState | AuthorizationState]: string } = {
+const ticketStateVariants: { [K in ReviewState | AuthorizationState]: string } = {
   complete: "success",
   approved: "success",
 
@@ -20,10 +20,10 @@ const ticketStateVariants: { [K in CompletionState | AuthorizationState]: string
 };
 
 const ticketProgressState = {
-  displayText: (state?: CompletionState | AuthorizationState): string =>
+  displayText: (state?: ReviewState | AuthorizationState): string =>
     state ? prettyTicketState(state) : "Pending",
 
-  variant: (state?: CompletionState | AuthorizationState): string =>
+  variant: (state?: ReviewState | AuthorizationState): string =>
     state ? ticketStateVariants[state] : "info",
 };
 
