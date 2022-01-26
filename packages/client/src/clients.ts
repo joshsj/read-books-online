@@ -9,6 +9,7 @@ import {
   TicketDto,
   TicketQuery,
   TokenDto,
+  AuthorizeTicketRequest,
 } from "@client/models";
 import { Endpoint } from "@client/types";
 
@@ -27,11 +28,9 @@ type ITicketClient = {
     Endpoint<"update", CompleteTicketRequest> &
     Endpoint<"get", Id, TicketDto> &
     Endpoint<"get", TicketQuery, TicketDto[]> &
-    Endpoint<"delete", Id> & {
-      allocation: Endpoint<"create", AllocateTicketRequest>;
-    } & {
-      review: Endpoint<"put", ReviewTicketRequest>;
-    };
+    Endpoint<"delete", Id> & { allocation: Endpoint<"create", AllocateTicketRequest> } & {
+      review: Endpoint<"create", ReviewTicketRequest>;
+    } & { authorization: Endpoint<"create", AuthorizeTicketRequest> };
 };
 
 export { IAuthClient, ITicketClient, IUserClient };

@@ -5,6 +5,7 @@ export { AllocateTicketRequest } from "@backend/application/ticket/commands/allo
 export { ReviewTicketRequest } from "@backend/application/ticket/commands/reviewTicket";
 export { CreateTicketRequest } from "@backend/application/ticket/commands/createTicket";
 export { CompleteTicketRequest } from "@backend/application/ticket/commands/completeTicket";
+export { AuthorizeTicketRequest } from "@backend/application/ticket/commands/authorizeTicket";
 export { TicketDto } from "@backend/application/ticket/queries/ticketDto";
 export { TicketQuery } from "@backend/application/ticket/queries/ticketQuery";
 export { CreateUserRequest } from "@backend/application/user/commands/createUser";

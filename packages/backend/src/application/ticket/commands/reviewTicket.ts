@@ -1,8 +1,8 @@
 import {
-  reviewingOtherTicket,
+  notFound,
   reviewingCompletedTicket,
   reviewingNonAllocatedTicket,
-  notFound,
+  reviewingOtherTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -10,14 +10,15 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
-import { getTicketStates } from "@backend/domain/entities/ticket";
+import { ReviewState } from "@backend/domain/constants/reviewState";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
-import { bool, InferType, object } from "yup";
+import { InferType, object } from "yup";
 
-const ReviewTicketRequest = object({ ticketId: Id, complete: bool().required() }).concat(
-  Request("reviewTicketRequest")
-);
+const ReviewTicketRequest = object({
+  ticketId: Id,
+  state: ReviewState.required(),
+}).concat(Request("reviewTicketRequest"));
 
 type ReviewTicketRequest = InferType<typeof ReviewTicketRequest>;
 
@@ -50,14 +51,13 @@ class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRe
     await super.authorize(request);
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
-    const states = getTicketStates(ticket);
+
+    ensure(!!ticket.allocated, new RBOError("authorization", reviewingNonAllocatedTicket));
 
     // allows completion of tickets currently requiring new information
-    ensure(!states.includes("complete"), new RBOError("authorization", reviewingCompletedTicket));
-
     ensure(
-      states.includes("allocated"),
-      new RBOError("authorization", reviewingNonAllocatedTicket)
+      ticket.reviewed?.state !== "complete",
+      new RBOError("authorization", reviewingCompletedTicket)
     );
 
     const currentUser = await this.identityService.getCurrentUser();
@@ -74,13 +74,10 @@ class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest>
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
-  async handle({ ticketId, complete }: ReviewTicketRequest) {
+  async handle({ ticketId, state }: ReviewTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
 
-    ticket.reviewed = {
-      at: new Date(),
-      state: complete ? "complete" : "incomplete",
-    };
+    ticket.reviewed = { at: new Date(), state };
 
     await this.ticketRepository.update(ticket);
   }

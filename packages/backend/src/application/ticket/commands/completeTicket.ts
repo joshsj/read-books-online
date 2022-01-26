@@ -1,6 +1,6 @@
 import {
   notFound,
-  reviewingTicketNotRequired,
+  completingTicketNotRequired,
   completingOtherTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
@@ -53,7 +53,7 @@ class CompleteTicketRequestAuthorizer extends RoleRequestAuthorizer<CompleteTick
 
     ensure(
       ticket.reviewed?.state === "incomplete",
-      new RBOError("authorization", reviewingTicketNotRequired)
+      new RBOError("authorization", completingTicketNotRequired)
     );
 
     ensure(

@@ -7,7 +7,7 @@ import { array, InferType, object, string } from "yup";
 const JWTPayloadDto = object({
   sub: Id,
   preferred_username: string().strict().required(),
-  roles: array().of(Role).required(),
+  roles: array().of(Role.required()).required(),
 });
 type JWTPayloadDto = InferType<typeof JWTPayloadDto>;
 

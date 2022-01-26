@@ -9,7 +9,6 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
-import { getTicketStates } from "@backend/domain/entities/ticket";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
@@ -47,10 +46,7 @@ class AllocateTicketRequestAuthorizer extends RoleRequestAuthorizer<AllocateTick
 
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
 
-    ensure(
-      !getTicketStates(ticket).includes("allocated"),
-      new RBOError("validation", allocatingAllocatedTicket)
-    );
+    ensure(!ticket.allocated, new RBOError("validation", allocatingAllocatedTicket));
 
     const currentUser = await this.identityService.getCurrentUser();
 

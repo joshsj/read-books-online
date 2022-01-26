@@ -75,12 +75,20 @@ ticketRoutes.post(
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
 
     return { state: "created" };
-    1;
   })
 );
 
-ticketRoutes.put(
+ticketRoutes.post(
   "/review",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "ok", value: undefined };
+  })
+);
+
+ticketRoutes.post(
+  "/authorization",
   handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
     await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
 

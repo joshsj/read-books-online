@@ -2,7 +2,7 @@ import { isRBOError } from "@client/index";
 import { RBOErrorDto } from "@client/types";
 import Modal from "@frontend/components/general/Modal.vue";
 import { ModalProps } from "@frontend/utilities/types";
-import { h, getCurrentInstance, render, VNode, VNodeArrayChildren } from "vue";
+import { h, getCurrentInstance, render, VNode } from "vue";
 import { useOrugaMixin } from "./orugaMixin";
 
 type NotifyVariant = "info" | "success" | "danger";

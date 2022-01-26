@@ -41,12 +41,19 @@ export const allocatingOwnTicket = "You cannot be allocated to your own ticket";
 export const allocatingAllocatedTicket =
   "You cannot allocate a ticket which has already been allocated";
 export const cancellingOtherTicket = "You cannot delete a ticket which was created by another user";
-export const cancellingAllocatedTicket = "You cannot delete a ticket which has been allocated";
+export const cancellingAllocatedTicket =
+  "You cannot delete a ticket which has already been allocated";
 export const reviewingOtherTicket = "You cannot review which is allocated to another employee";
 export const reviewingCompletedTicket =
   "You cannot complete a ticket which has already been completed";
 export const reviewingNonAllocatedTicket =
   "You cannot review a ticket which has not been allocated";
-export const reviewingTicketNotRequired = "This ticket does not require additional information";
+export const completingTicketNotRequired = "This ticket does not require additional information";
 export const completingOtherTicket =
   "You cannot provide additional information to a ticket created by another user";
+export const authorizingAuthorizedTicket =
+  "You cannot authorize an ticket which has already been authorized";
+export const authorizingNonCompleteTicket = "You cannot authorize an non-completed ticket";
+export const authorizingOwnCreatedTicket = "You cannot authorized a ticket which you created";
+export const authorizingOwnAllocatedTicket =
+  "You cannot authorized a ticket to which you are allocated";

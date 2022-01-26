@@ -23,7 +23,7 @@ const tagClass = "tag is-light is-medium is-";
 </script>
 
 <template>
-  <o-table :data="tickets">
+  <o-table :data="tickets" narrowed>
     <o-table-column label="Information" width="40%">
       <template v-slot="{ row: { information } }">
         <span>
@@ -123,6 +123,16 @@ const tagClass = "tag is-light is-medium is-";
             v-if="ticketBusiness.canComplete(ticket)"
             @click="emit('complete', ticket)">
             Complete
+          </o-dropdown-item>
+
+          <o-dropdown-item
+            v-if="ticketBusiness.canAuthorize(ticket)"
+            @click="
+              ticketBusiness
+                .authorize(ticket)
+                .then((x) => x && emit('needTickets'))
+            ">
+            Authorize
           </o-dropdown-item>
 
           <o-dropdown-item

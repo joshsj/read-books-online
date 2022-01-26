@@ -168,6 +168,17 @@ onMounted(getTicket);
               :variant="ticketProgressState.variant(ticket.authorized?.state)">
               <p>
                 {{ ticketProgressState.displayText(ticket.authorized?.state) }}
+
+                <template v-if="ticketBusiness.canAuthorize(ticket)">
+                  (<a
+                    @click="
+                      ticketBusiness.authorize(ticket!).then((x) => {
+                        x && getTicket();
+                      })
+                    "
+                    >Authorize</a
+                  >)
+                </template>
               </p>
             </ticket-field>
           </div>
