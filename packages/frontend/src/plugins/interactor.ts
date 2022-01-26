@@ -97,7 +97,6 @@ const useInteractor = () => {
         mainButtonText: "Yes",
         mainButtonVariant: "success",
         altButtonText: "No",
-        altButtonVariant: "danger",
       },
       undefined,
       () => message
