@@ -24,7 +24,7 @@ const tagClass = "tag is-light is-medium is-";
 
 <template>
   <o-table :data="tickets">
-    <o-table-column label="Information" width="50%">
+    <o-table-column label="Information" width="40%">
       <template v-slot="{ row: { information } }">
         <span>
           {{ truncate(information, 200) }}
@@ -37,7 +37,7 @@ const tagClass = "tag is-light is-medium is-";
         <span>
           <username :username="created.by.username" />
           <br />
-          {{ formatDate(created.at, "date") }}
+          <small>{{ formatDate(created.at, "date") }}</small>
         </span>
       </template>
     </o-table-column>
@@ -47,7 +47,7 @@ const tagClass = "tag is-light is-medium is-";
         <span v-if="states.includes('allocated')">
           <username :username="allocated.to.username" />
           <br />
-          {{ formatDate(allocated.at, "date") }}
+          <small>{{ formatDate(allocated.at, "date") }}</small>
         </span>
       </template>
     </o-table-column>
@@ -61,7 +61,9 @@ const tagClass = "tag is-light is-medium is-";
           </span>
 
           <br />
-          {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
+          <small>
+            {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
+          </small>
         </span>
       </template>
     </o-table-column>
@@ -75,7 +77,9 @@ const tagClass = "tag is-light is-medium is-";
           </span>
 
           <br />
-          {{ authorized ? formatDate(authorized.at, "date") + " " : "" }}
+          <small>
+            {{ authorized ? formatDate(authorized.at, "date") + " " : "" }}
+          </small>
         </span>
       </template>
     </o-table-column>
