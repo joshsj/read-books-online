@@ -12,7 +12,9 @@ defineProps({
     </div>
 
     <div class="message-body">
-      <slot />
+      <p>
+        <slot />
+      </p>
     </div>
   </article>
 </template>

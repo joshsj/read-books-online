@@ -7,6 +7,7 @@ import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketField from "@frontend/components/ticket/TicketField.vue";
 import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
+import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 import StateTag from "@frontend/components/ticket/TicketStateTag.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
@@ -17,12 +18,11 @@ import {
   TicketInformationModel,
   TicketPriceModel,
 } from "@frontend/utilities/forms";
-import { ProgressState } from "@frontend/utilities/ticket";
+import { stateVariant } from "@frontend/utilities/ticket";
 import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
 import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 
 const props = defineProps({ ticketId: { type: String, required: true } });
 
@@ -149,72 +149,77 @@ onMounted(getTicket);
               title="Allocation"
               class="tile is-child"
               :variant="ticket.allocated ? 'success' : PendingVariant">
-              <p>
-                <template v-if="ticket.allocated">
-                  To <username :username="ticket.allocated.to.username" /> at
-                  {{ formatDate(ticket.allocated.at) }}
-                </template>
+              <template v-if="ticket.allocated">
+                To <username :username="ticket.allocated.to.username" /> at
+                {{ formatDate(ticket.allocated.at) }}
+              </template>
 
-                <template v-else>
-                  Pending
-                  <template v-if="ticketBusiness.canAllocate(ticket)">
-                    (<a
-                      @click="
+              <template v-else>
+                Pending
+                <template v-if="ticketBusiness.canAllocate(ticket)">
+                  (<a
+                    @click="
                     ticketBusiness
                       .allocate(ticket!)
                       .then((x) => {x && getTicket()})"
-                      >Allocate</a
-                    >)
-                  </template>
+                    >Allocate</a
+                  >)
                 </template>
-              </p>
+              </template>
             </ticket-field>
 
             <ticket-field
               title="Review"
               class="tile is-child"
               v-if="ticket.allocated"
-              :variant="ProgressState.variant(ticket.reviewed?.state)">
-              <p>
-                {{ ProgressState.text(ticket.reviewed?.state) }}
+              :variant="stateVariant(ticket.reviewed?.state)">
+              {{ ticket.reviewed ? ticket.reviewed.state : "Pending" }}
 
-                <template v-if="ticketBusiness.canReview(ticket)">
-                  (<a
-                    @click="
+              <template v-if="ticketBusiness.canReview(ticket)">
+                (<a
+                  @click="
                       ticketBusiness.review(ticket!).then((x) => {
                         x && getTicket();
                       })
                     "
-                    >Review</a
-                  >)
-                </template>
+                  >Review</a
+                >)
+              </template>
 
-                <template v-else-if="ticketBusiness.canComplete(ticket)">
-                  (<a @click="onCompleteClick">Complete</a>)
-                </template>
-              </p>
+              <template v-else-if="ticketBusiness.canComplete(ticket)">
+                (<a @click="onCompleteClick">Complete</a>)
+              </template>
             </ticket-field>
 
             <ticket-field
               title="Price"
               class="tile is-child"
-              :variant="ticket.priced ? 'success' : PendingVariant">
-              <p>
-                {{ ticket.priced?.value.toFixed(2) ?? 'Pending' }}
+              :variant="stateVariant(ticket.reviewed?.state)"
+              v-if="ticket.reviewed?.state === 'Information Complete'">
+              <template v-if="ticket.priced">
+                {{ ticket.priced?.value.toFixed(2) ?? "Pending" }}
+              </template>
+
+              <template v-else>
+                Pending
 
                 <template v-if="ticketBusiness.canSubmitPrice(ticket)">
                   (<a @click="onSubmitPriceClick()">Submit Price</a>)
                 </template>
-              </p>
+              </template>
             </ticket-field>
 
             <ticket-field
               title="Purchase"
               class="tile is-child"
               v-if="ticket.priced"
-              :variant="ProgressState.variant(ticket.authorized?.state)">
-              <p>
-                {{ ProgressState.text(ticket.authorized?.state) }}
+              :variant="stateVariant(ticket.reviewed?.state)">
+              <template v-if="ticket.authorized">
+                {{ ticket.authorized.state }}
+              </template>
+
+              <template v-else>
+                Pending
 
                 <template v-if="ticketBusiness.canAuthorize(ticket)">
                   (<a
@@ -226,7 +231,7 @@ onMounted(getTicket);
                     >Authorize</a
                   >)
                 </template>
-              </p>
+              </template>
             </ticket-field>
           </div>
         </div>

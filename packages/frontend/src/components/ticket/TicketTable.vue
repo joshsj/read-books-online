@@ -34,7 +34,7 @@ const { ticketBusiness } = useBusiness();
     <template v-if="simpleColumns">
       <o-table-column label="Status">
         <template v-slot="{ row: { states } }">
-          <state-tag :state="states.at(-1)!" />
+          <state-tag :state="states.at(-1)!" fallback />
         </template>
       </o-table-column>
     </template>
@@ -61,14 +61,11 @@ const { ticketBusiness } = useBusiness();
       </o-table-column>
 
       <o-table-column label="Review">
-        <template v-slot="{ row: { allocated, reviewed } }">
-          <span v-if="allocated">
-            <state-tag :state="reviewed?.state" progress />
-
+        <template v-slot="{ row: { reviewed } }">
+          <span v-if="reviewed">
+            <state-tag :state="reviewed.state" />
             <br />
-            <small>
-              {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
-            </small>
+            <small>{{ formatDate(reviewed.at, "date") }}</small>
           </span>
         </template>
       </o-table-column>
@@ -85,14 +82,12 @@ const { ticketBusiness } = useBusiness();
       </o-table-column>
 
       <o-table-column label="Authorization">
-        <template v-slot="{ row: { priced, authorized } }">
-          <span v-if="priced">
-            <state-tag :state="authorized?.state" progress />
+        <template v-slot="{ row: { authorized } }">
+          <span v-if="authorized">
+            <state-tag :state="authorized.state" />
 
             <br />
-            <small>
-              {{ authorized ? formatDate(authorized.at, "date") + " " : "" }}
-            </small>
+            <small>{{ formatDate(authorized.at, "date") }}</small>
           </span>
         </template>
       </o-table-column>

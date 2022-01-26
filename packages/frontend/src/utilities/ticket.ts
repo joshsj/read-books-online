@@ -1,26 +1,23 @@
 import { AuthorizationState, ReviewState, TicketState } from "@client/models";
-import { PendingVariant as DefaultVariant } from "./constants";
 
-type ProgressState = ReviewState | AuthorizationState;
+const DefaultVariant = "info";
 
-type StateVariants = { [K in TicketState]: string };
-const StateVariants: StateVariants = {
-  Unallocated: DefaultVariant,
-  "Pending Review": DefaultVariant,
+type TerminalState = Extract<ReviewState, "Information Incomplete"> | AuthorizationState;
 
+type TerminalStateVariants = { [K in TerminalState]: string };
+const TerminalStateVariants: TerminalStateVariants = {
   "Information Incomplete": "danger",
-  "Information Complete": "success",
-
-  "Pending Pricing": DefaultVariant,
-  "Pending Authorization": DefaultVariant,
-
   "Purchase Denied": "danger",
   "Purchase Approved": "success",
 };
 
-const ProgressState = {
-  variant: (state?: ProgressState): string => (state ? StateVariants[state] : "info"),
-  text: (state?: ProgressState): string => (state ? state : "Pending"),
+const stateVariant = (state?: TicketState): string => {
+  const terminalVariant = terminalStateVariant(state as TerminalState);
+
+  return terminalVariant ? terminalVariant : state ? "success" : DefaultVariant;
 };
 
-export { StateVariants, ProgressState };
+const terminalStateVariant = (state?: TerminalState) =>
+  state ? TerminalStateVariants[state] : undefined;
+
+export { DefaultVariant, stateVariant, terminalStateVariant };

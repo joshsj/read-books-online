@@ -5,7 +5,7 @@ import { fieldState, numberFieldMap } from "@frontend/utilities/forms";
 import { TicketPriceModel } from "@frontend/utilities/forms";
 import { useField, useForm } from "vee-validate";
 
-const emit = defineEmits(["main"]);
+const emit = defineEmits(["main", "update:active"]);
 
 const form = useForm<TicketPriceModel>({
   validationSchema: TicketPriceModel,
@@ -16,6 +16,7 @@ const priceMap = numberFieldMap(price);
 
 const onSubmit = form.handleSubmit(() => {
   emit("main");
+  emit("update:active", false);
   form.resetForm();
 });
 
