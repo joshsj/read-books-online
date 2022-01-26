@@ -24,7 +24,7 @@ const TicketSchema: Schema<Ticket> = {
 
   priced: {
     at: { type: Date },
-    state: { type: Number },
+    value: { type: Number },
   },
 
   authorized: {

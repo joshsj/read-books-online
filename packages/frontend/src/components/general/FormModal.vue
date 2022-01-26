@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { ModifyMode } from "@frontend/utilities/types";
 import RboModal from "@frontend/components/general/Modal.vue";
 import { capitalize } from "@core/utilities/string";
 
-defineProps({
+const props = defineProps({
   active: { type: Boolean, default: false },
   entity: { type: String, required: true },
-  mode: { type: String as PropType<ModifyMode>, required: true },
+  mode: { type: String as PropType<ModifyMode> },
   valid: { type: Boolean, default: true },
 });
+
+const title = computed(() =>
+  props.mode ? `${capitalize(props.mode)} ${props.entity}` : props.entity
+);
 </script>
 
 <template>
@@ -18,7 +22,7 @@ defineProps({
     main-button-text="Save"
     alt-button-text="Cancel"
     :active="active"
-    :title="capitalize(mode) + ' ' + entity"
+    :title="title"
     :auto-close="false"
     :main-button-disabled="!valid">
     <slot />

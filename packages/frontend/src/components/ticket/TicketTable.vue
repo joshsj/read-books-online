@@ -5,26 +5,25 @@ import { truncate } from "@core/utilities/string";
 import Username from "@frontend/components/general/Username.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { route } from "@frontend/router";
-import { ticketProgressState } from "@frontend/utilities/ticket";
 import { PropType } from "vue";
+import StateTag from "@frontend/components/ticket/TicketStateTag.vue";
 
 defineProps({
   tickets: {
     type: Object as PropType<TicketDto[]>,
     required: true,
   },
+  simpleColumns: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["needTickets", "complete"]);
+const emit = defineEmits(["needTickets", "complete", "submitPrice"]);
 
 const { ticketBusiness } = useBusiness();
-
-const tagClass = "tag is-light is-medium is-";
 </script>
 
 <template>
   <o-table :data="tickets" narrowed>
-    <o-table-column label="Information" width="40%">
+    <o-table-column label="Information" :width="simpleColumns ? '75%' : '50%'">
       <template v-slot="{ row: { information } }">
         <span>
           {{ truncate(information, 200) }}
@@ -32,57 +31,61 @@ const tagClass = "tag is-light is-medium is-";
       </template>
     </o-table-column>
 
-    <o-table-column label="Creation">
-      <template v-slot="{ row: { created } }">
-        <span>
-          <username :username="created.by.username" />
-          <br />
-          <small>{{ formatDate(created.at, "date") }}</small>
-        </span>
-      </template>
-    </o-table-column>
+    <template v-if="simpleColumns">
+      <o-table-column label="Status">
+        <template v-slot="{ row: { states } }">
+          <state-tag :state="states.at(-1)!" />
+        </template>
+      </o-table-column>
+    </template>
 
-    <o-table-column label="Allocation">
-      <template v-slot="{ row: { states, allocated } }">
-        <span v-if="states.includes('allocated')">
-          <username :username="allocated.to.username" />
-          <br />
-          <small>{{ formatDate(allocated.at, "date") }}</small>
-        </span>
-      </template>
-    </o-table-column>
-
-    <o-table-column label="Review">
-      <template v-slot="{ row: { states, reviewed } }">
-        <span v-if="states.includes('allocated')">
-          <span
-            :class="tagClass + ticketProgressState.variant(reviewed?.state)">
-            {{ ticketProgressState.displayText(reviewed?.state) }}
+    <template v-else>
+      <o-table-column label="Creation">
+        <template v-slot="{ row: { created } }">
+          <span>
+            <username :username="created.by.username" />
+            <br />
+            <small>{{ formatDate(created.at, "date") }}</small>
           </span>
+        </template>
+      </o-table-column>
 
-          <br />
-          <small>
-            {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
-          </small>
-        </span>
-      </template>
-    </o-table-column>
-
-    <o-table-column label="Purchase">
-      <template v-slot="{ row: { states, authorized } }">
-        <span v-if="states.includes('complete')">
-          <span
-            :class="tagClass + ticketProgressState.variant(authorized?.state)">
-            {{ ticketProgressState.displayText(authorized?.state) }}
+      <o-table-column label="Allocation">
+        <template v-slot="{ row: { states, allocated } }">
+          <span v-if="states.includes('allocated')">
+            <username :username="allocated.to.username" />
+            <br />
+            <small>{{ formatDate(allocated.at, "date") }}</small>
           </span>
+        </template>
+      </o-table-column>
 
-          <br />
-          <small>
-            {{ authorized ? formatDate(authorized.at, "date") + " " : "" }}
-          </small>
-        </span>
-      </template>
-    </o-table-column>
+      <o-table-column label="Review">
+        <template v-slot="{ row: { states, reviewed } }">
+          <span v-if="states.includes('allocated')">
+            <state-tag :state="reviewed?.state" :progress="true" />
+
+            <br />
+            <small>
+              {{ reviewed ? formatDate(reviewed.at, "date") + " " : "" }}
+            </small>
+          </span>
+        </template>
+      </o-table-column>
+
+      <o-table-column label="Purchase">
+        <template v-slot="{ row: { states, authorized } }">
+          <span v-if="states.includes('complete')">
+            <state-tag :state="authorized?.state" :progress="true" />
+
+            <br />
+            <small>
+              {{ authorized ? formatDate(authorized.at, "date") + " " : "" }}
+            </small>
+          </span>
+        </template>
+      </o-table-column>
+    </template>
 
     <o-table-column label="Actions" position="centered" width="7.5%">
       <template v-slot="{ index, row: ticket }">
@@ -123,6 +126,12 @@ const tagClass = "tag is-light is-medium is-";
             v-if="ticketBusiness.canComplete(ticket)"
             @click="emit('complete', ticket)">
             Complete
+          </o-dropdown-item>
+
+          <o-dropdown-item
+            v-if="ticketBusiness.canSubmitPrice(ticket)"
+            @click="emit('submitPrice', ticket)">
+            Submit Price
           </o-dropdown-item>
 
           <o-dropdown-item

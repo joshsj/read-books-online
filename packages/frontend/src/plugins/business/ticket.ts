@@ -1,4 +1,9 @@
-import { CompleteTicketRequest, CreateTicketRequest, TicketDto, TicketState } from "@client/models";
+import {
+  CompleteTicketRequest,
+  CreateTicketRequest,
+  TicketDto,
+  SubmitTicketPriceRequest,
+} from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
 import { Interactor, useInteractor } from "@frontend/plugins/interactor";
@@ -144,6 +149,27 @@ const useTicketBusiness = () => {
     complete: (request: CompleteTicketRequest) =>
       execTicketAction(interactor, () => client.ticket.update(request), "Ticket updated"),
 
+    canSubmitPrice: (ticket: TicketDto, user?: UserStore) => {
+      const resolvedUser = user ?? store.user;
+
+      if (!resolvedUser) {
+        return false;
+      }
+
+      return (
+        !ticket.priced &&
+        ticket.reviewed?.state === "complete" &&
+        ticket.allocated!.to._id === resolvedUser._id
+      );
+    },
+
+    submitPrice: async (request: SubmitTicketPriceRequest) =>
+      execTicketAction(
+        interactor,
+        () => client.ticket.price.create(request),
+        "Ticket price submitted"
+      ),
+
     canAuthorize: (ticket: TicketDto, user?: UserStore) => {
       const resolvedUser = user ?? store.user;
 
@@ -153,11 +179,7 @@ const useTicketBusiness = () => {
 
       const invalidIds = [ticket.created.by._id, ticket.allocated?.to._id];
 
-      return (
-        !ticket.authorized &&
-        ticket.reviewed?.state === "complete" &&
-        !invalidIds.includes(resolvedUser._id)
-      );
+      return !ticket.authorized && !!ticket.priced && !invalidIds.includes(resolvedUser._id);
     },
 
     authorize: async (ticket: TicketDto) => {

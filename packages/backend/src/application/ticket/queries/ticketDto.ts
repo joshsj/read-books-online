@@ -1,4 +1,3 @@
-import { AuthorizerDto } from "@backend/application/common/dtos/authorizerDto";
 import { UserDto } from "@backend/application/common/dtos/userDto";
 import { AuthorizationState } from "@backend/domain/constants/authorizationState";
 import { TicketState } from "@backend/domain/constants/ticketState";
@@ -9,12 +8,13 @@ type TicketDto = Pick<Ticket, "_id" | "information"> & {
   created: { at: Date; by: UserDto };
   allocated?: { at: Date; to: UserDto };
   reviewed?: NonNullable<Ticket["reviewed"]>;
-  authorized?: { at: Date; by?: AuthorizerDto; state: AuthorizationState };
+  priced?: NonNullable<Ticket["priced"]>;
+  authorized?: { at: Date; by?: UserDto; state: AuthorizationState };
 };
 
 const TicketDto = {
   fromTicket: (ticket: Ticket): TicketDto => {
-    const { _id, information, created, allocated, reviewed, authorized } = ticket;
+    const { _id, information, created, allocated, reviewed, priced, authorized } = ticket;
 
     return {
       _id,
@@ -23,10 +23,11 @@ const TicketDto = {
       created: { at: created.at, by: UserDto.fromUser(created.by) },
       allocated: allocated ? { at: allocated.at, to: UserDto.fromUser(allocated.to) } : undefined,
       reviewed: reviewed ?? undefined,
+      priced: priced ?? undefined,
       authorized: authorized
         ? {
             at: authorized.at,
-            by: authorized.by ? AuthorizerDto.fromAuthorizer(authorized.by) : undefined,
+            by: authorized.by ? UserDto.fromUser(authorized.by) : undefined,
             state: authorized.state,
           }
         : undefined,

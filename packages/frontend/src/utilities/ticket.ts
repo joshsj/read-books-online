@@ -1,17 +1,33 @@
 import {
-  CompleteTicketRequest,
-  TicketState,
-  ReviewState,
   AuthorizationState,
+  CompleteTicketRequest,
+  ReviewState,
+  TicketState,
 } from "@client/models";
 import { capitalize } from "@core/utilities/string";
 import { InferType } from "yup";
-
-const PendingVariant = "info" as const;
+import { PendingVariant as DefaultVariant } from "./constants";
 
 const prettyTicketState = (state: TicketState) => capitalize(state);
 
-const ticketStateVariants: { [K in ReviewState | AuthorizationState]: string } = {
+type ProgressState = ReviewState | AuthorizationState;
+
+const StateVariants: { [K in TicketState]: string } = {
+  unallocated: DefaultVariant,
+  allocated: DefaultVariant,
+
+  incomplete: "danger",
+  complete: "success",
+
+  priced: DefaultVariant,
+
+  denied: "danger",
+  approved: "success",
+};
+
+const ProgressStateVariants: {
+  [K in ProgressState]: string;
+} = {
   complete: "success",
   approved: "success",
 
@@ -19,15 +35,9 @@ const ticketStateVariants: { [K in ReviewState | AuthorizationState]: string } =
   denied: "danger",
 };
 
-const ticketProgressState = {
-  displayText: (state?: ReviewState | AuthorizationState): string =>
-    state ? prettyTicketState(state) : "Pending",
-
-  variant: (state?: ReviewState | AuthorizationState): string =>
-    state ? ticketStateVariants[state] : "info",
+const ProgressState = {
+  variant: (state?: ProgressState) => (state ? ProgressStateVariants[state] : "info"),
+  text: (state?: ProgressState) => (state ? prettyTicketState(state) : "Pending"),
 };
 
-const TicketInformationModel = CompleteTicketRequest.pick(["ticketId", "information"]);
-type TicketInformationModel = InferType<typeof TicketInformationModel>;
-
-export { ticketProgressState, prettyTicketState, PendingVariant, TicketInformationModel };
+export { prettyTicketState, StateVariants, ProgressStateVariants, ProgressState };

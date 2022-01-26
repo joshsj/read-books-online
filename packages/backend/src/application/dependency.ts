@@ -198,7 +198,11 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository),
         c.resolve(Dependency.identityService)
       ),
-    (c) => new SubmitTicketPriceCommandHandler(c.resolve(Dependency.ticketRepository)),
+    (c) =>
+      new SubmitTicketPriceCommandHandler(
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.configuration)
+      ),
   ]);
 };
 

@@ -3,46 +3,77 @@ import { TicketDto } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
+import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 import TicketTable from "@frontend/components/ticket/TicketTable.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { store } from "@frontend/store";
-import { TicketInformationModel } from "@frontend/utilities/ticket";
+import {
+  TicketInformationModel,
+  TicketPriceModel,
+} from "@frontend/utilities/forms";
 import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const { notify } = useInteractor();
-
 const { ticketBusiness } = useBusiness();
 
-const modal = ref<{ form: FormContext<TicketInformationModel> } | undefined>();
-const modalActive = ref(false);
-const modalMode = ref<ModifyMode>("create");
+const tableSimpleColumns = ref<boolean>(false);
 
-const onModalMain = async () => {
-  if (!modal.value) {
-    return;
-  }
+const infoModalRef = ref<
+  { form: FormContext<TicketInformationModel> } | undefined
+>();
+const infoModal = reactive({
+  active: false,
+  mode: "create" as ModifyMode,
 
-  const { ticketId, information } = modal.value.form.values;
+  onMain: async () => {
+    if (!infoModalRef.value) {
+      return;
+    }
 
-  const result = await (modalMode.value === "create"
-    ? ticketBusiness.create({
-        requestName: "createTicketRequest",
-        information,
-      })
-    : ticketBusiness.complete({
-        requestName: "completeTicketRequest",
-        ticketId,
-        information,
-      }));
+    const { ticketId, information } = infoModalRef.value.form.values;
 
-  result && getTickets();
-};
+    const result = await (infoModal.mode === "create"
+      ? ticketBusiness.create({
+          requestName: "createTicketRequest",
+          information,
+        })
+      : ticketBusiness.complete({
+          requestName: "completeTicketRequest",
+          ticketId,
+          information,
+        }));
+
+    result && getTickets();
+  },
+});
+
+const priceModalRef = ref<
+  { form: FormContext<TicketPriceModel> } | undefined
+>();
+const priceModal = reactive({
+  active: false,
+
+  onMain: async () => {
+    if (!priceModalRef.value) {
+      return;
+    }
+
+    const { ticketId, price } = priceModalRef.value.form.values;
+
+    const result = await ticketBusiness.submitPrice({
+      requestName: "submitTicketPriceRequest",
+      ticketId,
+      price,
+    });
+
+    result && getTickets();
+  },
+});
 
 const tickets = ref<TicketDto[]>([]);
-
 const getTickets = async () => {
   const response = await store.pageLoad(
     client.ticket.get({
@@ -65,19 +96,29 @@ const getTickets = async () => {
 };
 
 const onCreateClick = () => {
-  modalMode.value = "create";
-  modalActive.value = true;
+  infoModal.mode = "create";
+  infoModal.active = true;
 };
 
 const onCompleteClick = ({ _id, information }: TicketDto) => {
-  if (!modal.value) {
+  if (!infoModalRef.value) {
     return;
   }
 
-  modal.value.form.values.ticketId = _id;
-  modal.value.form.values.information = information;
-  modalMode.value = "update";
-  modalActive.value = true;
+  infoModalRef.value.form.values.ticketId = _id;
+  infoModalRef.value.form.values.information = information;
+
+  infoModal.mode = "update";
+  infoModal.active = true;
+};
+
+const onSubmitPriceClick = ({ _id }: TicketDto) => {
+  if (!priceModalRef.value) {
+    return;
+  }
+
+  priceModalRef.value.form.values.ticketId = _id;
+  priceModal.active = true;
 };
 
 onMounted(getTickets);
@@ -93,15 +134,28 @@ onMounted(getTickets);
         @click="onCreateClick" />
     </view-title>
 
+    <div class="block">
+      <o-switch variant="info" v-model="tableSimpleColumns">
+        Simple Columns
+      </o-switch>
+    </div>
+
     <ticket-table
       :tickets="tickets"
+      :simple-columns="tableSimpleColumns"
       @need-tickets="getTickets"
-      @complete="onCompleteClick" />
+      @complete="onCompleteClick"
+      @submit-price="onSubmitPriceClick" />
 
     <ticket-information-modal
-      ref="modal"
-      v-model:active="modalActive"
-      :mode="modalMode"
-      @main="onModalMain" />
+      ref="infoModalRef"
+      v-model:active="infoModal.active"
+      :mode="infoModal.mode"
+      @main="infoModal.onMain" />
+
+    <ticket-price-modal
+      ref="priceModalRef"
+      v-model:active="priceModal.active"
+      @main="priceModal.onMain" />
   </div>
 </template>

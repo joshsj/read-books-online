@@ -6,20 +6,23 @@ import { client } from "@frontend/client";
 import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketField from "@frontend/components/ticket/TicketField.vue";
+import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
+import StateTag from "@frontend/components/ticket/TicketStateTag.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
+import { PendingVariant } from "@frontend/utilities/constants";
 import {
-  ticketProgressState,
-  PendingVariant,
-  prettyTicketState,
   TicketInformationModel,
-} from "@frontend/utilities/ticket";
+  TicketPriceModel,
+} from "@frontend/utilities/forms";
+import { ProgressState } from "@frontend/utilities/ticket";
+import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
+import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 
 const props = defineProps({ ticketId: { type: String, required: true } });
 
@@ -27,8 +30,52 @@ const router = useRouter();
 const { ticketBusiness } = useBusiness();
 const { notify } = useInteractor();
 
-const modal = ref<{ form: FormContext<TicketInformationModel> } | undefined>();
-const modalActive = ref(false);
+const completeModalRef = ref<
+  { form: FormContext<TicketInformationModel> } | undefined
+>();
+const completeModal = reactive({
+  active: false,
+  mode: "create" as ModifyMode,
+
+  onMain: async () => {
+    if (!completeModalRef.value) {
+      return;
+    }
+
+    const { ticketId, information } = completeModalRef.value.form.values;
+
+    const result = await ticketBusiness.complete({
+      requestName: "completeTicketRequest",
+      ticketId,
+      information,
+    });
+
+    result && getTicket();
+  },
+});
+
+const priceModalRef = ref<
+  { form: FormContext<TicketPriceModel> } | undefined
+>();
+const priceModal = reactive({
+  active: false,
+
+  onMain: async () => {
+    if (!priceModalRef.value) {
+      return;
+    }
+
+    const { ticketId, price } = priceModalRef.value.form.values;
+
+    const result = await ticketBusiness.submitPrice({
+      requestName: "submitTicketPriceRequest",
+      ticketId,
+      price,
+    });
+
+    result && getTicket();
+  },
+});
 
 const ticket = ref<TicketDto | undefined>();
 
@@ -44,30 +91,19 @@ const getTicket = async () => {
   ticket.value = response;
 };
 
-const onCompleteClick = ({ _id, information }: TicketDto) => {
-  if (!modal.value) {
-    return;
+const onCompleteClick = () => {
+  if (completeModalRef.value && ticket.value) {
+    completeModalRef.value.form.values.ticketId = ticket.value._id;
+    completeModalRef.value.form.values.information = ticket.value.information;
+    completeModal.active = true;
   }
-
-  modal.value.form.values.ticketId = _id;
-  modal.value.form.values.information = information;
-  modalActive.value = true;
 };
 
-const onCompleted = async () => {
-  if (!modal.value) {
-    return;
+const onSubmitPriceClick = () => {
+  if (priceModalRef.value && ticket.value) {
+    priceModalRef.value.form.values.ticketId = ticket.value._id;
+    priceModal.active = true;
   }
-
-  const { ticketId, information } = modal.value.form.values;
-
-  const result = await ticketBusiness.complete({
-    requestName: "completeTicketRequest",
-    ticketId,
-    information,
-  });
-
-  result && getTicket();
 };
 
 onMounted(getTicket);
@@ -90,7 +126,7 @@ onMounted(getTicket);
     <div class="columns is-6">
       <div class="column content">
         <strong>Status</strong>
-        <p>{{ prettyTicketState(ticket.states.at(-1)!) }}</p>
+        <p><state-tag :state="ticket.states.at(-1)!" /></p>
 
         <strong>Information</strong>
         <p>{{ ticket.information }}</p>
@@ -140,9 +176,9 @@ onMounted(getTicket);
               title="Review"
               class="tile is-child"
               v-if="ticket.states.includes('allocated')"
-              :variant="ticketProgressState.variant(ticket.reviewed?.state)">
+              :variant="ProgressState.variant(ticket.reviewed?.state)">
               <p>
-                {{ ticketProgressState.displayText(ticket.reviewed?.state) }}
+                {{ ProgressState.text(ticket.reviewed?.state) }}
 
                 <template v-if="ticketBusiness.canReview(ticket)">
                   (<a
@@ -156,7 +192,7 @@ onMounted(getTicket);
                 </template>
 
                 <template v-else-if="ticketBusiness.canComplete(ticket)">
-                  (<a @click="onCompleteClick(ticket!)">Complete</a>)
+                  (<a @click="onCompleteClick">Complete</a>)
                 </template>
               </p>
             </ticket-field>
@@ -165,9 +201,9 @@ onMounted(getTicket);
               title="Purchase"
               class="tile is-child"
               v-if="ticket.states.includes('complete')"
-              :variant="ticketProgressState.variant(ticket.authorized?.state)">
+              :variant="ProgressState.variant(ticket.authorized?.state)">
               <p>
-                {{ ticketProgressState.displayText(ticket.authorized?.state) }}
+                {{ ProgressState.text(ticket.authorized?.state) }}
 
                 <template v-if="ticketBusiness.canAuthorize(ticket)">
                   (<a
@@ -179,6 +215,10 @@ onMounted(getTicket);
                     >Authorize</a
                   >)
                 </template>
+
+                <template v-else-if="ticketBusiness.canSubmitPrice(ticket)">
+                  (<a @click="onSubmitPriceClick()">Submit Price</a>)
+                </template>
               </p>
             </ticket-field>
           </div>
@@ -187,9 +227,14 @@ onMounted(getTicket);
     </div>
 
     <ticket-information-modal
-      ref="modal"
+      ref="completeModalRef"
       mode="Update"
-      v-model:active="modalActive"
-      @main="onCompleted" />
+      v-model:active="completeModal.active"
+      @main="completeModal.onMain" />
+
+    <ticket-price-modal
+      ref="priceModalRef"
+      v-model:active="priceModal.active"
+      @main="priceModal.onMain" />
   </div>
 </template>

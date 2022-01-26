@@ -2,14 +2,14 @@
 import RboFormModal from "@frontend/components/general/FormModal.vue";
 import { BlankId } from "@frontend/utilities/constants";
 import { fieldState } from "@frontend/utilities/forms";
-import { TicketInformationModel } from "@frontend/utilities/ticket";
+import { TicketInformationModel } from "@frontend/utilities/forms";
 import { useField, useForm } from "vee-validate";
 
 const emit = defineEmits(["main"]);
 
 const form = useForm<TicketInformationModel>({
   validationSchema: TicketInformationModel,
-  initialValues: { ticketId: BlankId },
+  initialValues: { ticketId: BlankId, information: "" },
 });
 const information = useField<string>("information");
 

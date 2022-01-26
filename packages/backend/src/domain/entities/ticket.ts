@@ -1,6 +1,5 @@
 import { Entity } from "@backend/domain/common/entity";
 import { date, InferType, object, string } from "yup";
-import { Authorizer } from "../common/authorizer";
 import { PositiveNumber } from "../common/constrainedTypes";
 import { AuthorizationState } from "../constants/authorizationState";
 import { ReviewState } from "../constants/reviewState";
@@ -34,7 +33,7 @@ const AdditionalFields = object({
 
   authorized: object({
     at: date().strict().required(),
-    by: Authorizer.required().nullable(),
+    by: User.nullable(),
     state: AuthorizationState.required(),
   }).nullable(),
 });
@@ -48,6 +47,7 @@ const getTicketStates = (ticket: Ticket): TicketState[] => {
 
   ticket.allocated && states.push("allocated");
   ticket.reviewed && states.push(ticket.reviewed.state);
+  ticket.priced && states.push("priced");
   ticket.authorized && states.push(ticket.authorized.state);
 
   return states;

@@ -5,6 +5,7 @@ import {
   submittingPriceToPricedTicket,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -71,15 +72,30 @@ class SubmitTicketPriceRequestAuthorizer extends RoleRequestAuthorizer<SubmitTic
 class SubmitTicketPriceCommandHandler implements ICommandHandler<SubmitTicketPriceRequest> {
   handles = "submitTicketPriceRequest" as const;
 
-  constructor(private readonly ticketRepository: ITicketRepository) {}
+  constructor(
+    private readonly ticketRepository: ITicketRepository,
+    private readonly configuration: IConfiguration
+  ) {}
 
   async handle({ ticketId, price }: SubmitTicketPriceRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
+    const { costThreshold } = this.configuration.ticket;
+    const now = new Date();
+
+    console.log(price);
 
     ticket.priced = {
-      at: new Date(),
+      at: now,
       value: price,
     };
+
+    if (price <= costThreshold) {
+      ticket.authorized = {
+        at: now,
+        by: null, // system
+        state: "approved",
+      };
+    }
 
     await this.ticketRepository.update(ticket);
   }

@@ -17,6 +17,7 @@ import {
   Pagination,
   Table,
   Tooltip,
+  Switch,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -134,6 +135,21 @@ createApp(App)
       prevBtnClass: "pagination-previous",
       infoClass: "display-none",
     },
+    switch: {
+      checkClass: (
+        {}: string,
+        { props, data }: { props: { variant?: string }; data: { newValue: boolean } }
+      ) => {
+        const classes = ["check"];
+
+        classes.push(
+          `has-background-${data.newValue ? props.variant ?? "grey-dark" : "grey-light"}`
+        );
+
+        return classes.join(" ");
+      },
+      labelClass: "control-label ml-1",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -146,4 +162,5 @@ createApp(App)
   .use(Table)
   .use(Dropdown)
   .use(Pagination)
+  .use(Switch)
   .mount("#app");
