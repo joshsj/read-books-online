@@ -10,7 +10,7 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
-import { ReviewState } from "@backend/domain/constants/reviewState";
+import { ReviewState } from "@backend/domain/constants/ticketStates";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
@@ -56,7 +56,7 @@ class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRe
 
     // allows completion of tickets currently requiring new information
     ensure(
-      ticket.reviewed?.state !== "complete",
+      ticket.reviewed?.state !== "Information Complete",
       new RBOError("authorization", reviewingCompletedTicket)
     );
 

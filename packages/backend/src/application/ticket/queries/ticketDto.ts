@@ -1,6 +1,5 @@
 import { UserDto } from "@backend/application/common/dtos/userDto";
-import { AuthorizationState } from "@backend/domain/constants/authorizationState";
-import { TicketState } from "@backend/domain/constants/ticketState";
+import { AuthorizationState, TicketState } from "@backend/domain/constants/ticketStates";
 import { getTicketStates, Ticket } from "@backend/domain/entities/ticket";
 
 type TicketDto = Pick<Ticket, "_id" | "information"> & {

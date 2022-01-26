@@ -12,9 +12,11 @@ export { TicketQuery } from "@backend/application/ticket/queries/ticketQuery";
 export { CreateUserRequest } from "@backend/application/user/commands/createUser";
 export { Id } from "@backend/domain/common/id";
 export { Role } from "@backend/domain/constants/role";
-export { TicketState, TicketStates } from "@backend/domain/constants/ticketState";
-export { ReviewState, ReviewStates } from "@backend/domain/constants/reviewState";
 export {
-  AuthorizationState,
   AuthorizationStates,
-} from "@backend/domain/constants/authorizationState";
+  AuthorizationState,
+  ReviewStates,
+  ReviewState,
+  TicketStates,
+  TicketState,
+} from "@backend/domain/constants/ticketStates";

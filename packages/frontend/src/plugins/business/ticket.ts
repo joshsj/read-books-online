@@ -100,7 +100,7 @@ const useTicketBusiness = () => {
 
       return (
         !!ticket.allocated &&
-        ticket.reviewed?.state !== "complete" &&
+        ticket.reviewed?.state !== "Information Complete" &&
         ticket.allocated.to._id === resolvedUser._id
       );
     },
@@ -124,7 +124,7 @@ const useTicketBusiness = () => {
       const response = await client.ticket.review.create({
         requestName: "reviewTicketRequest",
         ticketId: ticket._id,
-        state: from === "main" ? "complete" : "incomplete",
+        state: from === "main" ? "Information Complete" : "Information Incomplete",
       });
 
       if (isRBOError(response)) {
@@ -143,7 +143,10 @@ const useTicketBusiness = () => {
         return false;
       }
 
-      return ticket.reviewed?.state === "incomplete" && ticket.created.by._id === resolvedUser._id;
+      return (
+        ticket.reviewed?.state === "Information Incomplete" &&
+        ticket.created.by._id === resolvedUser._id
+      );
     },
 
     complete: (request: CompleteTicketRequest) =>
@@ -158,7 +161,7 @@ const useTicketBusiness = () => {
 
       return (
         !ticket.priced &&
-        ticket.reviewed?.state === "complete" &&
+        ticket.reviewed?.state === "Information Complete" &&
         ticket.allocated!.to._id === resolvedUser._id
       );
     },
@@ -191,7 +194,7 @@ const useTicketBusiness = () => {
           altButtonVariant: "danger",
         },
         undefined,
-        () => "TODO add ticket cost"
+        () => `Cost: ${ticket.priced?.value}`
       );
 
       if (from === "close") {
@@ -201,7 +204,7 @@ const useTicketBusiness = () => {
       const response = await client.ticket.authorization.create({
         requestName: "authorizeTicketRequest",
         ticketId: ticket._id,
-        state: from === "main" ? "approved" : "denied",
+        state: from === "main" ? "Purchase Approved" : "Purchase Denied",
       });
 
       if (isRBOError(response)) {

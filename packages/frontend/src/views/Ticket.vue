@@ -148,13 +148,11 @@ onMounted(getTicket);
             <ticket-field
               title="Allocation"
               class="tile is-child"
-              :variant="
-                ticket.states.includes('allocated') ? 'success' : PendingVariant
-              ">
+              :variant="ticket.allocated ? 'success' : PendingVariant">
               <p>
-                <template v-if="ticket.states.includes('allocated')">
-                  To <username :username="ticket.allocated!.to.username" /> at
-                  {{ formatDate(ticket.allocated!.at) }}
+                <template v-if="ticket.allocated">
+                  To <username :username="ticket.allocated.to.username" /> at
+                  {{ formatDate(ticket.allocated.at) }}
                 </template>
 
                 <template v-else>
@@ -175,7 +173,7 @@ onMounted(getTicket);
             <ticket-field
               title="Review"
               class="tile is-child"
-              v-if="ticket.states.includes('allocated')"
+              v-if="ticket.allocated"
               :variant="ProgressState.variant(ticket.reviewed?.state)">
               <p>
                 {{ ProgressState.text(ticket.reviewed?.state) }}
@@ -198,9 +196,22 @@ onMounted(getTicket);
             </ticket-field>
 
             <ticket-field
+              title="Price"
+              class="tile is-child"
+              :variant="ticket.priced ? 'success' : PendingVariant">
+              <p>
+                {{ ticket.priced?.value.toFixed(2) ?? 'Pending' }}
+
+                <template v-if="ticketBusiness.canSubmitPrice(ticket)">
+                  (<a @click="onSubmitPriceClick()">Submit Price</a>)
+                </template>
+              </p>
+            </ticket-field>
+
+            <ticket-field
               title="Purchase"
               class="tile is-child"
-              v-if="ticket.states.includes('complete')"
+              v-if="ticket.priced"
               :variant="ProgressState.variant(ticket.authorized?.state)">
               <p>
                 {{ ProgressState.text(ticket.authorized?.state) }}
@@ -214,10 +225,6 @@ onMounted(getTicket);
                     "
                     >Authorize</a
                   >)
-                </template>
-
-                <template v-else-if="ticketBusiness.canSubmitPrice(ticket)">
-                  (<a @click="onSubmitPriceClick()">Submit Price</a>)
                 </template>
               </p>
             </ticket-field>

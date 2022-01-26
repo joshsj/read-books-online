@@ -1,43 +1,26 @@
-import {
-  AuthorizationState,
-  CompleteTicketRequest,
-  ReviewState,
-  TicketState,
-} from "@client/models";
-import { capitalize } from "@core/utilities/string";
-import { InferType } from "yup";
+import { AuthorizationState, ReviewState, TicketState } from "@client/models";
 import { PendingVariant as DefaultVariant } from "./constants";
-
-const prettyTicketState = (state: TicketState) => capitalize(state);
 
 type ProgressState = ReviewState | AuthorizationState;
 
-const StateVariants: { [K in TicketState]: string } = {
-  unallocated: DefaultVariant,
-  allocated: DefaultVariant,
+type StateVariants = { [K in TicketState]: string };
+const StateVariants: StateVariants = {
+  Unallocated: DefaultVariant,
+  "Pending Review": DefaultVariant,
 
-  incomplete: "danger",
-  complete: "success",
+  "Information Incomplete": "danger",
+  "Information Complete": "success",
 
-  priced: DefaultVariant,
+  "Pending Pricing": DefaultVariant,
+  "Pending Authorization": DefaultVariant,
 
-  denied: "danger",
-  approved: "success",
-};
-
-const ProgressStateVariants: {
-  [K in ProgressState]: string;
-} = {
-  complete: "success",
-  approved: "success",
-
-  incomplete: "danger",
-  denied: "danger",
+  "Purchase Denied": "danger",
+  "Purchase Approved": "success",
 };
 
 const ProgressState = {
-  variant: (state?: ProgressState) => (state ? ProgressStateVariants[state] : "info"),
-  text: (state?: ProgressState) => (state ? prettyTicketState(state) : "Pending"),
+  variant: (state?: ProgressState): string => (state ? StateVariants[state] : "info"),
+  text: (state?: ProgressState): string => (state ? state : "Pending"),
 };
 
-export { prettyTicketState, StateVariants, ProgressStateVariants, ProgressState };
+export { StateVariants, ProgressState };

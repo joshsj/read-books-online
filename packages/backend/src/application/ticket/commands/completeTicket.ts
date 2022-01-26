@@ -52,7 +52,7 @@ class CompleteTicketRequestAuthorizer extends RoleRequestAuthorizer<CompleteTick
     const currentUser = await this.identityService.getCurrentUser();
 
     ensure(
-      ticket.reviewed?.state === "incomplete",
+      ticket.reviewed?.state === "Information Incomplete",
       new RBOError("authorization", completingTicketNotRequired)
     );
 

@@ -1,5 +1,4 @@
 import { CompleteTicketRequest, SubmitTicketPriceRequest } from "@client/models";
-import { strictEqual } from "assert";
 import { FieldContext } from "vee-validate";
 import { computed, WritableComputedRef } from "vue";
 import { InferType } from "yup";

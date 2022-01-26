@@ -11,7 +11,7 @@ import { IIdentityService } from "@backend/application/common/interfaces/identit
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
-import { AuthorizationState } from "@backend/domain/constants/authorizationState";
+import { AuthorizationState } from "@backend/domain/constants/ticketStates";
 import { ICommandHandler } from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";

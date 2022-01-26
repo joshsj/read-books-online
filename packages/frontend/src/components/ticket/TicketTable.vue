@@ -51,8 +51,8 @@ const { ticketBusiness } = useBusiness();
       </o-table-column>
 
       <o-table-column label="Allocation">
-        <template v-slot="{ row: { states, allocated } }">
-          <span v-if="states.includes('allocated')">
+        <template v-slot="{ row: { allocated } }">
+          <span v-if="allocated">
             <username :username="allocated.to.username" />
             <br />
             <small>{{ formatDate(allocated.at, "date") }}</small>
@@ -61,9 +61,9 @@ const { ticketBusiness } = useBusiness();
       </o-table-column>
 
       <o-table-column label="Review">
-        <template v-slot="{ row: { states, reviewed } }">
-          <span v-if="states.includes('allocated')">
-            <state-tag :state="reviewed?.state" :progress="true" />
+        <template v-slot="{ row: { allocated, reviewed } }">
+          <span v-if="allocated">
+            <state-tag :state="reviewed?.state" progress />
 
             <br />
             <small>
@@ -73,10 +73,21 @@ const { ticketBusiness } = useBusiness();
         </template>
       </o-table-column>
 
-      <o-table-column label="Purchase">
-        <template v-slot="{ row: { states, authorized } }">
-          <span v-if="states.includes('complete')">
-            <state-tag :state="authorized?.state" :progress="true" />
+      <o-table-column label="Price">
+        <template v-slot="{ row: { priced } }">
+          <span v-if="priced">
+            {{ priced.value.toFixed(2) }}
+
+            <br />
+            <small>{{ formatDate(priced.at, "date") }}</small>
+          </span>
+        </template>
+      </o-table-column>
+
+      <o-table-column label="Authorization">
+        <template v-slot="{ row: { priced, authorized } }">
+          <span v-if="priced">
+            <state-tag :state="authorized?.state" progress />
 
             <br />
             <small>

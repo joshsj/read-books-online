@@ -1,5 +1,12 @@
 {
-  "cSpell.words": ["audiobook", "audiobooks", "bulma", "interactor", "oruga"],
+  "cSpell.words": [
+    "audiobook",
+    "audiobooks",
+    "bulma",
+    "cqrs",
+    "interactor",
+    "oruga"
+  ],
   "[markdown]": {
     "editor.wordWrap": "off",
     "editor.quickSuggestions": false,

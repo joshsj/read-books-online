@@ -56,7 +56,7 @@ class SubmitTicketPriceRequestAuthorizer extends RoleRequestAuthorizer<SubmitTic
     ensure(!ticket.priced, new RBOError("authorization", submittingPriceToPricedTicket));
 
     ensure(
-      ticket.reviewed?.state === "complete",
+      ticket.reviewed?.state === "Information Complete",
       new RBOError("authorization", submittingPriceNonComplete)
     );
 
@@ -93,7 +93,7 @@ class SubmitTicketPriceCommandHandler implements ICommandHandler<SubmitTicketPri
       ticket.authorized = {
         at: now,
         by: null, // system
-        state: "approved",
+        state: "Purchase Approved",
       };
     }
 

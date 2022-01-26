@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { TicketState } from "@client/models";
-import {
-  StateVariants,
-  prettyTicketState,
-  ProgressState,
-} from "@frontend/utilities/ticket";
+import { StateVariants, ProgressState } from "@frontend/utilities/ticket";
 import { computed, PropType } from "vue";
 
 const props = defineProps({
@@ -17,13 +13,13 @@ const props = defineProps({
 const variant = computed<string>(() =>
   props.progress
     ? ProgressState.variant(props.state as ProgressState)
-    : StateVariants[props.state as TicketState]
+    : StateVariants[props.state!]
 );
 
-const text = computed<string>(() =>
+const text = computed<TicketState>(() =>
   props.progress
     ? ProgressState.text(props.state as ProgressState)
-    : prettyTicketState(props.state as TicketState)
+    : props.state
 );
 </script>
 
