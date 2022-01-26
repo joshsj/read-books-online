@@ -1,6 +1,7 @@
 import { Entity } from "@backend/domain/common/entity";
 import { date, InferType, object, string } from "yup";
 import { Authorizer } from "../common/authorizer";
+import { PositiveNumber } from "../common/constrainedTypes";
 import { AuthorizationState } from "../constants/authorizationState";
 import { ReviewState } from "../constants/reviewState";
 import { TicketState } from "../constants/ticketState";
@@ -24,6 +25,11 @@ const AdditionalFields = object({
   reviewed: object({
     at: date().strict().required(),
     state: ReviewState.required(),
+  }).nullable(),
+
+  priced: object({
+    at: date().strict().required(),
+    value: PositiveNumber.required(),
   }).nullable(),
 
   authorized: object({

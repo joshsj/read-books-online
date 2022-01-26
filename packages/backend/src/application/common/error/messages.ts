@@ -57,3 +57,8 @@ export const authorizingNonCompleteTicket = "You cannot authorize an non-complet
 export const authorizingOwnCreatedTicket = "You cannot authorized a ticket which you created";
 export const authorizingOwnAllocatedTicket =
   "You cannot authorized a ticket to which you are allocated";
+export const submittingPriceToPricedTicket =
+  "You cannot submit the price of a ticket which is already priced";
+export const submittingPriceNonComplete = "You cannot submit the price for a non-completed ticket";
+export const submittingPriceOtherTicket =
+  "You cannot submit the price of a ticket which is allocated to another employee";

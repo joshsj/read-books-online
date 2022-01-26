@@ -1,8 +1,8 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { Mode } from "@backend/application/common/interfaces/mode";
-import { ensure } from "@core/utilities";
-import { getEnv, EnvArraySep } from "@core/utilities/env";
 import { JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
+import { ensure } from "@core/utilities";
+import { EnvArraySep, getEnv } from "@core/utilities/env";
 
 const EnvKeys = [
   "SERVER_PORT",
@@ -18,6 +18,7 @@ const EnvKeys = [
   "JWT_ALGORITHM",
   "JWT_ISSUER",
   "JWT_AUDIENCE",
+  "TICKET_COST_THRESHOLD",
 ] as const;
 
 const getConfiguration = (): IConfiguration => {
@@ -55,6 +56,10 @@ const getConfiguration = (): IConfiguration => {
     mongo: {
       uri: env.MONGO_URI,
       databaseName: env.MONGO_DB_NAME,
+    },
+
+    ticket: {
+      costThreshold: parseInt(env.TICKET_COST_THRESHOLD),
     },
   };
 

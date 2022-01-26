@@ -28,6 +28,8 @@ const IConfiguration = object({
       refreshTokenKey: string().strict().required(),
     }),
   }),
+
+  ticket: object({ costThreshold: PositiveNumber.required() }),
 });
 
 type IConfiguration = InferType<typeof IConfiguration>;

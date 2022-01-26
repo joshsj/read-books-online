@@ -39,6 +39,8 @@ const createConfiguration = (): IConfiguration => ({
     uri: "uri",
     databaseName: "databaseName",
   },
+
+  ticket: { costThreshold: 1 },
 });
 
 const createLogger = (): ILogger => ({ log: () => void 0 });

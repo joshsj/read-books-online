@@ -96,4 +96,13 @@ ticketRoutes.post(
   })
 );
 
+ticketRoutes.post(
+  "/price",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "ok", value: undefined };
+  })
+);
+
 export { ticketRoutes };

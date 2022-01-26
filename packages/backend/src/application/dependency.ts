@@ -42,6 +42,11 @@ import {
   ReviewTicketRequestValidator,
 } from "./ticket/commands/reviewTicket";
 import {
+  SubmitTicketPriceCommandHandler,
+  SubmitTicketPriceRequestAuthorizer,
+  SubmitTicketPriceRequestValidator,
+} from "./ticket/commands/submitTicketPrice";
+import {
   GetTicketQueryAuthorizer,
   GetTicketQueryHandler,
   GetTicketQueryValidator,
@@ -123,6 +128,7 @@ const registerApplicationDependencies = () => {
     (c) => new ReviewTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new CompleteTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new AuthorizeTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new SubmitTicketPriceRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -158,6 +164,11 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
+    (c) =>
+      new SubmitTicketPriceRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.ticketRepository)
+      ),
   ]);
 
   registerHandlers([
@@ -187,6 +198,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository),
         c.resolve(Dependency.identityService)
       ),
+    (c) => new SubmitTicketPriceCommandHandler(c.resolve(Dependency.ticketRepository)),
   ]);
 };
 

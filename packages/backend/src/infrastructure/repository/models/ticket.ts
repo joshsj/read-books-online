@@ -22,6 +22,11 @@ const TicketSchema: Schema<Ticket> = {
     state: { type: String },
   },
 
+  priced: {
+    at: { type: Date },
+    state: { type: Number },
+  },
+
   authorized: {
     at: { type: Date },
     by: { type: String, ref: UserModel, autopopulate: true },

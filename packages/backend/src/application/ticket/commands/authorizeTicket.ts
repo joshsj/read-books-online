@@ -53,10 +53,7 @@ class AuthorizeTicketRequestAuthorizer extends RoleRequestAuthorizer<AuthorizeTi
 
     ensure(!ticket.authorized, new RBOError("validation", authorizingAuthorizedTicket));
 
-    ensure(
-      ticket.reviewed?.state === "complete",
-      new RBOError("authorization", authorizingNonCompleteTicket)
-    );
+    ensure(!!ticket.priced, new RBOError("authorization", authorizingNonCompleteTicket));
 
     const currentUser = await this.identityService.getCurrentUser();
 

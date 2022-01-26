@@ -48,6 +48,7 @@ class CreateTicketCommandHandler implements ICommandHandler<CreateTicketRequest>
       },
       allocated: null,
       reviewed: null,
+      priced: null,
       authorized: null,
     };
 
