@@ -18,6 +18,7 @@ import {
   Table,
   Tooltip,
   Switch,
+  Select,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -135,6 +136,7 @@ createApp(App)
       prevBtnClass: "pagination-previous",
       infoClass: "display-none",
     },
+
     switch: {
       checkClass: (
         {}: string,
@@ -150,6 +152,11 @@ createApp(App)
       },
       labelClass: "control-label ml-1",
     },
+
+    select: {
+      override: true,
+      rootClass: "select",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -163,4 +170,5 @@ createApp(App)
   .use(Dropdown)
   .use(Pagination)
   .use(Switch)
+  .use(Select)
   .mount("#app");

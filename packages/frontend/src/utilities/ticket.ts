@@ -1,4 +1,4 @@
-import { AuthorizationState, ReviewState, TicketState } from "@client/models";
+import { AuthorizationState, ReviewState, TicketState, TicketQuery } from "@client/models";
 
 const DefaultVariant = "info";
 
@@ -20,4 +20,6 @@ const stateVariant = (state?: TicketState): string => {
 const terminalStateVariant = (state?: TerminalState) =>
   state ? TerminalStateVariants[state] : undefined;
 
-export { DefaultVariant, stateVariant, terminalStateVariant };
+const EmptyTicketQuery = (): TicketQuery => ({ filter: {} });
+
+export { DefaultVariant, stateVariant, terminalStateVariant, EmptyTicketQuery };

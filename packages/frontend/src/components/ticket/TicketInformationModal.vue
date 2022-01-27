@@ -48,7 +48,7 @@ defineExpose({ form });
   </rbo-form-modal>
 </template>
 
-<style>
+<style scoped>
 #Information {
   height: 5rem;
 }

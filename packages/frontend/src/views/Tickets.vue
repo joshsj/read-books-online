@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { TicketDto } from "@client/models";
+import { TicketDto, TicketQuery } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
 import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 import TicketTable from "@frontend/components/ticket/TicketTable.vue";
+import TableFilters from "@frontend/components/ticket/TicketTableFilters.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { store } from "@frontend/store";
@@ -12,14 +13,29 @@ import {
   TicketInformationModel,
   TicketPriceModel,
 } from "@frontend/utilities/forms";
+import { EmptyTicketQuery } from "@frontend/utilities/ticket";
 import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
 
-const tableSimpleColumns = ref<boolean>(false);
+const table = reactive({
+  items: [] as TicketDto[],
+  query: EmptyTicketQuery(),
+});
+
+const getTickets = async () => {
+  const response = await store.pageLoad(client.ticket.get(table.query));
+
+  if (isRBOError(response)) {
+    notify(response);
+    return;
+  }
+
+  table.items = response;
+};
 
 const infoModalRef = ref<
   { form: FormContext<TicketInformationModel> } | undefined
@@ -73,28 +89,6 @@ const priceModal = reactive({
   },
 });
 
-const tickets = ref<TicketDto[]>([]);
-const getTickets = async () => {
-  const response = await store.pageLoad(
-    client.ticket.get({
-      filter: {
-        created: {
-          by: store.user!.roles.every((r) => r === "client")
-            ? [store.user!._id]
-            : [],
-        },
-      },
-    })
-  );
-
-  if (isRBOError(response)) {
-    notify(response);
-    return;
-  }
-
-  tickets.value = response;
-};
-
 const onCreateClick = () => {
   infoModal.mode = "create";
   infoModal.active = true;
@@ -134,15 +128,10 @@ onMounted(getTickets);
         @click="onCreateClick" />
     </view-title>
 
-    <div class="block">
-      <o-switch variant="info" v-model="tableSimpleColumns">
-        Simple Columns
-      </o-switch>
-    </div>
+    <table-filters v-model:query="table.query" @change="getTickets" />
 
     <ticket-table
-      :tickets="tickets"
-      :simple-columns="tableSimpleColumns"
+      :tickets="table.items"
       @need-tickets="getTickets"
       @complete="onCompleteClick"
       @submit-price="onSubmitPriceClick" />
