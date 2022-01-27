@@ -82,7 +82,6 @@ class SubmitTicketPriceCommandHandler implements ICommandHandler<SubmitTicketPri
     const { costThreshold } = this.configuration.ticket;
     const now = new Date();
 
-    console.log(price);
 
     ticket.priced = {
       at: now,
