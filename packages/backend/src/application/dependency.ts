@@ -20,6 +20,10 @@ import { toDependencies } from "@core/utilities/dependency";
 import { container, FactoryProvider, InjectionToken } from "tsyringe";
 import { IRequestAuthorizer, IRequestValidator } from "./common/interfaces/cqrs";
 import {
+  GetReferenceDataQueryHandler,
+  GetReferenceDataRequestValidator,
+} from "./referenceData/queries/getReferenceData";
+import {
   AllocateTicketCommandHandler,
   AllocateTicketRequestAuthorizer,
   AllocateTicketRequestValidator,
@@ -139,6 +143,7 @@ const registerApplicationDependencies = () => {
     (c) => new CompleteTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new AuthorizeTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new SubmitTicketPriceRequestValidator(c.resolve(Dependency.ticketRepository)),
+    () => new GetReferenceDataRequestValidator(),
   ]);
 
   registerAuthorizers([
@@ -218,6 +223,7 @@ const registerApplicationDependencies = () => {
         () => c.resolve(Dependency.cqrs),
         c.resolve(Dependency.configuration)
       ),
+    (c) => new GetReferenceDataQueryHandler(() => c.resolve(Dependency.userRepository)),
   ]);
 
   registerNotificationHandlers([

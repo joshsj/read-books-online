@@ -16,6 +16,10 @@ class UserRepository extends MongoRepository<User> implements IUserRepository {
   async getByUsername(username: string) {
     return await this.model.findOne({ username }).lean<User>().exec();
   }
+
+  async getReferenceData() {
+    return await super.getReferenceData("username");
+  }
 }
 
 export { UserRepository };

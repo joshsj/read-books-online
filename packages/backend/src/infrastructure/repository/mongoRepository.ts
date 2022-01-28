@@ -3,6 +3,7 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IRepository } from "@backend/application/common/interfaces/repository";
 import { Entity, isEntity } from "@backend/domain/common/entity";
 import { Id, isId } from "@backend/domain/common/id";
+import { ReferenceData } from "@backend/domain/entities/referenceData";
 import { ensure } from "@core/utilities";
 import { FilterQuery, Model } from "mongoose";
 import { ObjectSchema, ValidationError } from "yup";
@@ -96,6 +97,10 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
 
       return obj;
     }, {});
+  }
+
+  protected async getReferenceData(field: string): Promise<ReferenceData[]> {
+    return await this.model.aggregate([{ $project: { value: `$${field}` } }]);
   }
 }
 

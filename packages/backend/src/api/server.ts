@@ -3,6 +3,7 @@ import { httpContextServiceProvider } from "@backend/api/common/middlewares/http
 import { missingRouteHandler } from "@backend/api/common/middlewares/missingRouteHandler";
 import { requestLogger } from "@backend/api/common/middlewares/requestLogger";
 import { authRoutes } from "@backend/api/routes/auth";
+import { referenceDataRoutes } from "@backend/api/routes/referenceData";
 import { ticketRoutes } from "@backend/api/routes/ticket";
 import { userRoutes } from "@backend/api/routes/user";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
@@ -18,7 +19,8 @@ class Server {
     const routes = Router()
       .use("/auth", authRoutes)
       .use("/user", userRoutes)
-      .use("/ticket", ticketRoutes);
+      .use("/ticket", ticketRoutes)
+      .use("/referenceData", referenceDataRoutes);
 
     if (this.configuration.mode === "development") {
       import("@backend/api/routes/test").then(({ testRoutes }) => routes.use("/test", testRoutes));
