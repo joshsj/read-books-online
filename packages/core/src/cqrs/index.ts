@@ -42,7 +42,7 @@ class CQRS implements ICQRS {
 
   async publish<T extends INotification<any>>(notification: T) {
     const handlers = this.notificationHandlers.filter(
-      (h) => (h.handles = notification.notificationName)
+      (h) => h.handles === notification.notificationName
     );
 
     for (const handler of handlers) {

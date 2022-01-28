@@ -45,6 +45,7 @@ class CreateUserCommandHandler implements ICommandHandler<CreateUserRequest> {
 
     const user: User = {
       _id: newId(),
+      email: null, // TODO add email from request
       roles: ["client"],
       username,
       passwordHash,

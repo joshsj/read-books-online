@@ -4,7 +4,7 @@ import { PositiveNumber } from "../common/constrainedTypes";
 import { AuthorizationState, ReviewState, TicketState } from "../constants/ticketStates";
 import { User } from "./user";
 
-const InitialFields = object({
+const RequiredFields = object({
   information: string().strict().required(),
 
   created: object({
@@ -36,7 +36,7 @@ const AdditionalFields = object({
   }).nullable(),
 });
 
-const Ticket = Entity.concat(InitialFields).concat(AdditionalFields);
+const Ticket = Entity.concat(RequiredFields).concat(AdditionalFields);
 
 type Ticket = InferType<typeof Ticket>;
 

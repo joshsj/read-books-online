@@ -1,7 +1,7 @@
 import {
-  notFound,
-  completingTicketNotRequired,
   completingOtherTicket,
+  completingTicketNotRequired,
+  notFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";

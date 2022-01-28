@@ -8,12 +8,18 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
-import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
+import {
+  DelayedDependency,
+  Request,
+  RoleRequestAuthorizer,
+} from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
 import { ReviewState } from "@backend/domain/constants/ticketStates";
 import { ICommandHandler } from "@core/cqrs/types/request";
+import { ICQRS } from "@core/cqrs/types/service";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
+import { IncompleteTicketNotification } from "../notifications/incompleteTicket";
 
 const ReviewTicketRequest = object({
   ticketId: Id,
@@ -72,7 +78,10 @@ class ReviewTicketRequestAuthorizer extends RoleRequestAuthorizer<ReviewTicketRe
 class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest> {
   handles = "reviewTicketRequest" as const;
 
-  constructor(private readonly ticketRepository: ITicketRepository) {}
+  constructor(
+    private readonly ticketRepository: ITicketRepository,
+    private readonly cqrs: DelayedDependency<ICQRS>
+  ) {}
 
   async handle({ ticketId, state }: ReviewTicketRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
@@ -80,6 +89,17 @@ class ReviewTicketCommandHandler implements ICommandHandler<ReviewTicketRequest>
     ticket.reviewed = { at: new Date(), state };
 
     await this.ticketRepository.update(ticket);
+
+    if (state !== "Information Incomplete") {
+      return;
+    }
+
+    const notification: IncompleteTicketNotification = {
+      notificationName: "incompleteTicketNotification",
+      ticketId,
+    };
+
+    await this.cqrs().publish(notification);
   }
 }
 

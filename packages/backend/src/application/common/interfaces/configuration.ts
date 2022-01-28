@@ -6,6 +6,7 @@ const IConfiguration = object({
   mode: Mode,
 
   hashing: object({ saltRounds: PositiveNumber }),
+
   mongo: object({ uri: string().strict().required(), databaseName: string().strict().required() }),
 
   auth: object({
@@ -29,7 +30,15 @@ const IConfiguration = object({
     }),
   }),
 
+  email: object({
+    host: string().required(),
+    port: PositiveNumber.required(),
+    from: string().required(),
+  }),
+
   ticket: object({ costThreshold: PositiveNumber.required() }),
+
+  appUrl: string().required(),
 });
 
 type IConfiguration = InferType<typeof IConfiguration>;

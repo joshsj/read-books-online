@@ -13,6 +13,7 @@ import {
 } from "@backend/application/user/commands/createUser";
 import { CQRS } from "@core/cqrs";
 import { IRequestBehavior } from "@core/cqrs/types/behavior";
+import { INotificationHandler } from "@core/cqrs/types/notification";
 import { IRequestHandler } from "@core/cqrs/types/request";
 import { ICQRS } from "@core/cqrs/types/service";
 import { toDependencies } from "@core/utilities/dependency";
@@ -48,6 +49,8 @@ import {
   SubmitTicketPriceRequestAuthorizer,
   SubmitTicketPriceRequestValidator,
 } from "./ticket/commands/submitTicketPrice";
+import { AuthorizeTicketNotificationHandler } from "./ticket/notifications/authorizedTicket";
+import { IncompleteTicketNotificationHandler } from "./ticket/notifications/incompleteTicket";
 import {
   GetTicketQueryAuthorizer,
   GetTicketQueryHandler,
@@ -108,7 +111,10 @@ const registerer =
 
 const registerValidators = registerer<IRequestValidator<any>>(Dependency.requestValidator);
 const registerAuthorizers = registerer<IRequestAuthorizer<any>>(Dependency.requestAuthorizer);
-const registerHandlers = registerer<IRequestHandler>(Dependency.requestHandler);
+const registerRequestHandlers = registerer<IRequestHandler>(Dependency.requestHandler);
+const registerNotificationHandlers = registerer<INotificationHandler<any>>(
+  Dependency.notificationHandler
+);
 
 const registerApplicationDependencies = () => {
   container.register<ICQRS>(Dependency.cqrs, {
@@ -175,7 +181,7 @@ const registerApplicationDependencies = () => {
       ),
   ]);
 
-  registerHandlers([
+  registerRequestHandlers([
     (c) =>
       new CreateUserCommandHandler(
         c.resolve(Dependency.hashingService),
@@ -195,17 +201,35 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService)
       ),
     (c) => new CancelTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
-    (c) => new ReviewTicketCommandHandler(c.resolve(Dependency.ticketRepository)),
+    (c) =>
+      new ReviewTicketCommandHandler(c.resolve(Dependency.ticketRepository), () =>
+        c.resolve(Dependency.cqrs)
+      ),
     (c) => new ProvideNewInformationCommandHandler(c.resolve(Dependency.ticketRepository)),
     (c) =>
       new AuthorizeTicketCommandHandler(
         c.resolve(Dependency.ticketRepository),
+        () => c.resolve(Dependency.cqrs),
         c.resolve(Dependency.identityService)
       ),
     (c) =>
       new SubmitTicketPriceCommandHandler(
         c.resolve(Dependency.ticketRepository),
+        () => c.resolve(Dependency.cqrs),
         c.resolve(Dependency.configuration)
+      ),
+  ]);
+
+  registerNotificationHandlers([
+    (c) =>
+      new IncompleteTicketNotificationHandler(
+        c.resolve(Dependency.configuration),
+        c.resolve(Dependency.identityService)
+      ),
+    (c) =>
+      new AuthorizeTicketNotificationHandler(
+        c.resolve(Dependency.configuration),
+        c.resolve(Dependency.identityService)
       ),
   ]);
 };

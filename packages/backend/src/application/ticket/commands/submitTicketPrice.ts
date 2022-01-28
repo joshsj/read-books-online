@@ -9,12 +9,18 @@ import { IConfiguration } from "@backend/application/common/interfaces/configura
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
-import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
+import {
+  DelayedDependency,
+  Request,
+  RoleRequestAuthorizer,
+} from "@backend/application/common/utilities/cqrs";
 import { PositiveNumber } from "@backend/domain/common/constrainedTypes";
 import { Id } from "@backend/domain/common/id";
 import { ICommandHandler } from "@core/cqrs/types/request";
+import { ICQRS } from "@core/cqrs/types/service";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
+import { AuthorizeTicketBase } from "./base/authorizeTicketBase";
 
 const SubmitTicketPriceRequest = object({
   ticketId: Id,
@@ -69,33 +75,36 @@ class SubmitTicketPriceRequestAuthorizer extends RoleRequestAuthorizer<SubmitTic
   }
 }
 
-class SubmitTicketPriceCommandHandler implements ICommandHandler<SubmitTicketPriceRequest> {
+class SubmitTicketPriceCommandHandler
+  extends AuthorizeTicketBase
+  implements ICommandHandler<SubmitTicketPriceRequest>
+{
   handles = "submitTicketPriceRequest" as const;
 
   constructor(
-    private readonly ticketRepository: ITicketRepository,
+    ticketRepository: ITicketRepository,
+    cqrs: DelayedDependency<ICQRS>,
     private readonly configuration: IConfiguration
-  ) {}
+  ) {
+    super(ticketRepository, cqrs);
+  }
 
   async handle({ ticketId, price }: SubmitTicketPriceRequest) {
     const ticket = (await this.ticketRepository.get(ticketId))!;
     const { costThreshold } = this.configuration.ticket;
-    const now = new Date();
 
     ticket.priced = {
-      at: now,
+      at: new Date(),
       value: price,
     };
 
-    if (price <= costThreshold) {
-      ticket.authorized = {
-        at: now,
-        by: null, // system
-        state: "Purchase Approved",
-      };
+    await this.ticketRepository.update(ticket);
+
+    if (price > costThreshold) {
+      return;
     }
 
-    await this.ticketRepository.update(ticket);
+    await super.authorize(ticketId, "Purchase Approved", null); // automatic system approval
   }
 }
 

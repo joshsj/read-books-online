@@ -12,7 +12,6 @@ import { InferType, object, string } from "yup";
 const CreateTicketRequest = object({
   information: string().strict().required(),
 }).concat(Request("createTicketRequest"));
-
 type CreateTicketRequest = InferType<typeof CreateTicketRequest>;
 
 class CreateTicketCommandValidator implements IRequestValidator<CreateTicketRequest> {

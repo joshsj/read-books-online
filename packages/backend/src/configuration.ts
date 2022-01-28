@@ -19,6 +19,10 @@ const EnvKeys = [
   "JWT_ISSUER",
   "JWT_AUDIENCE",
   "TICKET_COST_THRESHOLD",
+  "EMAIL_HOST",
+  "EMAIL_PORT",
+  "EMAIL_FROM",
+  "APP_URL",
 ] as const;
 
 const getConfiguration = (): IConfiguration => {
@@ -28,6 +32,8 @@ const getConfiguration = (): IConfiguration => {
 
   const configuration: IConfiguration = {
     mode: env.NODE_ENV as Mode,
+    appUrl: env.APP_URL,
+
     auth: {
       expiresInMs,
 
@@ -47,6 +53,12 @@ const getConfiguration = (): IConfiguration => {
         secret: env.COOKIE_SECRET,
         refreshTokenKey: env.COOKIE_REFRESH_TOKEN_KEY,
       },
+    },
+
+    email: {
+      host: env.EMAIL_HOST,
+      port: parseInt(env.EMAIL_PORT),
+      from: env.EMAIL_FROM,
     },
 
     hashing: {

@@ -9,12 +9,18 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
-import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
+import {
+  DelayedDependency,
+  Request,
+  RoleRequestAuthorizer,
+} from "@backend/application/common/utilities/cqrs";
 import { Id } from "@backend/domain/common/id";
 import { AuthorizationState } from "@backend/domain/constants/ticketStates";
 import { ICommandHandler } from "@core/cqrs/types/request";
+import { ICQRS } from "@core/cqrs/types/service";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
+import { AuthorizeTicketBase } from "./base/authorizeTicketBase";
 
 const AuthorizeTicketRequest = object({
   ticketId: Id,
@@ -68,25 +74,24 @@ class AuthorizeTicketRequestAuthorizer extends RoleRequestAuthorizer<AuthorizeTi
   }
 }
 
-class AuthorizeTicketCommandHandler implements ICommandHandler<AuthorizeTicketRequest> {
+class AuthorizeTicketCommandHandler
+  extends AuthorizeTicketBase
+  implements ICommandHandler<AuthorizeTicketRequest>
+{
   handles = "authorizeTicketRequest" as const;
 
   constructor(
-    private readonly ticketRepository: ITicketRepository,
+    ticketRepository: ITicketRepository,
+    cqrs: DelayedDependency<ICQRS>,
     private readonly identityService: IIdentityService
-  ) {}
+  ) {
+    super(ticketRepository, cqrs);
+  }
 
   async handle({ ticketId, state }: AuthorizeTicketRequest) {
-    const ticket = (await this.ticketRepository.get(ticketId))!;
     const currentUser = await this.identityService.getCurrentUser();
 
-    ticket.authorized = {
-      at: new Date(),
-      by: currentUser,
-      state,
-    };
-
-    await this.ticketRepository.update(ticket);
+    await super.authorize(ticketId, state, currentUser);
   }
 }
 

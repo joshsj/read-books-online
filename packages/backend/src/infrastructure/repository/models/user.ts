@@ -5,6 +5,7 @@ import { EntitySchema } from "./entity";
 const UserSchema: Schema<User> = {
   ...EntitySchema,
   username: { type: String },
+  email: { type: String },
   passwordHash: { type: String },
   roles: { type: [String] },
 };

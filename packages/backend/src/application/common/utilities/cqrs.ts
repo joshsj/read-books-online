@@ -3,9 +3,13 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { Role } from "@backend/domain/constants/role";
+import { INotification, INotificationName } from "@core/cqrs/types/notification";
 import { IRequest, IRequestName } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { mixed, object, ObjectSchema } from "yup";
+
+// tsyringe does not provide a method for
+type DelayedDependency<T> = () => T;
 
 const Request = <T extends IRequestName>(requestName: T): ObjectSchema<IRequest<T>> =>
   object({
@@ -15,7 +19,15 @@ const Request = <T extends IRequestName>(requestName: T): ObjectSchema<IRequest<
       .required(),
   });
 
-type Request<T extends IRequestName> = IRequest<T>;
+const Notification = <T extends INotificationName>(
+  notificationName: T
+): ObjectSchema<INotification<T>> =>
+  object({
+    // TODO reduce assertion from any to T, not compatible with current typing
+    notificationName: mixed((x): x is any => x === notificationName)
+      .strict()
+      .required(),
+  });
 
 abstract class SchemaRequestValidator<T extends IRequest<any>> implements IRequestValidator<T> {
   abstract requestName: T["requestName"];
@@ -43,4 +55,4 @@ abstract class RoleRequestAuthorizer<T extends IRequest<any>> implements IReques
   }
 }
 
-export { Request, SchemaRequestValidator, RoleRequestAuthorizer };
+export { Request, Notification, SchemaRequestValidator, RoleRequestAuthorizer, DelayedDependency };

@@ -8,6 +8,7 @@ type ExpectedError = Pick<RBOError, "type"> & Pick<Partial<RBOError>, "message">
 
 const createConfiguration = (): IConfiguration => ({
   mode: "development",
+  appUrl: "appUrl",
 
   auth: {
     expiresInMs: 60_000,
@@ -29,6 +30,12 @@ const createConfiguration = (): IConfiguration => ({
       secret: "secret",
       refreshTokenKey: "refreshTokenKey",
     },
+  },
+
+  email: {
+    host: "email.host",
+    port: 1,
+    from: "from",
   },
 
   hashing: {
