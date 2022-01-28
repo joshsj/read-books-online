@@ -5,7 +5,7 @@ import { array, InferType, object, string } from "yup";
 // https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
 // https://www.iana.org/assignments/jwt/jwt.xhtml
 const JWTPayloadDto = object({
-  sub: Id,
+  sub: Id.required(),
   preferred_username: string().strict().required(),
   roles: array().of(Role.required()).required(),
 });

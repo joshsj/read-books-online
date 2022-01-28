@@ -1,11 +1,12 @@
 import { RBOErrorDto } from "@backend/application/common/dtos/errorDto";
-import { Id } from "@backend/domain/common/id";
-import { IAuthClient, ITicketClient, IUserClient } from "@client/clients";
+import { IAuthClient, IReferenceDataClient, ITicketClient, IUserClient } from "@client/clients";
 
 type EndpointName = "get" | "post" | "create" | "put" | "update" | "delete";
 
 type ResponseData = object | void;
-type RequestData<T extends EndpointName> = ResponseData | (T extends "get" | "delete" ? Id : never);
+type RequestData<T extends EndpointName> =
+  | ResponseData
+  | (T extends "get" | "delete" ? string : never);
 
 type Endpoint<
   TName extends EndpointName,
@@ -26,7 +27,7 @@ type RBOClientRequestState = {
 
 type RBOClientRequester = (state: RBOClientRequestState) => Promise<any>;
 
-type RBOClient = IAuthClient & ITicketClient & IUserClient;
+type RBOClient = IAuthClient & ITicketClient & IUserClient & IReferenceDataClient;
 
 export {
   Endpoint,

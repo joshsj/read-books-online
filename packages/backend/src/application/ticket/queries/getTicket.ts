@@ -11,7 +11,7 @@ import { InferType, object } from "yup";
 import { TicketDto } from "./ticketDto";
 
 const GetTicketRequest = object({
-  ticketId: Id,
+  ticketId: Id.required(),
 }).concat(Request("getTicketRequest"));
 
 type GetTicketRequest = InferType<typeof GetTicketRequest>;

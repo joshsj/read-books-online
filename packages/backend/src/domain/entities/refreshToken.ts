@@ -8,7 +8,7 @@ const RefreshToken = Entity.concat(
   object({
     value: string().strict().required(),
     expires: date().strict().required(),
-    userId: Id,
+    userId: Id.required(),
   })
 );
 

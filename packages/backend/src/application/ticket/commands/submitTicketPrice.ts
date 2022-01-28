@@ -23,7 +23,7 @@ import { InferType, object } from "yup";
 import { AuthorizeTicketBase } from "./base/authorizeTicketBase";
 
 const SubmitTicketPriceRequest = object({
-  ticketId: Id,
+  ticketId: Id.required(),
   price: PositiveNumber.required(),
 }).concat(Request("submitTicketPriceRequest"));
 type SubmitTicketPriceRequest = InferType<typeof SubmitTicketPriceRequest>;

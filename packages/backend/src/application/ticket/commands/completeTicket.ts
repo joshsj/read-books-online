@@ -14,7 +14,7 @@ import { ensure } from "@core/utilities";
 import { InferType, object, string } from "yup";
 
 const CompleteTicketRequest = object({
-  ticketId: Id,
+  ticketId: Id.required(),
   information: string().strict().required(),
 }).concat(Request("completeTicketRequest"));
 

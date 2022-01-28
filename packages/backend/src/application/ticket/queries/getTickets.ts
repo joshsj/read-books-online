@@ -1,10 +1,8 @@
-import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
-import { SchemaRequestValidator, Request } from "@backend/application/common/utilities/cqrs";
+import { Request, SchemaRequestValidator } from "@backend/application/common/utilities/cqrs";
 import { IQueryHandler } from "@core/cqrs/types/request";
-import { ensure } from "@core/utilities";
 import { InferType } from "yup";
 import { TicketDto } from "./ticketDto";
 import { TicketQuery } from "./ticketQuery";
@@ -32,10 +30,8 @@ class GetTicketsQueryAuthorizer implements IRequestAuthorizer<GetTicketsRequest>
       return;
     }
 
-    ensure(
-      !!filter?.created?.by && filter.created.by.every((r) => r === currentUser._id),
-      new RBOError("authorization")
-    );
+    // prevent clients from filtering tickets from other
+    filter.userId = currentUser._id;
   }
 }
 

@@ -6,7 +6,7 @@ import { InferType, object } from "yup";
 import { BaseTicketNotificationHandler } from "./baseTicketNotificationHandler";
 
 const AuthorizeTicketNotification = object({
-  ticketId: Id,
+  ticketId: Id.required(),
   state: AuthorizationState.required(),
 }).concat(Notification("authorizeTicketNotification"));
 type AuthorizeTicketNotification = InferType<typeof AuthorizeTicketNotification>;

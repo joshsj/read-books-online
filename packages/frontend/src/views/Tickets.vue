@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TicketDto, TicketQuery } from "@client/models";
+import { TicketDto, ReferenceDataDto } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
@@ -16,25 +16,25 @@ import {
 import { EmptyTicketQuery } from "@frontend/utilities/ticket";
 import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
 
-const table = reactive({
+const table = ref({
   items: [] as TicketDto[],
   query: EmptyTicketQuery(),
 });
 
 const getTickets = async () => {
-  const response = await store.pageLoad(client.ticket.get(table.query));
+  const response = await store.pageLoad(client.ticket.get(table.value.query));
 
   if (isRBOError(response)) {
     notify(response);
     return;
   }
 
-  table.items = response;
+  table.value.items = response;
 };
 
 const infoModalRef = ref<
@@ -128,7 +128,10 @@ onMounted(getTickets);
         @click="onCreateClick" />
     </view-title>
 
-    <table-filters v-model:query="table.query" @change="getTickets" />
+    <table-filters
+      v-model:query="table.query"
+      :users="table.users"
+      @change="getTickets" />
 
     <ticket-table
       :tickets="table.items"

@@ -18,7 +18,7 @@ const { ticketBusiness } = useBusiness();
 </script>
 
 <template>
-  <o-table :data="tickets" narrowed>
+  <o-table :data="tickets" narrowed class="block">
     <o-table-column label="Information">
       <template v-slot="{ row: { information } }">
         <span>
@@ -148,11 +148,9 @@ const { ticketBusiness } = useBusiness();
         </o-dropdown>
       </template>
     </o-table-column>
-
-    <template #empty>
-      <div class="notification is-info is-light" v-if="!tickets.length">
-        No tickets found
-      </div>
-    </template>
   </o-table>
+
+  <div v-if="!tickets.length" class="block notification is-info is-light">
+    No tickets found
+  </div>
 </template>

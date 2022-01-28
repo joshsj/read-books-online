@@ -13,7 +13,9 @@ import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
-const AllocateTicketRequest = object({ ticketId: Id }).concat(Request("allocateTicketRequest"));
+const AllocateTicketRequest = object({ ticketId: Id.required() }).concat(
+  Request("allocateTicketRequest")
+);
 type AllocateTicketRequest = InferType<typeof AllocateTicketRequest>;
 
 class AllocateTicketRequestValidator implements IRequestValidator<AllocateTicketRequest> {

@@ -5,7 +5,7 @@ import { INotificationHandler } from "@core/cqrs/types/notification";
 import { InferType, object } from "yup";
 import { BaseTicketNotificationHandler } from "./baseTicketNotificationHandler";
 
-const IncompleteTicketNotification = object({ ticketId: Id }).concat(
+const IncompleteTicketNotification = object({ ticketId: Id.required() }).concat(
   Notification("incompleteTicketNotification")
 );
 type IncompleteTicketNotification = InferType<typeof IncompleteTicketNotification>;

@@ -155,7 +155,13 @@ createApp(App)
 
     select: {
       override: true,
-      rootClass: "select",
+      rootClass: ({}: string, { props }: { props: { multiple: boolean } }) => {
+        const classes = ["select"];
+
+        props.multiple && classes.push("is-multiple");
+
+        return classes.join(" ");
+      },
     },
   })
   .use(Button)

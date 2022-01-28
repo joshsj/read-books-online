@@ -1,4 +1,3 @@
-import { isId } from "@backend/domain/common/id";
 import {
   EndpointName,
   RBOClientMethod,
@@ -38,7 +37,7 @@ const getRequestState = (data: RequestData<any>, segments: string[]): RBOClientR
     };
   }
 
-  if (isId(data)) {
+  if (typeof data === "string") {
     return {
       endpoint: endpoint + "/" + data,
       body: undefined,

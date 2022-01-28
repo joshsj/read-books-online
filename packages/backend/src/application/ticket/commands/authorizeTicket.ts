@@ -23,7 +23,7 @@ import { InferType, object } from "yup";
 import { AuthorizeTicketBase } from "./base/authorizeTicketBase";
 
 const AuthorizeTicketRequest = object({
-  ticketId: Id,
+  ticketId: Id.required(),
   state: AuthorizationState.required(),
 }).concat(Request("authorizeTicketRequest"));
 type AuthorizeTicketRequest = InferType<typeof AuthorizeTicketRequest>;

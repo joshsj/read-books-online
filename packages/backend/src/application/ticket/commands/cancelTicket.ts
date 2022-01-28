@@ -13,7 +13,9 @@ import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
-const CancelTicketRequest = object({ ticketId: Id }).concat(Request("cancelTicketRequest"));
+const CancelTicketRequest = object({ ticketId: Id.required() }).concat(
+  Request("cancelTicketRequest")
+);
 type CancelTicketRequest = InferType<typeof CancelTicketRequest>;
 
 class CancelTicketRequestValidator implements IRequestValidator<CancelTicketRequest> {

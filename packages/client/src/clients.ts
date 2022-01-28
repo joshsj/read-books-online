@@ -11,6 +11,8 @@ import {
   TokenDto,
   AuthorizeTicketRequest,
   SubmitTicketPriceRequest,
+  ReferenceDataDto,
+  ReferenceDataType,
 } from "@client/models";
 import { Endpoint } from "@client/types";
 
@@ -37,4 +39,8 @@ type ITicketClient = {
     };
 };
 
-export { IAuthClient, ITicketClient, IUserClient };
+type IReferenceDataClient = {
+  referenceData: Endpoint<"get", ReferenceDataType, ReferenceDataDto[]>;
+};
+
+export { IAuthClient, ITicketClient, IUserClient, IReferenceDataClient };

@@ -10,28 +10,17 @@ class TicketRepository extends MongoRepository<Ticket> implements ITicketReposit
     super(Ticket, TicketModel);
   }
 
-  public async filtered({ filter }: TicketQuery) {
-    if (!filter) {
-      return this.get();
-    }
+  private readonly UsernameFields = ["created.by", "allocated.to", "authorized.by"] as const;
 
+  public async filtered({ filter }: TicketQuery) {
     const builder = new FilterBuilder<Ticket>();
 
     if (filter.information) {
       builder.add("string", "information", filter.information);
     }
 
-    if (filter.created?.at) {
-      builder.add({
-        "created.at": {
-          $gte: filter.created.at.from,
-          $lte: filter.created.at.to,
-        },
-      });
-    }
-
-    if (filter.created?.by?.length) {
-      builder.add({ "created.by": { $in: filter.created.by } });
+    if (filter.userId) {
+      builder.add({ $or: this.UsernameFields.map((f) => ({ [f]: filter.userId })) });
     }
 
     return this._filtered(builder.getFilter());

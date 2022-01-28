@@ -3,7 +3,7 @@ import { InferType, object } from "yup";
 
 const IdKey = "_id";
 
-const Entity = object({ [IdKey]: Id }).strict();
+const Entity = object({ [IdKey]: Id.required() }).strict();
 type Entity = InferType<typeof Entity>;
 
 const isEntity = (obj: any): obj is Entity =>

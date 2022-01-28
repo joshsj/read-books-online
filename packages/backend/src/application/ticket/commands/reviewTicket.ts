@@ -22,7 +22,7 @@ import { InferType, object } from "yup";
 import { IncompleteTicketNotification } from "../notifications/incompleteTicket";
 
 const ReviewTicketRequest = object({
-  ticketId: Id,
+  ticketId: Id.required(),
   state: ReviewState.required(),
 }).concat(Request("reviewTicketRequest"));
 
