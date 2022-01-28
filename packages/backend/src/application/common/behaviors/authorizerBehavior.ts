@@ -1,8 +1,9 @@
 import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { IBehavior, IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types";
+import { IRequestBehavior } from "@core/cqrs/types/behavior";
+import { IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types/request";
 
-class AuthorizerBehavior implements IBehavior {
+class AuthorizerBehavior implements IRequestBehavior {
   constructor(
     private readonly logger: ILogger,
     private readonly requestAuthorizers: IRequestAuthorizer<any>[]

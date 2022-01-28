@@ -7,7 +7,7 @@ import { Request } from "@backend/application/common/utilities/cqrs";
 import { Password, Username } from "@backend/domain/common/constrainedTypes";
 import { newId } from "@backend/domain/common/id";
 import { User } from "@backend/domain/entities/user";
-import { ICommandHandler } from "@core/cqrs/types";
+import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 

@@ -1,6 +1,6 @@
 import { handleAsync } from "@backend/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
-import { ICQRS } from "@core/cqrs/types";
+import { ICQRS } from "@core/cqrs/types/service";
 import { Router } from "express";
 
 const router = Router();

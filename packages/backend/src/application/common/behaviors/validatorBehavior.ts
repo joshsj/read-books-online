@@ -1,8 +1,9 @@
 import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { IBehavior, IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types";
+import { IRequestBehavior } from "@core/cqrs/types/behavior";
+import { IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types/request";
 
-class ValidatorBehavior implements IBehavior {
+class ValidatorBehavior implements IRequestBehavior {
   constructor(
     private readonly logger: ILogger,
     private readonly requestValidators: IRequestValidator<any>[]

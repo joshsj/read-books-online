@@ -1,7 +1,8 @@
 import { ILogger } from "@backend/application/common/interfaces/logger";
-import { IBehavior, IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types";
+import { IRequestBehavior } from "@core/cqrs/types/behavior";
+import { IRequest, IRequestName, IResponseReturnValue } from "@core/cqrs/types/request";
 
-class RequestLoggerBehavior implements IBehavior {
+class RequestLoggerBehavior implements IRequestBehavior {
   constructor(private readonly logger: ILogger) {}
 
   async handle<T extends IResponseReturnValue>(

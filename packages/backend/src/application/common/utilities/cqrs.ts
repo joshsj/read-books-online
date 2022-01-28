@@ -1,11 +1,11 @@
+import { requiresRoles } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { Role } from "@backend/domain/constants/role";
-import { IRequest, IRequestName } from "@core/cqrs/types";
+import { IRequest, IRequestName } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { mixed, object, ObjectSchema } from "yup";
-import { requiresRoles } from "@backend/application/common/error/messages";
 
 const Request = <T extends IRequestName>(requestName: T): ObjectSchema<IRequest<T>> =>
   object({

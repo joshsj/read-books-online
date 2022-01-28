@@ -5,7 +5,7 @@ import { ITicketRepository } from "@backend/application/common/interfaces/reposi
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { newId } from "@backend/domain/common/id";
 import { Ticket } from "@backend/domain/entities/ticket";
-import { ICommandHandler } from "@core/cqrs/types";
+import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object, string } from "yup";
 

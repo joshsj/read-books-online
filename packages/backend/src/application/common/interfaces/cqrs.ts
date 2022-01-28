@@ -1,4 +1,4 @@
-import { IRequest, IRequestName } from "@core/cqrs/types";
+import { IRequest, IRequestName } from "@core/cqrs/types/request";
 
 type IRequestValidator<T extends IRequest<IRequestName>> = {
   requestName: T["requestName"];

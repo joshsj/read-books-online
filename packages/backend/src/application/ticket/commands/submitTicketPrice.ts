@@ -12,7 +12,7 @@ import { ITicketRepository } from "@backend/application/common/interfaces/reposi
 import { Request, RoleRequestAuthorizer } from "@backend/application/common/utilities/cqrs";
 import { PositiveNumber } from "@backend/domain/common/constrainedTypes";
 import { Id } from "@backend/domain/common/id";
-import { ICommandHandler } from "@core/cqrs/types";
+import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
@@ -81,7 +81,6 @@ class SubmitTicketPriceCommandHandler implements ICommandHandler<SubmitTicketPri
     const ticket = (await this.ticketRepository.get(ticketId))!;
     const { costThreshold } = this.configuration.ticket;
     const now = new Date();
-
 
     ticket.priced = {
       at: now,

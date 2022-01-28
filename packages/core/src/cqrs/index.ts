@@ -1,21 +1,18 @@
-import {
-  IBehavior,
-  ICQRS,
-  IRequestHandler,
-  IRequest,
-  IRequestName,
-  IResponseReturnValue,
-} from "@core/cqrs/types";
 import { ensure } from "@core/utilities";
+import { IRequestBehavior } from "./types/behavior";
+import { INotification, INotificationHandler } from "./types/notification";
+import { IRequest, IRequestHandler, IRequestName, IResponseReturnValue } from "./types/request";
+import { ICQRS } from "./types/service";
 
 class CQRS implements ICQRS {
   constructor(
-    private readonly handlers: IRequestHandler[],
-    private readonly behaviors: IBehavior[]
+    private readonly requestHandlers: IRequestHandler[],
+    private readonly requestBehaviors: IRequestBehavior[],
+    private readonly notificationHandlers: INotificationHandler<any>[]
   ) {}
 
   async send<T extends IRequest<IRequestName>>(request: T) {
-    const handlers = this.handlers.filter((h) => h.handles === request.requestName);
+    const handlers = this.requestHandlers.filter((h) => h.handles === request.requestName);
 
     ensure(
       handlers.length === 1,
@@ -26,7 +23,7 @@ class CQRS implements ICQRS {
 
     const handler = handlers[0]!;
 
-    if (!this.behaviors.length) {
+    if (!this.requestBehaviors.length) {
       return await handler.handle(request);
     }
 
@@ -35,12 +32,22 @@ class CQRS implements ICQRS {
     const next = async (): Promise<IResponseReturnValue> => {
       ++behaviorCounter;
 
-      return await (behaviorCounter < this.behaviors.length
-        ? this.behaviors[behaviorCounter]!.handle(request, next)
+      return await (behaviorCounter < this.requestBehaviors.length
+        ? this.requestBehaviors[behaviorCounter]!.handle(request, next)
         : handler.handle(request));
     };
 
-    return await this.behaviors[0]!.handle(request, next);
+    return await this.requestBehaviors[0]!.handle(request, next);
+  }
+
+  async publish<T extends INotification<any>>(notification: T) {
+    const handlers = this.notificationHandlers.filter(
+      (h) => (h.handles = notification.notificationName)
+    );
+
+    for (const handler of handlers) {
+      await handler.handle(notification);
+    }
   }
 }
 

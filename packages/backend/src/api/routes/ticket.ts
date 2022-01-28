@@ -4,7 +4,7 @@ import { Dependency } from "@backend/application/dependency";
 import { CancelTicketRequest } from "@backend/application/ticket/commands/cancelTicket";
 import { GetTicketRequest } from "@backend/application/ticket/queries/getTicket";
 import { GetTicketsRequest } from "@backend/application/ticket/queries/getTickets";
-import { ICQRS } from "@core/cqrs/types";
+import { ICQRS } from "@core/cqrs/types/service";
 import { Router } from "express";
 
 const ticketRoutes = Router().use(authenticator);

@@ -3,7 +3,7 @@ import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs"
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { SchemaRequestValidator, Request } from "@backend/application/common/utilities/cqrs";
-import { IQueryHandler } from "@core/cqrs/types";
+import { IQueryHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType } from "yup";
 import { TicketDto } from "./ticketDto";

@@ -12,7 +12,9 @@ import {
   CreateUserCommandValidator,
 } from "@backend/application/user/commands/createUser";
 import { CQRS } from "@core/cqrs";
-import { IBehavior, ICQRS, IRequestHandler } from "@core/cqrs/types";
+import { IRequestBehavior } from "@core/cqrs/types/behavior";
+import { IRequestHandler } from "@core/cqrs/types/request";
+import { ICQRS } from "@core/cqrs/types/service";
 import { toDependencies } from "@core/utilities/dependency";
 import { container, FactoryProvider, InjectionToken } from "tsyringe";
 import { IRequestAuthorizer, IRequestValidator } from "./common/interfaces/cqrs";
@@ -75,21 +77,22 @@ const Dependency = toDependencies([
   "requestBehavior",
   "requestValidator",
   "requestAuthorizer",
+  "notificationHandler",
 ]);
 
 const registerBehaviors = () => {
   container
-    .register<IBehavior>(Dependency.requestBehavior, {
+    .register<IRequestBehavior>(Dependency.requestBehavior, {
       useFactory: (c) => new RequestLoggerBehavior(c.resolve(Dependency.logger)),
     })
-    .register<IBehavior>(Dependency.requestBehavior, {
+    .register<IRequestBehavior>(Dependency.requestBehavior, {
       useFactory: (c) =>
         new ValidatorBehavior(
           c.resolve(Dependency.logger),
           resolveAny(c, Dependency.requestValidator)
         ),
     })
-    .register<IBehavior>(Dependency.requestBehavior, {
+    .register<IRequestBehavior>(Dependency.requestBehavior, {
       useFactory: (c) =>
         new AuthorizerBehavior(
           c.resolve(Dependency.logger),
@@ -112,7 +115,8 @@ const registerApplicationDependencies = () => {
     useFactory: (c) =>
       new CQRS(
         c.resolveAll<IRequestHandler>(Dependency.requestHandler),
-        resolveAny(c, Dependency.requestBehavior)
+        resolveAny(c, Dependency.requestBehavior),
+        resolveAny(c, Dependency.notificationHandler)
       ),
   });
 
