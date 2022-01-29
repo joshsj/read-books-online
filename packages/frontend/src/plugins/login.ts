@@ -1,5 +1,5 @@
 import { isRBOError } from "@client/index";
-import { AccountDto, JWTPayloadDto } from "@client/models";
+import { AccountDto, JWTPayloadDto, CreateUserRequest } from "@client/models";
 import { RBOErrorDto } from "@client/types";
 import { client } from "@frontend/client";
 import { route } from "@frontend/router";
@@ -23,14 +23,14 @@ const toUserStore = (token: string): UserStore => {
 
 const isLoggedIn = (): boolean => !!store.user;
 
-const signUp = async (router: Router, accountDto: AccountDto) => {
-  const response = await client.user.create({ requestName: "createUserRequest", ...accountDto });
+const signUp = async (router: Router, request: CreateUserRequest) => {
+  const response = await client.user.create(request);
 
   if (isRBOError(response)) {
     return response;
   }
 
-  return await login(router, accountDto);
+  return await login(router, request);
 };
 
 const login = async (router: Router, accountDto: AccountDto): Promise<RBOErrorDto | void> => {
@@ -49,14 +49,14 @@ const logout = (router: Router) => {
 
   client.auth.delete();
 
-  router.push(route({ name: "authorize" }));
+  router.push(route({ name: "login" }));
 };
 
 const useLogin = () => {
   const router = useRouter();
 
   return {
-    signUp: (accountDto: AccountDto) => signUp(router, accountDto),
+    signUp: (request: CreateUserRequest) => signUp(router, request),
     login: (accountDto: AccountDto) => login(router, accountDto),
     logout: () => logout(router),
     isLoggedIn,

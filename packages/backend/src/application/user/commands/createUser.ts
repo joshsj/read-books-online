@@ -4,7 +4,7 @@ import { IRequestValidator } from "@backend/application/common/interfaces/cqrs";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IUserRepository } from "@backend/application/common/interfaces/repository";
 import { Request } from "@backend/application/common/utilities/cqrs";
-import { Password, Username } from "@backend/domain/common/constrainedTypes";
+import { Password } from "@backend/domain/common/constrainedTypes";
 import { newId } from "@backend/domain/common/id";
 import { User } from "@backend/domain/entities/user";
 import { ICommandHandler } from "@core/cqrs/types/request";
@@ -12,9 +12,10 @@ import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
 const CreateUserRequest = object({
-  username: Username.required(),
   password: Password.required(),
-}).concat(Request("createUserRequest"));
+})
+  .concat(User.pick(["username", "email"]))
+  .concat(Request("createUserRequest"));
 
 type CreateUserRequest = InferType<typeof CreateUserRequest>;
 
@@ -40,13 +41,13 @@ class CreateUserCommandHandler implements ICommandHandler<CreateUserRequest> {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async handle({ username, password }: CreateUserRequest): Promise<void> {
+  async handle({ username, password, email }: CreateUserRequest): Promise<void> {
     const passwordHash = await this.hashingService.hash(password, await this.hashingService.salt());
 
     const user: User = {
       _id: newId(),
-      email: null, // TODO add email from request
       roles: ["client"],
+      email,
       username,
       passwordHash,
     };

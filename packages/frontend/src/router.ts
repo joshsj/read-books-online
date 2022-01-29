@@ -1,5 +1,6 @@
 import { store } from "@frontend/store";
 import Login from "@frontend/views/Login.vue";
+import SignUp from "@frontend/views/SignUp.vue";
 import Ticket from "@frontend/views/Ticket.vue";
 import Tickets from "@frontend/views/Tickets.vue";
 import {
@@ -41,10 +42,15 @@ const route = <T extends object | void = void>(
 };
 
 const routes = {
-  authorize: route({
-    path: "/auth",
-    alias: ["/signup", "/login"],
+  login: route({
+    path: "/login",
     component: Login,
+    meta: { auth: "none" },
+  }),
+
+  signUp: route({
+    path: "/signup",
+    component: SignUp,
     meta: { auth: "none" },
   }),
 
@@ -88,7 +94,7 @@ const createRouter = () => {
     }
 
     if (!store.user) {
-      return routeHelper({ name: "authorize" });
+      return routeHelper({ name: "login" });
     }
 
     return;
