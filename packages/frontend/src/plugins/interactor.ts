@@ -50,12 +50,7 @@ const useInteractor = () => {
     children?: (() => string) | VNode
   ) =>
     new Promise<{ from: "main" | "alt" | "close"; payload: T }>((resolve) => {
-      const el: Element = (() => {
-        const rootEl = vm.vnode.el as Element;
-        const childEl = document.createElement("div");
-        rootEl.appendChild(childEl);
-        return childEl;
-      })();
+      const el = document.getElementsByTagName("body")[0]!;
 
       const destroy = () => {
         // Oruga doesn't provide a 'closed' listener,
