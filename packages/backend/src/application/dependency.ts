@@ -230,12 +230,12 @@ const registerApplicationDependencies = () => {
     (c) =>
       new IncompleteTicketNotificationHandler(
         c.resolve(Dependency.configuration),
-        c.resolve(Dependency.identityService)
+        c.resolve(Dependency.ticketRepository)
       ),
     (c) =>
       new AuthorizeTicketNotificationHandler(
         c.resolve(Dependency.configuration),
-        c.resolve(Dependency.identityService)
+        c.resolve(Dependency.ticketRepository)
       ),
   ]);
 };

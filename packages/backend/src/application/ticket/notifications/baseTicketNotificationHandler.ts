@@ -1,5 +1,5 @@
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
-import { IIdentityService } from "@backend/application/common/interfaces/identityService";
+import { ITicketRepository } from "@backend/application/common/interfaces/repository";
 import { Id } from "@backend/domain/common/id";
 import { TicketState } from "@backend/domain/constants/ticketStates";
 import { createTransport } from "nodemailer";
@@ -7,11 +7,11 @@ import { createTransport } from "nodemailer";
 abstract class BaseTicketNotificationHandler {
   constructor(
     private readonly configuration: IConfiguration,
-    private readonly identityService: IIdentityService
+    private readonly ticketRepository: ITicketRepository
   ) {}
 
   async notify(ticketId: Id, state: TicketState, ...messages: string[]) {
-    const { email } = await this.identityService.getCurrentUser();
+    const { email } = (await this.ticketRepository.get(ticketId))!.created.by;
 
     if (!email) {
       return;
