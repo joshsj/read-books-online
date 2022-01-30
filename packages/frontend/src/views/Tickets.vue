@@ -128,10 +128,7 @@ onMounted(getTickets);
         @click="onCreateClick" />
     </view-title>
 
-    <table-filters
-      v-model:query="table.query"
-      :users="table.users"
-      @change="getTickets" />
+    <table-filters v-model:query="table.query" @change="getTickets" />
 
     <ticket-table
       :tickets="table.items"
