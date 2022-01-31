@@ -65,6 +65,11 @@ import {
   GetTicketsQueryHandler,
   GetTicketsQueryValidator,
 } from "./ticket/queries/getTickets";
+import {
+  GetUserQueryHandler,
+  GetUserRequestAuthorizer,
+  GetUserRequestValidator,
+} from "./user/queries/getuser";
 
 const Dependency = toDependencies([
   // general
@@ -144,6 +149,7 @@ const registerApplicationDependencies = () => {
     (c) => new AuthorizeTicketRequestValidator(c.resolve(Dependency.ticketRepository)),
     (c) => new SubmitTicketPriceRequestValidator(c.resolve(Dependency.ticketRepository)),
     () => new GetReferenceDataRequestValidator(),
+    (c) => new GetUserRequestValidator(c.resolve(Dependency.userRepository)),
   ]);
 
   registerAuthorizers([
@@ -184,6 +190,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.ticketRepository)
       ),
+    (c) => new GetUserRequestAuthorizer(c.resolve(Dependency.identityService)),
   ]);
 
   registerRequestHandlers([
@@ -224,6 +231,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.configuration)
       ),
     (c) => new GetReferenceDataQueryHandler(() => c.resolve(Dependency.userRepository)),
+    (c) => new GetUserQueryHandler(c.resolve(Dependency.userRepository)),
   ]);
 
   registerNotificationHandlers([

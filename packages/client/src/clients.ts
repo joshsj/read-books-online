@@ -1,23 +1,25 @@
 import {
   AccountDto,
   AllocateTicketRequest,
-  ReviewTicketRequest,
+  AuthorizeTicketRequest,
+  CompleteTicketRequest,
   CreateTicketRequest,
   CreateUserRequest,
   Id,
-  CompleteTicketRequest,
+  ReferenceDataDto,
+  ReferenceDataType,
+  ReviewTicketRequest,
+  SubmitTicketPriceRequest,
   TicketDto,
   TicketQuery,
   TokenDto,
-  AuthorizeTicketRequest,
-  SubmitTicketPriceRequest,
-  ReferenceDataDto,
-  ReferenceDataType,
+  UserDto,
+  Username,
 } from "@client/models";
 import { Endpoint } from "@client/types";
 
 type IUserClient = {
-  user: Endpoint<"create", CreateUserRequest>;
+  user: Endpoint<"create", CreateUserRequest> & Endpoint<"get", Username, UserDto>;
 };
 
 type IAuthClient = {

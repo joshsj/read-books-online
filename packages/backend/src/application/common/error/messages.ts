@@ -37,6 +37,8 @@ export const userAlreadyExists = (username: string) =>
 export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
 
+export const cannotViewUser = "You cannot view this user";
+
 export const allocatingOwnTicket = "You cannot be allocated to your own ticket";
 export const allocatingAllocatedTicket =
   "You cannot allocate a ticket which has already been allocated";

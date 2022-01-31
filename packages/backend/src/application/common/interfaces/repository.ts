@@ -29,6 +29,7 @@ type IReferenceDataRepository = {
 type IUserRepository = IRepository<User> &
   IReferenceDataRepository & {
     getByUsername(username: string): Promise<User | null>;
+    existsByUsername(username: string): Promise<boolean>;
   };
 
 type IRefreshTokenRepository = IRepository<RefreshToken> & {

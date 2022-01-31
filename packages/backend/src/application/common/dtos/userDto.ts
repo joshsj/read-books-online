@@ -1,9 +1,9 @@
 import { User } from "@backend/domain/entities/user";
 
-type UserDto = Pick<User, "_id" | "username">;
+type BriefUserDto = Pick<User, "_id" | "username">;
 
-const UserDto = {
-  fromUser: ({ _id, username }: User): UserDto => ({ _id, username }),
+const BriefUserDto = {
+  fromUser: ({ _id, username }: User): BriefUserDto => ({ _id, username }),
 };
 
-export { UserDto };
+export { BriefUserDto };

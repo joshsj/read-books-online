@@ -3,6 +3,7 @@ import Login from "@frontend/views/Login.vue";
 import SignUp from "@frontend/views/SignUp.vue";
 import Ticket from "@frontend/views/Ticket.vue";
 import Tickets from "@frontend/views/Tickets.vue";
+import User from "@frontend/views/User.vue";
 import {
   createRouter as createVueRouter,
   createWebHistory,
@@ -54,6 +55,12 @@ const routes = {
     meta: { auth: "none" },
   }),
 
+  ticket: route<{ ticketId: Id }>({
+    path: "/tickets/:ticketId",
+    component: Ticket,
+    meta: { auth: "any" },
+    props: true,
+  }),
   tickets: route({
     path: "/tickets",
     alias: "/",
@@ -61,16 +68,9 @@ const routes = {
     meta: { auth: "any" },
   }),
 
-  ticket: route<{ ticketId: Id }>({
-    path: "/tickets/:ticketId",
-    component: Ticket,
-    meta: { auth: "any" },
-    props: true,
-  }),
-
-  account: route<{ username: string }>({
-    path: "/accounts/:username",
-    redirect: "/",
+  user: route<{ username: string }>({
+    path: "/user/:username",
+    component: User,
     meta: { auth: "any" },
     props: true,
   }),
