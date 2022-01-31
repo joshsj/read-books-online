@@ -10,6 +10,7 @@ describe("Ticket", () => {
 
   const createRequest = (information: string): CreateTicketRequest => ({
     requestName: "createTicketRequest",
+    format: "book",
     information,
   });
 
@@ -48,6 +49,7 @@ describe("Ticket", () => {
 
       const request: CreateTicketRequest = {
         requestName: "createTicketRequest",
+        format: "book",
         information: undefined as any,
       };
 

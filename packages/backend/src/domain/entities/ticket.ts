@@ -1,10 +1,12 @@
 import { Entity } from "@backend/domain/common/entity";
 import { date, InferType, object, string } from "yup";
 import { PositiveNumber } from "../common/constrainedTypes";
+import { TicketFormat } from "../constants/ticketFormat";
 import { AuthorizationState, ReviewState, TicketState } from "../constants/ticketStates";
 import { User } from "./user";
 
 const RequiredFields = object({
+  format: TicketFormat.required(),
   information: string().strict().required(),
 
   created: object({

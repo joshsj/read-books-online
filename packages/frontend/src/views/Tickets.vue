@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { TicketDto, ReferenceDataDto } from "@client/models";
+import { CreateTicketRequest, TicketDto } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
+import TicketCreateModal from "@frontend/components/ticket/TicketCreateModal.vue";
 import TicketInformationModal from "@frontend/components/ticket/TicketInformationModal.vue";
 import TicketPriceModal from "@frontend/components/ticket/TicketPriceModal.vue";
 import TicketTable from "@frontend/components/ticket/TicketTable.vue";
@@ -14,9 +15,8 @@ import {
   TicketPriceModel,
 } from "@frontend/utilities/forms";
 import { EmptyTicketQuery } from "@frontend/utilities/ticket";
-import { ModifyMode } from "@frontend/utilities/types";
 import { FormContext } from "vee-validate";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const { notify } = useInteractor();
 const { ticketBusiness } = useBusiness();
@@ -25,6 +25,73 @@ const table = ref({
   items: [] as TicketDto[],
   query: EmptyTicketQuery(),
 });
+
+const modals = ref({
+  create: {
+    active: false,
+
+    onMain: async () => {
+      if (!createModalRef.value) {
+        return;
+      }
+
+      const result = await ticketBusiness.create(
+        createModalRef.value.form.values
+      );
+
+      result && getTickets();
+    },
+  },
+
+  info: {
+    active: false,
+
+    onMain: async () => {
+      if (!infoModalRef.value) {
+        return;
+      }
+
+      const { ticketId, information } = infoModalRef.value.form.values;
+
+      const result = await ticketBusiness.complete({
+        requestName: "completeTicketRequest",
+        ticketId,
+        information,
+      });
+
+      result && getTickets();
+    },
+  },
+
+  price: {
+    active: false,
+
+    onMain: async () => {
+      if (!priceModalRef.value) {
+        return;
+      }
+
+      const { ticketId, price } = priceModalRef.value.form.values;
+
+      const result = await ticketBusiness.submitPrice({
+        requestName: "submitTicketPriceRequest",
+        ticketId,
+        price,
+      });
+
+      result && getTickets();
+    },
+  },
+});
+const createModalRef = ref<
+  { form: FormContext<CreateTicketRequest> } | undefined
+>();
+const infoModalRef = ref<
+  { form: FormContext<TicketInformationModel> } | undefined
+>();
+const priceModalRef = ref<
+  { form: FormContext<TicketPriceModel> } | undefined
+>();
 
 const getTickets = async () => {
   const response = await store.pageLoad(client.ticket.get(table.value.query));
@@ -37,61 +104,8 @@ const getTickets = async () => {
   table.value.items = response;
 };
 
-const infoModalRef = ref<
-  { form: FormContext<TicketInformationModel> } | undefined
->();
-const infoModal = reactive({
-  active: false,
-  mode: "create" as ModifyMode,
-
-  onMain: async () => {
-    if (!infoModalRef.value) {
-      return;
-    }
-
-    const { ticketId, information } = infoModalRef.value.form.values;
-
-    const result = await (infoModal.mode === "create"
-      ? ticketBusiness.create({
-          requestName: "createTicketRequest",
-          information,
-        })
-      : ticketBusiness.complete({
-          requestName: "completeTicketRequest",
-          ticketId,
-          information,
-        }));
-
-    result && getTickets();
-  },
-});
-
-const priceModalRef = ref<
-  { form: FormContext<TicketPriceModel> } | undefined
->();
-const priceModal = reactive({
-  active: false,
-
-  onMain: async () => {
-    if (!priceModalRef.value) {
-      return;
-    }
-
-    const { ticketId, price } = priceModalRef.value.form.values;
-
-    const result = await ticketBusiness.submitPrice({
-      requestName: "submitTicketPriceRequest",
-      ticketId,
-      price,
-    });
-
-    result && getTickets();
-  },
-});
-
 const onCreateClick = () => {
-  infoModal.mode = "create";
-  infoModal.active = true;
+  modals.value.create.active = true;
 };
 
 const onCompleteClick = ({ _id, information }: TicketDto) => {
@@ -102,8 +116,7 @@ const onCompleteClick = ({ _id, information }: TicketDto) => {
   infoModalRef.value.form.values.ticketId = _id;
   infoModalRef.value.form.values.information = information;
 
-  infoModal.mode = "update";
-  infoModal.active = true;
+  modals.value.info.active = true;
 };
 
 const onSubmitPriceClick = ({ _id }: TicketDto) => {
@@ -112,7 +125,7 @@ const onSubmitPriceClick = ({ _id }: TicketDto) => {
   }
 
   priceModalRef.value.form.values.ticketId = _id;
-  priceModal.active = true;
+  modals.value.price.active = true;
 };
 
 onMounted(getTickets);
@@ -136,15 +149,19 @@ onMounted(getTickets);
       @complete="onCompleteClick"
       @submit-price="onSubmitPriceClick" />
 
+    <ticket-create-modal
+      ref="createModalRef"
+      v-model:active="modals.create.active"
+      @main="modals.create.onMain" />
+
     <ticket-information-modal
       ref="infoModalRef"
-      v-model:active="infoModal.active"
-      :mode="infoModal.mode"
-      @main="infoModal.onMain" />
+      v-model:active="modals.info.active"
+      @main="modals.info.onMain" />
 
     <ticket-price-modal
       ref="priceModalRef"
-      v-model:active="priceModal.active"
-      @main="priceModal.onMain" />
+      v-model:active="modals.price.active"
+      @main="modals.price.onMain" />
   </div>
 </template>

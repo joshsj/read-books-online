@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TicketDto } from "@client/models";
 import { formatDate } from "@core/utilities/date";
-import { truncate } from "@core/utilities/string";
+import { capitalize, truncate } from "@core/utilities/string";
 import Username from "@frontend/components/general/Username.vue";
 import { useBusiness } from "@frontend/plugins/business";
 import { route } from "@frontend/router";
@@ -19,6 +19,14 @@ const { ticketBusiness } = useBusiness();
 
 <template>
   <o-table :data="tickets" narrowed class="block">
+    <o-table-column label="Format">
+      <template v-slot="{ row: { format } }">
+        <span>
+          {{ capitalize(format) }}
+        </span>
+      </template>
+    </o-table-column>
+
     <o-table-column label="Information">
       <template v-slot="{ row: { information } }">
         <span>

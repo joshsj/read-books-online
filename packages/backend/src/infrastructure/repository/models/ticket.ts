@@ -5,6 +5,7 @@ import { UserModel } from "./user";
 
 const TicketSchema: Schema<Ticket> = {
   ...EntitySchema,
+  format: { type: String },
   information: { type: String },
 
   created: {

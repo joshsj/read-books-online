@@ -7,11 +7,11 @@ import { newId } from "@backend/domain/common/id";
 import { Ticket } from "@backend/domain/entities/ticket";
 import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
-import { InferType, object, string } from "yup";
+import { InferType } from "yup";
 
-const CreateTicketRequest = object({
-  information: string().strict().required(),
-}).concat(Request("createTicketRequest"));
+const CreateTicketRequest = Ticket.pick(["format", "information"]).concat(
+  Request("createTicketRequest")
+);
 type CreateTicketRequest = InferType<typeof CreateTicketRequest>;
 
 class CreateTicketCommandValidator implements IRequestValidator<CreateTicketRequest> {
@@ -35,11 +35,12 @@ class CreateTicketCommandHandler implements ICommandHandler<CreateTicketRequest>
     private readonly identityService: IIdentityService
   ) {}
 
-  async handle({ information }: CreateTicketRequest) {
+  async handle({ information, format }: CreateTicketRequest) {
     const currentUser = await this.identityService.getCurrentUser();
 
     const ticket: Ticket = {
       _id: newId(),
+      format,
       information,
       created: {
         at: new Date(),

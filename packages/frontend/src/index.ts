@@ -15,10 +15,11 @@ import {
   Modal,
   Notification,
   Pagination,
+  Radio,
+  Select,
+  Switch,
   Table,
   Tooltip,
-  Switch,
-  Select,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -163,6 +164,11 @@ createApp(App)
         return classes.join(" ");
       },
     },
+
+    radio: {
+      override: true,
+      labelClass: "ml-1 mr-2",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -177,4 +183,5 @@ createApp(App)
   .use(Pagination)
   .use(Switch)
   .use(Select)
+  .use(Radio)
   .mount("#app");

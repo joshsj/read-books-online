@@ -2,6 +2,7 @@
 import { isRBOError } from "@client/index";
 import { TicketDto } from "@client/models";
 import { formatDate } from "@core/utilities/date";
+import { capitalize } from "@core/utilities/string";
 import { client } from "@frontend/client";
 import Username from "@frontend/components/general/Username.vue";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
@@ -125,6 +126,9 @@ onMounted(getTicket);
 
     <div class="columns is-6">
       <div class="column content">
+        <strong>Format</strong>
+        <p>{{ capitalize(ticket.format) }}</p>
+
         <strong>Status</strong>
         <p><state-tag :state="ticket.states.at(-1)!" /></p>
 
