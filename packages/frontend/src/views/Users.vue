@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { UserDto } from "@client/models";
+import { UpdateUserRequest, UserDto } from "@client/models";
 import { client, isRBOError } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
+import UpdateModal from "@frontend/components/user/UserUpdateModal.vue";
+import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { prettyRoles } from "@frontend/utilities/user";
+import { FormContext } from "vee-validate";
 import { onMounted, ref } from "vue";
+import Username from "@frontend/components/general/Username.vue";
 
 const { notify } = useInteractor();
+const { userBusiness } = useBusiness();
 
 const table = ref({ items: [] as UserDto[] });
 
@@ -23,6 +28,40 @@ const getUsers = async () => {
   table.value.items = response;
 };
 
+const modal = ref({
+  active: false,
+
+  onMain: async () => {
+    if (!updateModal.value) {
+      return;
+    }
+
+    const request = {
+      ...updateModal.value.form.values,
+    };
+    !userBusiness.canUpdateRoles() && (request.roles = undefined);
+
+    await userBusiness.update(request).then(getUsers);
+  },
+});
+const updateModal = ref<{ form: FormContext<UpdateUserRequest> } | undefined>();
+
+const onUpdateClick = (user: UserDto) => {
+  if (!updateModal.value) {
+    return;
+  }
+
+  const { email, roles } = user;
+
+  updateModal.value.form.setValues({
+    requestName: "updateUserRequest",
+    userId: user._id,
+    email,
+    roles,
+  });
+  modal.value.active = true;
+};
+
 onMounted(getUsers);
 </script>
 
@@ -33,7 +72,7 @@ onMounted(getUsers);
     <o-table :data="table.items">
       <o-table-column label="Username">
         <template v-slot="{ row: { username } }">
-          <span>{{ username }}</span>
+          <span><username :username="username" /></span>
         </template>
       </o-table-column>
 
@@ -67,9 +106,18 @@ onMounted(getUsers);
                 View
               </o-dropdown-item>
             </router-link>
+
+            <o-dropdown-item @click="onUpdateClick(user)">
+              Update
+            </o-dropdown-item>
           </o-dropdown>
         </template>
       </o-table-column>
     </o-table>
+
+    <update-modal
+      ref="updateModal"
+      v-model:active="modal.active"
+      @main="modal.onMain" />
   </div>
 </template>

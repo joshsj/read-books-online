@@ -66,6 +66,11 @@ import {
   GetTicketsQueryValidator,
 } from "./ticket/queries/getTickets";
 import {
+  UpdateUserCommandHandler,
+  UpdateUserRequestAuthorizer,
+  UpdateUserRequestValidator,
+} from "./user/commands/updateUser";
+import {
   GetUserQueryHandler,
   GetUserRequestAuthorizer,
   GetUserRequestValidator,
@@ -156,6 +161,7 @@ const registerApplicationDependencies = () => {
     () => new GetReferenceDataRequestValidator(),
     (c) => new GetUserRequestValidator(c.resolve(Dependency.userRepository)),
     () => new GetUsersRequestValidator(),
+    (c) => new UpdateUserRequestValidator(c.resolve(Dependency.userRepository)),
   ]);
 
   registerAuthorizers([
@@ -198,6 +204,7 @@ const registerApplicationDependencies = () => {
       ),
     (c) => new GetUserRequestAuthorizer(c.resolve(Dependency.identityService)),
     (c) => new GetUsersRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) => new UpdateUserRequestAuthorizer(c.resolve(Dependency.identityService)),
   ]);
 
   registerRequestHandlers([
@@ -240,6 +247,7 @@ const registerApplicationDependencies = () => {
     (c) => new GetReferenceDataQueryHandler(() => c.resolve(Dependency.userRepository)),
     (c) => new GetUserQueryHandler(c.resolve(Dependency.userRepository)),
     (c) => new GetUsersQueryHandler(c.resolve(Dependency.userRepository)),
+    (c) => new UpdateUserCommandHandler(c.resolve(Dependency.userRepository)),
   ]);
 
   registerNotificationHandlers([

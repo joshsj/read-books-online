@@ -38,6 +38,10 @@ export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
 
 export const cannotViewUser = "You cannot view this user";
+export const updatingUserNonAuthorizer =
+  "You cannot update another user if you are not an authorizer";
+export const updatingUserRolesNonAuthorizer =
+  "You cannot change a user's roles if you are not an authorizer";
 
 export const allocatingOwnTicket = "You cannot be allocated to your own ticket";
 export const allocatingAllocatedTicket =

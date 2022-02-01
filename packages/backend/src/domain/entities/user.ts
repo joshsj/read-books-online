@@ -4,10 +4,10 @@ import { Entity } from "@backend/domain/common/entity";
 import { Username } from "@backend/domain/common/constrainedTypes";
 
 const User = object({
-  username: Username.required(),
-  email: string().email().required(),
-  roles: array().of(Role.required()).strict().required(),
-  passwordHash: string().strict().required(),
+  username: Username.defined(),
+  email: string().email().defined(),
+  roles: array().of(Role.defined()).strict().defined().min(1),
+  passwordHash: string().strict().defined(),
 }).concat(Entity);
 
 type User = InferType<typeof User>;

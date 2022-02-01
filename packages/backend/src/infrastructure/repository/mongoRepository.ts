@@ -41,7 +41,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   }
 
   async exists(_id: Id): Promise<boolean> {
-    return this.model.exists({ id: _id });
+    return await this.model.exists({ _id });
   }
 
   async insert(entity: T): Promise<void> {
@@ -62,7 +62,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
       { $set: { ...associableEntity, _id: undefined } }
     );
 
-    ensure(!!result.modifiedCount, new RBOError("missing", notFound(entity._id)));
+    ensure(!!result.matchedCount, new RBOError("missing", notFound(entity._id)));
   }
 
   async delete(_id: Some<Id>): Promise<void> {

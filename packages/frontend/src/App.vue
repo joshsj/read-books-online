@@ -42,7 +42,7 @@ const toggleNavbar = () =>
       <div v-if="store.user" class="navbar-menu" :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
           <router-link
-            v-if="store.user.roles.some((r) => r === 'authorizer')"
+            v-if="store.user.roles.includes('authorizer')"
             :to="route({ name: 'users' })"
             class="navbar-item">
             Users

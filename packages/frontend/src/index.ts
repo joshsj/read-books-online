@@ -20,6 +20,7 @@ import {
   Switch,
   Table,
   Tooltip,
+  Checkbox,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
 
@@ -169,6 +170,11 @@ createApp(App)
       override: true,
       labelClass: "ml-1 mr-2",
     },
+
+    checkbox: {
+      override: true,
+      labelClass: "ml-1 mr-2",
+    },
   })
   .use(Button)
   .use(Notification)
@@ -184,4 +190,5 @@ createApp(App)
   .use(Switch)
   .use(Select)
   .use(Radio)
+  .use(Checkbox)
   .mount("#app");

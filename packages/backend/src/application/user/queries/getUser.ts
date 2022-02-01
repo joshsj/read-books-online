@@ -38,7 +38,7 @@ class GetUserRequestAuthorizer implements IRequestAuthorizer<GetUserRequest> {
   async authorize(request: GetUserRequest) {
     const currentUser = await this.identityService.getCurrentUser();
 
-    if (currentUser.roles.some((r) => r !== "client")) {
+    if (currentUser.roles.includes("authorizer")) {
       return;
     }
 

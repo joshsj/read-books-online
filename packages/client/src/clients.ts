@@ -13,6 +13,7 @@ import {
   TicketDto,
   TicketQuery,
   TokenDto,
+  UpdateUserRequest,
   UserDto,
   Username,
 } from "@client/models";
@@ -21,7 +22,8 @@ import { Endpoint } from "@client/types";
 type IUserClient = {
   user: Endpoint<"create", CreateUserRequest> &
     Endpoint<"get", Username, UserDto> &
-    Endpoint<"get", void, UserDto[]>;
+    Endpoint<"get", void, UserDto[]> &
+    Endpoint<"update", UpdateUserRequest>;
 };
 
 type IAuthClient = {

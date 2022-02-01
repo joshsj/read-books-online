@@ -1,4 +1,4 @@
-import { CompleteTicketRequest, SubmitTicketPriceRequest } from "@client/models";
+import { CompleteTicketRequest, SubmitTicketPriceRequest, UpdateUserRequest } from "@client/models";
 import { FieldContext } from "vee-validate";
 import { computed, WritableComputedRef } from "vue";
 import { InferType } from "yup";
@@ -7,12 +7,6 @@ const fieldState = (context: FieldContext<unknown>) => ({
   message: context.meta.validated ? context.errorMessage.value : undefined,
   variant: context.errorMessage.value ? "danger" : undefined,
 });
-
-const TicketInformationModel = CompleteTicketRequest.pick(["ticketId", "information"]);
-type TicketInformationModel = InferType<typeof TicketInformationModel>;
-
-const TicketPriceModel = SubmitTicketPriceRequest.pick(["price", "ticketId"]);
-type TicketPriceModel = InferType<typeof TicketPriceModel>;
 
 const numberFieldMap = (
   field: FieldContext<number>,
@@ -30,5 +24,11 @@ const numberFieldMap = (
       field.value.value = isNaN(value) ? def : value;
     },
   });
+
+const TicketInformationModel = CompleteTicketRequest.pick(["ticketId", "information"]);
+type TicketInformationModel = InferType<typeof TicketInformationModel>;
+
+const TicketPriceModel = SubmitTicketPriceRequest.pick(["price", "ticketId"]);
+type TicketPriceModel = InferType<typeof TicketPriceModel>;
 
 export { fieldState, TicketInformationModel, TicketPriceModel, numberFieldMap };

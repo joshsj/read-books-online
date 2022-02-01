@@ -46,4 +46,13 @@ router.post(
   })
 );
 
+router.put(
+  "",
+  handleAsync(async ({ body }, {}, { getPerRequestContainer }) => {
+    await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(body);
+
+    return { state: "noContent" };
+  })
+);
+
 export { router as userRoutes };
