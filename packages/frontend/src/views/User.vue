@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { isRBOError } from "@client/index";
 import { UserDto } from "@client/models";
-import { capitalize } from "@core/utilities/string";
 import { client } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
+import { prettyRoles } from "@frontend/utilities/user";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -44,7 +44,7 @@ onMounted(getUser);
       <p>{{ user.email }}</p>
 
       <strong>Roles</strong>
-      <p>{{ user.roles.map(capitalize).join(", ") }}</p>
+      <p>{{ prettyRoles(user.roles) }}</p>
     </div>
   </div>
 </template>

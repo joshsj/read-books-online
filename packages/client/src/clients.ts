@@ -19,7 +19,9 @@ import {
 import { Endpoint } from "@client/types";
 
 type IUserClient = {
-  user: Endpoint<"create", CreateUserRequest> & Endpoint<"get", Username, UserDto>;
+  user: Endpoint<"create", CreateUserRequest> &
+    Endpoint<"get", Username, UserDto> &
+    Endpoint<"get", void, UserDto[]>;
 };
 
 type IAuthClient = {

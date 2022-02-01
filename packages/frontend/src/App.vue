@@ -45,6 +45,13 @@ const toggleNavbar = () =>
         class="navbar-menu"
         :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
+          <router-link
+            v-if="store.user.roles.some((r) => r === 'authorizer')"
+            :to="route({ name: 'users' })"
+            class="navbar-item">
+            Users
+          </router-link>
+
           <router-link :to="route({ name: 'tickets' })" class="navbar-item">
             Tickets
           </router-link>
@@ -53,8 +60,14 @@ const toggleNavbar = () =>
             <a class="navbar-link">{{ store.user?.username ?? "User" }}</a>
 
             <div class="navbar-dropdown">
+              <router-link
+                :to="route({ name: 'user', username: store.user.username })"
+                class="navbar-item">
+                View
+              </router-link>
+
               <div class="navbar-item">
-                <a class="button is-danger" @click="logout"> Logout </a>
+                <a class="has-text-danger" @click="logout">Logout</a>
               </div>
             </div>
           </div>

@@ -1,20 +1,21 @@
+import { Id } from "@client/models";
 import { store } from "@frontend/store";
 import Login from "@frontend/views/Login.vue";
 import SignUp from "@frontend/views/SignUp.vue";
 import Ticket from "@frontend/views/Ticket.vue";
 import Tickets from "@frontend/views/Tickets.vue";
 import User from "@frontend/views/User.vue";
+import Users from "@frontend/views/Users.vue";
 import {
   createRouter as createVueRouter,
   createWebHistory,
   RouteLocationRaw,
   RouteRecordRaw,
 } from "vue-router";
-import { Id } from "@client/models";
 
 declare module "vue-router" {
   interface RouteMeta {
-    auth: "none" | "any"; // | Role[] | (() => boolean);
+    auth: "none" | "any" | ((to: RouteLocationNormalized) => boolean); //| Role[]
   }
 }
 
@@ -69,12 +70,26 @@ const routes = {
   }),
 
   user: route<{ username: string }>({
-    path: "/user/:username",
+    path: "/users/:username",
     component: User,
-    meta: { auth: "any" },
     props: true,
+    meta: {
+      auth: (to) => {
+        if (store.user!.roles.some((r) => r !== "client")) {
+          return true;
+        }
+
+        const username = to.params.username as string;
+
+        return store.user!.username === username;
+      },
+    },
   }),
-  accounts: route({ path: "/accounts", redirect: "/", meta: { auth: "any" } }),
+  users: route({
+    path: "/users",
+    component: Users,
+    meta: { auth: "any" },
+  }),
 
   noPath: route({ path: "/:noPath(.*)*", redirect: "/", meta: { auth: "none" } }),
 };
@@ -89,12 +104,23 @@ const createRouter = () => {
   });
 
   router.beforeEach((to) => {
-    if (to.meta.auth === "none") {
+    const { auth } = to.meta;
+    const routeAway = routeHelper({ name: "login" });
+
+    if (auth === "none") {
       return;
     }
 
     if (!store.user) {
-      return routeHelper({ name: "login" });
+      return routeAway;
+    }
+
+    if (auth === "any") {
+      return;
+    }
+
+    if (!auth(to)) {
+      return routeAway;
     }
 
     return;

@@ -1,11 +1,26 @@
 import { handleAsync } from "@backend/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
 import { GetUserRequest } from "@backend/application/user/queries/getuser";
+import { GetUsersRequest } from "@backend/application/user/queries/getUsers";
 import { ICQRS } from "@core/cqrs/types/service";
 import { Router } from "express";
 import { authenticator } from "../common/middlewares/authenticator";
 
 const router = Router();
+
+router.get(
+  "",
+  authenticator,
+  handleAsync(async ({}, {}, { getPerRequestContainer }) => {
+    const request: GetUsersRequest = {
+      requestName: "getUsersRequest",
+    };
+
+    const value = await getPerRequestContainer().resolve<ICQRS>(Dependency.cqrs).send(request);
+
+    return { state: "ok", value };
+  })
+);
 
 router.get(
   "/:username",

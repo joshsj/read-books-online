@@ -70,6 +70,11 @@ import {
   GetUserRequestAuthorizer,
   GetUserRequestValidator,
 } from "./user/queries/getuser";
+import {
+  GetUsersQueryHandler,
+  GetUsersRequestAuthorizer,
+  GetUsersRequestValidator,
+} from "./user/queries/getUsers";
 
 const Dependency = toDependencies([
   // general
@@ -150,6 +155,7 @@ const registerApplicationDependencies = () => {
     (c) => new SubmitTicketPriceRequestValidator(c.resolve(Dependency.ticketRepository)),
     () => new GetReferenceDataRequestValidator(),
     (c) => new GetUserRequestValidator(c.resolve(Dependency.userRepository)),
+    () => new GetUsersRequestValidator(),
   ]);
 
   registerAuthorizers([
@@ -191,6 +197,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.ticketRepository)
       ),
     (c) => new GetUserRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) => new GetUsersRequestAuthorizer(c.resolve(Dependency.identityService)),
   ]);
 
   registerRequestHandlers([
@@ -232,6 +239,7 @@ const registerApplicationDependencies = () => {
       ),
     (c) => new GetReferenceDataQueryHandler(() => c.resolve(Dependency.userRepository)),
     (c) => new GetUserQueryHandler(c.resolve(Dependency.userRepository)),
+    (c) => new GetUsersQueryHandler(c.resolve(Dependency.userRepository)),
   ]);
 
   registerNotificationHandlers([
