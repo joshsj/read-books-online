@@ -39,11 +39,7 @@ const toggleNavbar = () =>
         </a>
       </div>
 
-      <div
-        v-show="isLoggedIn()"
-        :aria-hidden="!isLoggedIn()"
-        class="navbar-menu"
-        :class="activeClass">
+      <div v-if="store.user" class="navbar-menu" :class="activeClass">
         <div class="navbar-end has-text-weight-semibold">
           <router-link
             v-if="store.user.roles.some((r) => r === 'authorizer')"
@@ -60,11 +56,12 @@ const toggleNavbar = () =>
             <a class="navbar-link">{{ store.user?.username ?? "User" }}</a>
 
             <div class="navbar-dropdown">
-              <router-link
-                :to="route({ name: 'user', username: store.user.username })"
-                class="navbar-item">
-                View
-              </router-link>
+              <div class="navbar-item">
+                <router-link
+                  :to="route({ name: 'user', username: store.user.username })">
+                  View
+                </router-link>
+              </div>
 
               <div class="navbar-item">
                 <a class="has-text-danger" @click="logout">Logout</a>
