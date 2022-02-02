@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { isRBOError } from "@client/index";
 import { UpdateUserRequest, UserDto } from "@client/models";
+import { capitalize } from "@core/utilities/string";
 import { client } from "@frontend/client";
 import ViewTitle from "@frontend/components/general/ViewTitle.vue";
 import UpdateModal from "@frontend/components/user/UserUpdateModal.vue";
@@ -8,7 +9,8 @@ import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
-import { prettyRoles } from "@frontend/utilities/user";
+import { prettyBoolean } from "@frontend/utilities/component";
+import { disabledToggleText, prettyRoles } from "@frontend/utilities/user";
 import { FormContext } from "vee-validate";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -76,11 +78,19 @@ const isCurrentUser = computed<boolean>(
 <template>
   <div v-if="user" class="container">
     <view-title title="User">
-      <o-button
-        v-if="userBusiness.canUpdate(user.username)"
-        label="Update"
-        variant="primary"
-        @click="onUpdateClick" />
+      <div class="buttons">
+        <o-button
+          v-if="userBusiness.canUpdate(user.username)"
+          label="Update"
+          variant="primary"
+          @click="onUpdateClick" />
+
+        <o-button
+          v-if="userBusiness.canDisable(user)"
+          :label="capitalize(disabledToggleText(user.disabled))"
+          variant="primary"
+          @click="userBusiness.toggleDisabled(user!).then((x ) => {x && getUser()})" />
+      </div>
     </view-title>
 
     <div class="content">
@@ -92,6 +102,9 @@ const isCurrentUser = computed<boolean>(
 
       <strong>Roles</strong>
       <p>{{ prettyRoles(user.roles) }}</p>
+
+      <strong>Disabled</strong>
+      <p>{{ prettyBoolean(user.disabled) }}</p>
     </div>
 
     <update-modal

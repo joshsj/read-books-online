@@ -7,10 +7,12 @@ import { useBusiness } from "@frontend/plugins/business";
 import { useInteractor } from "@frontend/plugins/interactor";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
-import { prettyRoles } from "@frontend/utilities/user";
+import { disabledToggleText, prettyRoles } from "@frontend/utilities/user";
 import { FormContext } from "vee-validate";
 import { onMounted, ref } from "vue";
 import Username from "@frontend/components/general/Username.vue";
+import { prettyBoolean } from "@frontend/utilities/component";
+import { capitalize } from "@core/utilities/string";
 
 const { notify } = useInteractor();
 const { userBusiness } = useBusiness();
@@ -88,6 +90,12 @@ onMounted(getUsers);
         </template>
       </o-table-column>
 
+      <o-table-column label="Disabled">
+        <template v-slot="{ row: { disabled } }">
+          <span>{{ prettyBoolean(disabled) }}</span>
+        </template>
+      </o-table-column>
+
       <o-table-column label="Actions" position="centered" width="7.5%">
         <template v-slot="{ index, row: user }">
           <o-dropdown
@@ -107,8 +115,16 @@ onMounted(getUsers);
               </o-dropdown-item>
             </router-link>
 
-            <o-dropdown-item @click="onUpdateClick(user)">
+            <o-dropdown-item
+              v-if="userBusiness.canUpdate(user.username)"
+              @click="onUpdateClick(user)">
               Update
+            </o-dropdown-item>
+
+            <o-dropdown-item
+              v-if="userBusiness.canDisable(user)"
+              @click="userBusiness.toggleDisabled(user!).then((x ) => {x && getUsers()})">
+              {{ capitalize(disabledToggleText(user.disabled)) }}
             </o-dropdown-item>
           </o-dropdown>
         </template>

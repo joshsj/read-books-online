@@ -1,40 +1,15 @@
 import {
   CompleteTicketRequest,
   CreateTicketRequest,
-  TicketDto,
   SubmitTicketPriceRequest,
+  TicketDto,
 } from "@client/models";
-import { RBOErrorDto } from "@client/types";
 import { client, isRBOError } from "@frontend/client";
-import { Interactor, useInteractor } from "@frontend/plugins/interactor";
+import { useInteractor } from "@frontend/plugins/interactor";
 import { store, UserStore } from "@frontend/store";
 import { h } from "vue";
+import { simpleAction } from ".";
 import { useUserBusiness } from "./user";
-
-const execTicketAction = async (
-  { notify, confirm }: Interactor,
-  request: () => Promise<RBOErrorDto | void>,
-  successMessage: string,
-  confirmMessage?: string
-): Promise<boolean> => {
-  if (confirmMessage) {
-    const confirmation = await confirm(confirmMessage);
-
-    if (!confirmation) {
-      return false;
-    }
-  }
-
-  const response = await request();
-
-  if (isRBOError(response)) {
-    notify(response);
-    return false;
-  }
-
-  notify({ message: successMessage, variant: "success" });
-  return true;
-};
 
 const useTicketBusiness = () => {
   const interactor = useInteractor();
@@ -45,7 +20,7 @@ const useTicketBusiness = () => {
       (user ?? store.user)?.roles.includes("client") ?? false,
 
     create: async (request: CreateTicketRequest) =>
-      execTicketAction(interactor, () => client.ticket.create(request), "Ticket created"),
+      simpleAction(interactor, () => client.ticket.create(request), "Ticket created"),
 
     canCancel: (ticket: TicketDto, user?: UserStore): boolean => {
       const resolvedUser = user ?? store.user;
@@ -58,7 +33,7 @@ const useTicketBusiness = () => {
     },
 
     cancel: async ({ _id }: TicketDto) =>
-      execTicketAction(
+      simpleAction(
         interactor,
         () => client.ticket.delete(_id),
         "Ticket cancelled",
@@ -80,7 +55,7 @@ const useTicketBusiness = () => {
     },
 
     allocate: async ({ _id }: TicketDto) =>
-      execTicketAction(
+      simpleAction(
         interactor,
         () =>
           client.ticket.allocation.create({
@@ -150,7 +125,7 @@ const useTicketBusiness = () => {
     },
 
     complete: (request: CompleteTicketRequest) =>
-      execTicketAction(interactor, () => client.ticket.update(request), "Ticket updated"),
+      simpleAction(interactor, () => client.ticket.update(request), "Ticket updated"),
 
     canSubmitPrice: (ticket: TicketDto, user?: UserStore) => {
       const resolvedUser = user ?? store.user;
@@ -167,11 +142,7 @@ const useTicketBusiness = () => {
     },
 
     submitPrice: async (request: SubmitTicketPriceRequest) =>
-      execTicketAction(
-        interactor,
-        () => client.ticket.price.create(request),
-        "Ticket price submitted"
-      ),
+      simpleAction(interactor, () => client.ticket.price.create(request), "Ticket price submitted"),
 
     canAuthorize: (ticket: TicketDto, user?: UserStore) => {
       const resolvedUser = user ?? store.user;

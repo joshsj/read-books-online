@@ -17,4 +17,6 @@ const fakeLoad = () =>
     }, 150);
   });
 
-export { delayedRef, fakeLoad };
+const prettyBoolean = (b: boolean) => (b ? "Yes" : "No");
+
+export { delayedRef, fakeLoad, prettyBoolean };

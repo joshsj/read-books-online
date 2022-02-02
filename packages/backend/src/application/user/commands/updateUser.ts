@@ -1,7 +1,8 @@
 import {
-  updatingUserRolesNonAuthorizer,
   notFound,
+  updatingDisabledOfAuthorizer,
   updatingUserNonAuthorizer,
+  updatingUserRolesNonAuthorizer,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
 import { IRequestAuthorizer, IRequestValidator } from "@backend/application/common/interfaces/cqrs";
@@ -14,7 +15,7 @@ import { ICommandHandler } from "@core/cqrs/types/request";
 import { ensure } from "@core/utilities";
 import { InferType, object } from "yup";
 
-const UpdateUserRequest = User.pick(["email", "roles"])
+const UpdateUserRequest = User.pick(["email", "roles", "disabled"])
   .partial()
   .concat(object({ userId: Id.required() }))
   .concat(Request("updateUserRequest"));
@@ -38,7 +39,10 @@ class UpdateUserRequestValidator implements IRequestValidator<UpdateUserRequest>
 class UpdateUserRequestAuthorizer implements IRequestAuthorizer<UpdateUserRequest> {
   requestName = "updateUserRequest" as const;
 
-  constructor(private readonly identityService: IIdentityService) {}
+  constructor(
+    private readonly identityService: IIdentityService,
+    private readonly userRepository: IUserRepository
+  ) {}
 
   async authorize(request: UpdateUserRequest) {
     const currentUser = await this.identityService.getCurrentUser();
@@ -50,6 +54,18 @@ class UpdateUserRequestAuthorizer implements IRequestAuthorizer<UpdateUserReques
 
     if (request.roles) {
       ensure(isAuthorizer, new RBOError("authorization", updatingUserRolesNonAuthorizer));
+    }
+
+    if (typeof request.disabled !== "undefined") {
+      const targetUser =
+        currentUser._id === request.userId
+          ? currentUser
+          : (await this.userRepository.get(request.userId))!;
+
+      ensure(
+        !targetUser.roles.includes("authorizer"),
+        new RBOError("authorization", updatingDisabledOfAuthorizer)
+      );
     }
 
     this.constrainRoles(request, currentUser);
@@ -78,11 +94,12 @@ class UpdateUserCommandHandler implements ICommandHandler<UpdateUserRequest> {
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async handle({ userId, email, roles }: UpdateUserRequest) {
+  async handle({ userId, email, roles, disabled }: UpdateUserRequest) {
     const user = (await this.userRepository.get(userId))!;
 
     email && (user.email = email);
     roles && (user.roles = roles);
+    typeof disabled !== "undefined" && (user.disabled = disabled);
 
     await this.userRepository.update(user);
   }

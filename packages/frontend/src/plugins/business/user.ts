@@ -1,11 +1,14 @@
 import { isRBOError } from "@client/index";
-import { Role, UpdateUserRequest } from "@client/models";
+import { Role, UpdateUserRequest, UserDto } from "@client/models";
 import { client } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
+import { disabledToggleText } from "@frontend/utilities/user";
+import { simpleAction } from ".";
 import { useInteractor } from "../interactor";
 
 const useUserBusiness = () => {
-  const { notify } = useInteractor();
+  const interactor = useInteractor();
+  const { notify } = interactor;
 
   const canView = (username: string, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
@@ -17,9 +20,12 @@ const useUserBusiness = () => {
     return username === resolvedUser.username || resolvedUser.roles.includes("authorizer");
   };
 
+  const canUpdate = canView;
+
   return {
     canView,
-    canUpdate: (username: string, user?: UserStore): boolean => canView(username, user),
+    canUpdate,
+
     canUpdateRoles: (user?: UserStore): boolean => {
       const resolvedUser = user ?? store.user;
 
@@ -40,6 +46,25 @@ const useUserBusiness = () => {
 
       notify({ message: "Update successful", variant: "success" });
       return true;
+    },
+
+    canDisable: (targetUser: UserDto, user?: UserStore): boolean =>
+      canUpdate(targetUser.username, user) && !targetUser.roles.includes("authorizer"),
+
+    toggleDisabled: async (user: UserDto): Promise<boolean> => {
+      const action = disabledToggleText(user.disabled);
+
+      return simpleAction(
+        interactor,
+        () =>
+          client.user.update({
+            requestName: "updateUserRequest",
+            userId: user._id,
+            disabled: !user.disabled,
+          }),
+        `User ${action}d`,
+        `Are you sure you want to ${action} this user?`
+      );
     },
 
     hasRoles: (_roles: Role[], user?: UserStore): boolean => {

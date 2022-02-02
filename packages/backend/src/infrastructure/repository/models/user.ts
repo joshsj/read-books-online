@@ -8,6 +8,7 @@ const UserSchema: Schema<User> = {
   email: { type: String },
   passwordHash: { type: String },
   roles: { type: [String] },
+  disabled: { type: Boolean },
 };
 
 const UserModel = model<User>("User", User, UserSchema);

@@ -2,10 +2,11 @@ import { AccountDto } from "@backend/application/common/dtos/accountDto";
 import { JWTPayloadDto } from "@backend/application/common/dtos/jwtPayloadDto";
 import {
   expiredRefreshToken,
-  incorrectPassword,
+  incorrectUsernamePassword,
   invalidAuthToken,
   invalidRefreshToken,
   noRefreshToken,
+  userDisabled,
   userNotFound,
 } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
@@ -57,11 +58,13 @@ class IdentityService implements IIdentityService {
   private async loginFromDetails({ username, password }: AccountDto): Promise<AuthTokenValue> {
     const user = await this.userRepository.getByUsername(username);
 
-    ensure(!!user, new RBOError("missing", userNotFound(username)));
+    ensure(!!user, new RBOError("missing", incorrectUsernamePassword(username)));
     ensure(
       await this.hashingService.compare(password, user.passwordHash),
-      new RBOError("authentication", incorrectPassword(username))
+      new RBOError("authentication", incorrectUsernamePassword(username))
     );
+
+    ensure(!user.disabled, new RBOError("authentication", userDisabled("login to")));
 
     return this.configureTokens(user);
   }

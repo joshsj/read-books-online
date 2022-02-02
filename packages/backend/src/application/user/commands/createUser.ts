@@ -50,6 +50,7 @@ class CreateUserCommandHandler implements ICommandHandler<CreateUserRequest> {
       email,
       username,
       passwordHash,
+      disabled: false,
     };
 
     await this.userRepository.insert(user);

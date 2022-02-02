@@ -3,4 +3,6 @@ import { capitalize } from "@core/utilities/string";
 
 const prettyRoles = (roles: Role[]) => roles.map(capitalize).join(", ");
 
-export { prettyRoles };
+const disabledToggleText = (disabled: boolean) => (disabled ? "enable" : "disable");
+
+export { prettyRoles, disabledToggleText };

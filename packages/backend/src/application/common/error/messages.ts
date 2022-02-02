@@ -29,19 +29,21 @@ export const requiresRoles = (...roles: Role[]) =>
     ? `This operation requires the following ${plural(roles.length > 1, "role")}: ${q(roles)}`
     : "You do not have the adequate roles for this operation";
 
-export const incorrectPassword = (username: string) =>
-  `Incorrect password for user ${q(username)}` as const;
+export const incorrectUsernamePassword = (username: string) =>
+  `Incorrect username/password for user ${q(username)}` as const;
 
 export const userAlreadyExists = (username: string) =>
   `User already exists with username ${username}`;
 export const userNotFound = (username?: string) =>
   "User not found" + (username ? ` with username ${q(username)}` : "");
+export const userDisabled = (action: string) => `You cannot ${action} a disabled account` as const;
 
 export const cannotViewUser = "You cannot view this user";
 export const updatingUserNonAuthorizer =
   "You cannot update another user if you are not an authorizer";
 export const updatingUserRolesNonAuthorizer =
   "You cannot change a user's roles if you are not an authorizer";
+export const updatingDisabledOfAuthorizer = "You cannot enable/disable a user who is an authorizer";
 
 export const allocatingOwnTicket = "You cannot be allocated to your own ticket";
 export const allocatingAllocatedTicket =
