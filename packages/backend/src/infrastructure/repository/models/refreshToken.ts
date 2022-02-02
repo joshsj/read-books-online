@@ -7,9 +7,14 @@ const RefreshTokenSchema: Schema<RefreshToken> = {
   ...EntitySchema,
   value: { type: String },
   expires: { type: Date },
-  userId: { type: String, ref: UserModel },
+  user: { type: String, ref: UserModel, autopopulate: true },
 };
 
-const RefreshTokenModel = model<RefreshToken>("RefreshToken", RefreshToken, RefreshTokenSchema);
+const RefreshTokenModel = model<RefreshToken>(
+  "RefreshToken",
+  RefreshToken,
+  RefreshTokenSchema,
+  true
+);
 
 export { RefreshTokenSchema, RefreshTokenModel };

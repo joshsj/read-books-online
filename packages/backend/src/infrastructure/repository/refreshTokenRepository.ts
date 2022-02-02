@@ -13,11 +13,11 @@ class RefreshTokenRepository
   }
 
   async getByValue(value: RefreshTokenValue): Promise<RefreshToken | null> {
-    return await this.model.findOne({ value }).lean<RefreshToken>().exec();
+    return await this.model.findOne({ value }).lean<RefreshToken>({ autopopulate: true }).exec();
   }
 
   async getByUserId(userId: Id): Promise<RefreshToken | null> {
-    return await this.model.findOne({ userId }).lean<RefreshToken>().exec();
+    return await this.model.findOne({ userId }).lean<RefreshToken>({ autopopulate: true }).exec();
   }
 }
 

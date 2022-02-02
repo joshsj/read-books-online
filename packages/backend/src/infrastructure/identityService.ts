@@ -78,17 +78,7 @@ class IdentityService implements IIdentityService {
     ensure(!!refreshToken, new RBOError("authentication", invalidRefreshToken));
     ensure(new Date() < refreshToken.expires, new RBOError("authentication", expiredRefreshToken));
 
-    const user = await this.userRepository.get(refreshToken.userId);
-    if (!user) {
-      await this.refreshTokenRepository.delete(refreshToken._id);
-
-      throw new RBOError(
-        "fatal",
-        `Invalid userId value (${refreshToken.userId}) for Refresh Token (${refreshToken._id})`
-      );
-    }
-
-    return this.configureTokens(user);
+    return this.configureTokens(refreshToken.user);
   }
 
   async logout(): Promise<void> {
@@ -109,7 +99,7 @@ class IdentityService implements IIdentityService {
     await this.refreshTokenRepository.delete(refreshToken._id);
   }
 
-  private async configureTokens({ _id: userId }: User): Promise<AuthTokenValue> {
+  private async configureTokens(user: User): Promise<AuthTokenValue> {
     const {
       auth: {
         expiresInMs,
@@ -118,25 +108,23 @@ class IdentityService implements IIdentityService {
     } = this.configuration;
     const expires = new Date(Date.now() + expiresInMs);
 
-    const existingId = (await this.refreshTokenRepository.getByUserId(userId))?._id;
+    const existingId = (await this.refreshTokenRepository.getByUserId(user._id))?._id;
 
     const refreshToken: RefreshToken = {
       _id: existingId ?? newId(),
       value: await this.hashingService.salt(),
-      userId,
       expires,
+      user,
     };
 
     const method = existingId ? "update" : "insert";
     await this.refreshTokenRepository[method](refreshToken);
     this.setRefreshTokenCookie(refreshToken.value, expires);
 
-    const { username, roles } = (await this.userRepository.get(userId))!;
-
     const payload: JWTPayloadDto = {
-      sub: userId,
-      preferred_username: username,
-      roles,
+      sub: user._id,
+      preferred_username: user.username,
+      roles: user.roles,
     };
 
     return new Promise((resolve, reject) =>

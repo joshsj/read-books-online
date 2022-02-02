@@ -47,7 +47,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   async insert(entity: T): Promise<void> {
     await this.validate(entity);
 
-    const associableEntity = this.mapAssociations(entity);
+    const associableEntity = this.depopulate(entity);
 
     await this.model.create(associableEntity);
   }
@@ -55,7 +55,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   async update(entity: T): Promise<void> {
     await this.validate(entity);
 
-    const associableEntity = this.mapAssociations(entity);
+    const associableEntity = this.depopulate(entity);
 
     const result = await this.model.updateOne(
       { _id: entity._id },
@@ -78,7 +78,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
   }
 
   // i hate repository patterns
-  private mapAssociations(entity: T): Associable<T> {
+  private depopulate(entity: T): Associable<T> {
     return Object.entries(entity).reduce<any>((obj, curr) => {
       const [key, value] = curr as [any, any];
       let newValue: any = value;
