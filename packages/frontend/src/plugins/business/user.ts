@@ -1,4 +1,3 @@
-import { isRBOError } from "@client/index";
 import { Role, UpdateUserRequest, UserDto } from "@client/models";
 import { client } from "@frontend/client";
 import { store, UserStore } from "@frontend/store";
@@ -8,7 +7,6 @@ import { useInteractor } from "../interactor";
 
 const useUserBusiness = () => {
   const interactor = useInteractor();
-  const { notify } = interactor;
 
   const canView = (username: string, user?: UserStore): boolean => {
     const resolvedUser = user ?? store.user;
@@ -36,17 +34,8 @@ const useUserBusiness = () => {
       return resolvedUser.roles.includes("authorizer");
     },
 
-    update: async (request: UpdateUserRequest): Promise<boolean> => {
-      const response = await client.user.update(request);
-
-      if (isRBOError(response)) {
-        notify(response);
-        return false;
-      }
-
-      notify({ message: "Update successful", variant: "success" });
-      return true;
-    },
+    update: async (request: UpdateUserRequest): Promise<boolean> =>
+      simpleAction(interactor, () => client.user.update(request), "Update successful"),
 
     canDisable: (targetUser: UserDto, user?: UserStore): boolean =>
       canUpdate(targetUser.username, user) && !targetUser.roles.includes("authorizer"),

@@ -204,7 +204,11 @@ const registerApplicationDependencies = () => {
       ),
     (c) => new GetUserRequestAuthorizer(c.resolve(Dependency.identityService)),
     (c) => new GetUsersRequestAuthorizer(c.resolve(Dependency.identityService)),
-    (c) => new UpdateUserRequestAuthorizer(c.resolve(Dependency.identityService)),
+    (c) =>
+      new UpdateUserRequestAuthorizer(
+        c.resolve(Dependency.identityService),
+        c.resolve(Dependency.userRepository)
+      ),
   ]);
 
   registerRequestHandlers([
@@ -247,7 +251,11 @@ const registerApplicationDependencies = () => {
     (c) => new GetReferenceDataQueryHandler(() => c.resolve(Dependency.userRepository)),
     (c) => new GetUserQueryHandler(c.resolve(Dependency.userRepository)),
     (c) => new GetUsersQueryHandler(c.resolve(Dependency.userRepository)),
-    (c) => new UpdateUserCommandHandler(c.resolve(Dependency.userRepository)),
+    (c) =>
+      new UpdateUserCommandHandler(
+        c.resolve(Dependency.userRepository),
+        c.resolve(Dependency.ticketRepository)
+      ),
   ]);
 
   registerNotificationHandlers([

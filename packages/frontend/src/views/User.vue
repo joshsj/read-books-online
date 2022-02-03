@@ -51,7 +51,7 @@ const modal = ref({
   },
 });
 const updateModal = ref<{ form: FormContext<UpdateUserRequest> } | undefined>();
-
+capitalize;
 const onUpdateClick = () => {
   if (!(updateModal.value && user.value)) {
     return;

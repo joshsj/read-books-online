@@ -8,7 +8,7 @@ const User = object({
   email: string().email().defined(),
   roles: array().of(Role.defined()).strict().defined().min(1),
   passwordHash: string().strict().defined(),
-  disabled: boolean().defined(),
+  disabled: boolean().strict().defined(),
 }).concat(Entity);
 
 type User = InferType<typeof User>;
