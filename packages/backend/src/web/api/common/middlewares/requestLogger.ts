@@ -1,4 +1,4 @@
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency } from "@backend/application/dependency";
 import { Handler } from "express";

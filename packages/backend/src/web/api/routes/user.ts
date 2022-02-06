@@ -1,4 +1,4 @@
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
 import { GetUserRequest } from "@backend/application/user/queries/getuser";
 import { GetUsersRequest } from "@backend/application/user/queries/getUsers";

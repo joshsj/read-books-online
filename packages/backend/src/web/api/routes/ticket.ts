@@ -1,5 +1,5 @@
-import { authenticator } from "@backend/api/common/middlewares/authenticator";
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { authenticator } from "@backend/web/api/common/middlewares/authenticator";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { Dependency } from "@backend/application/dependency";
 import { CancelTicketRequest } from "@backend/application/ticket/commands/cancelTicket";
 import { GetTicketRequest } from "@backend/application/ticket/queries/getTicket";

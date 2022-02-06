@@ -1,7 +1,7 @@
 import {
   getPerRequestContainer,
   setPerRequestContainer,
-} from "@backend/api/common/utilities/container";
+} from "@backend/web/api/common/utilities/container";
 import { fromUrlParams } from "@core/utilities/http";
 import { Request, RequestHandler, Response } from "express";
 import { DependencyContainer } from "tsyringe";

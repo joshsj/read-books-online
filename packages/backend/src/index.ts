@@ -1,4 +1,4 @@
-import { Server } from "@backend/api/server";
+import { Server } from "@backend/web/server";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency, registerApplicationDependencies } from "@backend/application/dependency";

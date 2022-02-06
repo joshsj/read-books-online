@@ -6,7 +6,7 @@ import {
   AssertSchema,
   assertSchema as _assertSchema,
 } from "@backend/application/common/utilities/schema";
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { Router } from "express";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 

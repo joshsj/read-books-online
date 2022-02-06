@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticator } from "@backend/api/common/middlewares/authenticator";
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { authenticator } from "@backend/web/api/common/middlewares/authenticator";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 
 const routes = Router();
 
