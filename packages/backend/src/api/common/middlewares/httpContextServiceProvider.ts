@@ -4,15 +4,29 @@ import { HttpContextService } from "@backend/infrastructure/httpContextService";
 import { handleAsync } from "@backend/api/common/utilities/request";
 import { Handler } from "express";
 import { container } from "tsyringe";
+import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 
 let contexts = 0;
 
 const httpContextServiceProvider: Handler = handleAsync(
-  async (req, res, { setPerRequestContainer }) => {
+  async (req, {}, { setPerRequestContainer }) => {
     const requestContainer = container.createChildContainer();
+    const configuration = container.resolve<IConfiguration>(Dependency.configuration);
+
+    const authenticationTokenValue = req.headers.authorization?.split(" ")[1];
+    const refreshTokenValue: unknown =
+      req.signedCookies[configuration.server.cookie.refreshTokenKey];
 
     requestContainer.register<IHttpContextService>(Dependency.httpContextService, {
-      useFactory: () => new HttpContextService({ id: contexts, req, res }),
+      useFactory: () =>
+        new HttpContextService({
+          id: contexts,
+          authenticationTokenValue,
+          refreshTokenValue:
+            refreshTokenValue && typeof refreshTokenValue === "string"
+              ? refreshTokenValue
+              : undefined,
+        }),
     });
 
     ++contexts;

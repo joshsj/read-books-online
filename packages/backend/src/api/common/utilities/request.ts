@@ -17,6 +17,16 @@ const createRequestHelper = (req: Request, res: Response) => ({
 
     return query ? fromUrlParams(query) : {};
   },
+
+  setRefreshTokenCookie: (key: string, value: string, expires: Date): void => {
+    res.cookie(key, value, {
+      httpOnly: true,
+      sameSite: false, // allows CORS
+      secure: true,
+      signed: true,
+      expires,
+    });
+  },
 });
 
 type AsyncRequestHandlerResult =

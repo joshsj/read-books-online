@@ -13,10 +13,7 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
-import {
-  AuthTokenValue,
-  IIdentityService,
-} from "@backend/application/common/interfaces/identityService";
+import { IIdentityService, Tokens } from "@backend/application/common/interfaces/identityService";
 import {
   IRefreshTokenRepository,
   IUserRepository,
@@ -37,25 +34,30 @@ class IdentityService implements IIdentityService {
   ) {}
 
   async authenticate(): Promise<void> {
-    const value = await this.getAuthTokenValue();
+    const { authenticationTokenValue } = this.httpContextService.getCurrent();
+    ensure(!!authenticationTokenValue, new RBOError("authentication", invalidAuthToken));
+
     const { algorithm, audience, issuer, secret } = this.configuration.auth.jwt;
 
     return new Promise((resolve, reject) =>
-      jwt.verify(value, secret, { audience, issuer, algorithms: [algorithm] }, (err) =>
-        err ? reject(new RBOError("authentication", invalidAuthToken)) : resolve()
+      jwt.verify(
+        authenticationTokenValue,
+        secret,
+        { audience, issuer, algorithms: [algorithm] },
+        (err) => (err ? reject(new RBOError("authentication", invalidAuthToken)) : resolve())
       )
     );
   }
 
-  login(refresh: "refresh"): Promise<AuthTokenValue>;
-  login(account: AccountDto): Promise<AuthTokenValue>;
-  async login(accountOrRefresh: AccountDto | "refresh"): Promise<AuthTokenValue> {
+  login(refresh: "refresh"): Promise<Tokens>;
+  login(account: AccountDto): Promise<Tokens>;
+  async login(accountOrRefresh: AccountDto | "refresh"): Promise<Tokens> {
     return typeof accountOrRefresh === "object"
       ? this.loginFromDetails(accountOrRefresh)
       : this.loginFromRefresh();
   }
 
-  private async loginFromDetails({ username, password }: AccountDto): Promise<AuthTokenValue> {
+  private async loginFromDetails({ username, password }: AccountDto): Promise<Tokens> {
     const user = await this.userRepository.getByUsername(username);
 
     ensure(!!user, new RBOError("missing", incorrectUsernamePassword(username)));
@@ -69,15 +71,12 @@ class IdentityService implements IIdentityService {
     return this.configureTokens(user);
   }
 
-  private async loginFromRefresh(): Promise<AuthTokenValue> {
-    const refreshTokenValue = await this.getRefreshTokenCookie();
-
-    ensure(
-      typeof refreshTokenValue === "string" && !!refreshTokenValue.length,
-      new RBOError("authentication", noRefreshToken)
-    );
+  private async loginFromRefresh(): Promise<Tokens> {
+    const { refreshTokenValue } = this.httpContextService.getCurrent();
+    ensure(!!refreshTokenValue, new RBOError("authentication", noRefreshToken));
 
     const refreshToken = await this.refreshTokenRepository.getByValue(refreshTokenValue);
+
     ensure(!!refreshToken, new RBOError("authentication", invalidRefreshToken));
     ensure(new Date() < refreshToken.expires, new RBOError("authentication", expiredRefreshToken));
 
@@ -85,11 +84,9 @@ class IdentityService implements IIdentityService {
   }
 
   async logout(): Promise<void> {
-    this.setRefreshTokenCookie("expired", new Date(0));
+    const { refreshTokenValue } = this.httpContextService.getCurrent();
 
-    const refreshTokenValue = await this.getRefreshTokenCookie();
-
-    if (!(typeof refreshTokenValue === "string" && refreshTokenValue.length)) {
+    if (!refreshTokenValue) {
       return;
     }
 
@@ -102,7 +99,7 @@ class IdentityService implements IIdentityService {
     await this.refreshTokenRepository.delete(refreshToken._id);
   }
 
-  private async configureTokens(user: User): Promise<AuthTokenValue> {
+  private async configureTokens(user: User): Promise<Tokens> {
     const {
       auth: {
         expiresInMs,
@@ -122,7 +119,6 @@ class IdentityService implements IIdentityService {
 
     const method = existingId ? "update" : "insert";
     await this.refreshTokenRepository[method](refreshToken);
-    this.setRefreshTokenCookie(refreshToken.value, expires);
 
     const payload: JWTPayloadDto = {
       sub: user._id,
@@ -135,43 +131,23 @@ class IdentityService implements IIdentityService {
         payload,
         secret,
         { expiresIn: expiresInMs, audience, issuer, algorithm },
-        (_, token) => (token ? resolve(token) : reject(new RBOError("authentication")))
+        (_, authenticationTokenValue) =>
+          authenticationTokenValue
+            ? resolve({
+                authenticationTokenValue,
+                refreshToken,
+              })
+            : reject(new RBOError("authentication"))
       )
     );
   }
 
-  private async getAuthTokenValue(): Promise<AuthTokenValue> {
-    const { req } = this.httpContextService.getCurrent();
-
-    const value = req.headers.authorization?.split(" ")[1];
-    ensure(!!value, new RBOError("authentication", invalidAuthToken));
-
-    return value;
-  }
-
-  private async getRefreshTokenCookie(): Promise<unknown> {
-    const { req } = this.httpContextService.getCurrent();
-    const { refreshTokenKey } = this.configuration.server.cookie;
-
-    return req.signedCookies[refreshTokenKey];
-  }
-
-  private setRefreshTokenCookie(value: string, expires: Date): void {
-    const { res } = this.httpContextService.getCurrent();
-    const { cookie } = this.configuration.server;
-
-    res.cookie(cookie.refreshTokenKey, value, {
-      httpOnly: true,
-      sameSite: false, // allow CORS
-      secure: true,
-      signed: true,
-      expires,
-    });
-  }
-
   getCurrentUserId(): Promise<Id> {
     return new Promise(async (resolve, reject) => {
-      const payload = jwt.decode(await this.getAuthTokenValue(), { json: true });
+      const { authenticationTokenValue } = this.httpContextService.getCurrent();
+      ensure(!!authenticationTokenValue, new RBOError("authentication", invalidAuthToken));
+
+      const payload = jwt.decode(authenticationTokenValue, { json: true });
 
       if (!JWTPayloadDto.isValidSync(payload)) {
         return reject(new RBOError("authentication", invalidAuthToken));
