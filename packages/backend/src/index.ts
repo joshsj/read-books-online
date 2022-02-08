@@ -14,10 +14,12 @@ const main = async () => {
 
   await createMongoConnection();
 
-  new Server(
+  const server = new Server(
     container.resolve<ILogger>(Dependency.logger),
     container.resolve<IConfiguration>(Dependency.configuration)
-  ).start();
+  );
+
+  await server.start();
 };
 
 main();

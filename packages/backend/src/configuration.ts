@@ -2,11 +2,13 @@ import { IConfiguration } from "@backend/application/common/interfaces/configura
 import { Mode } from "@backend/application/common/interfaces/mode";
 import { JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
 import { ensure } from "@core/utilities";
-import { EnvArraySep, getEnv } from "@core/utilities/env";
+import { getEnv } from "@core/utilities/env";
+import path from "path";
 
 const EnvKeys = [
   "SERVER_PORT",
-  "SERVER_CORS_ORIGINS",
+  "SERVER_HTTPS_KEY_PATH",
+  "SERVER_HTTPS_CERT_PATH",
   "NODE_ENV",
   "MONGO_URI",
   "MONGO_DB_NAME",
@@ -47,7 +49,11 @@ const getConfiguration = (): IConfiguration => {
 
     server: {
       port: parseInt(env.SERVER_PORT),
-      cors: { origins: env.SERVER_CORS_ORIGINS.split(EnvArraySep) },
+
+      https: {
+        certPath: path.normalize(env.SERVER_HTTPS_CERT_PATH),
+        keyPath: path.normalize(env.SERVER_HTTPS_KEY_PATH),
+      },
 
       cookie: {
         secret: env.COOKIE_SECRET,

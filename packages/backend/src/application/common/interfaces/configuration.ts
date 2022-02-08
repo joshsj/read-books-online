@@ -1,5 +1,5 @@
-import { PositiveNumber, JWTAlgorithm } from "@backend/domain/common/constrainedTypes";
-import { object, string, InferType, array } from "yup";
+import { JWTAlgorithm, PositiveNumber } from "@backend/domain/common/constrainedTypes";
+import { InferType, object, string } from "yup";
 import { Mode } from "./mode";
 
 const IConfiguration = object({
@@ -22,7 +22,11 @@ const IConfiguration = object({
 
   server: object({
     port: PositiveNumber,
-    cors: object({ origins: array().of(string().strict().required()).strict().required().min(1) }),
+
+    https: object({
+      certPath: string().strict().required(),
+      keyPath: string().strict().required(),
+    }),
 
     cookie: object({
       secret: string().strict().required(),

@@ -11,11 +11,13 @@ import { ILogger } from "@backend/application/common/interfaces/logger";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Router } from "express";
+import { readFile } from "fs/promises";
+import { createServer, ServerOptions } from "https";
 
 class Server {
   constructor(private readonly logger: ILogger, private readonly configuration: IConfiguration) {}
 
-  start() {
+  async start() {
     const routes = Router()
       .use("/auth", authRoutes)
       .use("/user", userRoutes)
@@ -31,7 +33,7 @@ class Server {
       .use(cookieParser(this.configuration.server.cookie.secret))
       .use(
         cors({
-          origin: this.configuration.server.cors.origins,
+          origin: this.configuration.appUrl,
           credentials: true,
         })
       )
@@ -41,9 +43,16 @@ class Server {
       .use(missingRouteHandler)
       .use(errorHandler);
 
-    const { port } = this.configuration.server;
+    const { port, https } = this.configuration.server;
 
-    const server = app.listen(port, () => this.logger.log("server", `Listening on port ${port}`));
+    const serverOptions: ServerOptions = {
+      key: await readFile(https.keyPath),
+      cert: await readFile(https.certPath),
+    };
+
+    const server = createServer(serverOptions, app).listen(port, () =>
+      this.logger.log("server", `Listening on port ${port}`)
+    );
 
     return { server };
   }
