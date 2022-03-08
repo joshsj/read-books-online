@@ -6,6 +6,11 @@ import { RefreshToken, RefreshTokenValue } from "@backend/domain/entities/refres
 import { Ticket } from "@backend/domain/entities/ticket";
 import { User } from "@backend/domain/entities/user";
 
+type QueryResult<T> = {
+  items: T[];
+  total: number;
+};
+
 type IWritableRepository<T extends Entity> = {
   insert(entity: T): Promise<void>;
   update(entity: T): Promise<void>;
@@ -38,7 +43,7 @@ type IRefreshTokenRepository = IRepository<RefreshToken> & {
 };
 
 type ITicketRepository = IRepository<Ticket> & {
-  filtered(filter: TicketQuery): Promise<Ticket[]>;
+  query(query: TicketQuery): Promise<QueryResult<Ticket>>;
 };
 
 export {
@@ -48,4 +53,5 @@ export {
   IUserRepository,
   IRefreshTokenRepository,
   ITicketRepository,
+  QueryResult,
 };

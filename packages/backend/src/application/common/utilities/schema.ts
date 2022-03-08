@@ -11,4 +11,8 @@ const assertSchema = <T extends object>(obj: any, schema: ObjectSchema<T>): asse
 
 type AssertSchema = typeof assertSchema;
 
-export { assertSchema, AssertSchema };
+const keyOfSchema = <T>(schema: ObjectSchema<T>): Array<keyof T> =>
+  Object.keys(schema.fields) as Array<keyof T>;
+type KeyOfSchema = typeof keyOfSchema;
+
+export { assertSchema, AssertSchema, keyOfSchema, KeyOfSchema };

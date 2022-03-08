@@ -1,3 +1,4 @@
+import { QueryDto } from "@backend/application/common/dtos/queryDto";
 import { IRequestAuthorizer } from "@backend/application/common/interfaces/cqrs";
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ITicketRepository } from "@backend/application/common/interfaces/repository";
@@ -31,19 +32,19 @@ class GetTicketsQueryAuthorizer implements IRequestAuthorizer<GetTicketsRequest>
     }
 
     // prevent clients from filtering tickets from other
-    filter.userId = currentUser._id;
+    filter && (filter.userId = currentUser._id);
   }
 }
 
-class GetTicketsQueryHandler implements IQueryHandler<GetTicketsRequest, TicketDto[]> {
+class GetTicketsQueryHandler implements IQueryHandler<GetTicketsRequest, QueryDto<TicketDto>> {
   handles = "getTicketsRequest" as const;
 
   constructor(private readonly ticketRepository: ITicketRepository) {}
 
   async handle(request: GetTicketsRequest) {
-    const tickets = await this.ticketRepository.filtered(request);
+    const { items, total } = await this.ticketRepository.query(request);
 
-    return tickets.map(TicketDto.fromTicket);
+    return { items: items.map(TicketDto.fromTicket), total };
   }
 }
 

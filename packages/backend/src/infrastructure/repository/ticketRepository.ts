@@ -12,18 +12,26 @@ class TicketRepository extends MongoRepository<Ticket> implements ITicketReposit
 
   private readonly UsernameFields = ["created.by", "allocated.to", "authorized.by"] as const;
 
-  public async filtered({ filter }: TicketQuery) {
+  public async query({ filter, sortField, sortDirection }: TicketQuery) {
     const builder = new FilterBuilder<Ticket>();
 
-    if (filter.information) {
+    if (filter?.information) {
       builder.add("string", "information", filter.information);
     }
 
-    if (filter.userId) {
+    if (filter?.userId) {
       builder.add({ $or: this.UsernameFields.map((f) => ({ [f]: filter.userId })) });
     }
 
-    return this._filtered(builder.getFilter());
+    const sort =
+      sortField && sortDirection
+        ? {
+            field: sortField,
+            direction: sortDirection,
+          }
+        : undefined;
+
+    return await this._query({ filter: builder.build(), sort });
   }
 }
 

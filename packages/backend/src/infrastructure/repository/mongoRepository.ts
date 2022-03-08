@@ -1,8 +1,9 @@
 import { notFound } from "@backend/application/common/error/messages";
 import { RBOError } from "@backend/application/common/error/rboError";
-import { IRepository } from "@backend/application/common/interfaces/repository";
+import { IRepository, QueryResult } from "@backend/application/common/interfaces/repository";
 import { Entity, isEntity } from "@backend/domain/common/entity";
 import { Id, isId } from "@backend/domain/common/id";
+import { SortDirection as SortDirection } from "@backend/domain/constants/sortDirection";
 import { ReferenceData } from "@backend/domain/entities/referenceData";
 import { ensure } from "@core/utilities";
 import { FilterQuery, Model } from "mongoose";
@@ -18,10 +19,23 @@ type Associable<T> = {
     ? Associable<T[K]>
     : T[K];
 };
+type Query<T> = {
+  filter?: FilterQuery<T>;
+  sort?: {
+    field: keyof T | string;
+    direction: SortDirection;
+  };
+  page?: {
+    number: number;
+    size: number;
+  };
+};
 
 const arrayify = <T>(x: T | T[]): T[] => (Array.isArray(x) ? x : [x]);
 
 class MongoRepository<T extends Entity> implements IRepository<T> {
+  private readonly EscapePaginationValue = 0;
+
   constructor(protected readonly helper: ObjectSchema<T>, protected readonly model: Model<T>) {}
 
   get(): Promise<T[]>;
@@ -36,8 +50,18 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
     return await this.model.find(filter).lean<T[]>({ autopopulate: true }).exec();
   }
 
-  protected async _filtered(filter: FilterQuery<T>): Promise<T[]> {
-    return await this.model.find(filter).lean<T[]>({ autopopulate: true }).exec();
+  protected async _query({ filter, sort, page }: Query<T>): Promise<QueryResult<T>> {
+    return {
+      items: await this.model
+        .find(filter ?? {})
+        .sort(sort ? { [sort.field]: sort.direction } : {})
+        .skip(page ? page.number * page.size : this.EscapePaginationValue)
+        .limit(page ? page.size : this.EscapePaginationValue)
+        .lean<T[]>({ autopopulate: true })
+        .exec(),
+
+      total: await this.model.count().exec(),
+    };
   }
 
   async exists(_id: Id): Promise<boolean> {

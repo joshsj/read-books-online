@@ -23,6 +23,7 @@ const { ticketBusiness } = useBusiness();
 
 const table = ref({
   items: [] as TicketDto[],
+  total: 0,
   query: EmptyTicketQuery(),
 });
 
@@ -101,7 +102,8 @@ const getTickets = async () => {
     return;
   }
 
-  table.value.items = response;
+  table.value.items = response.items;
+  table.value.total = response.total;
 };
 
 const onCreateClick = () => {

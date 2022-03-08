@@ -126,7 +126,9 @@ class UpdateUserCommandHandler implements ICommandHandler<UpdateUserRequest> {
       return;
     }
 
-    const tickets = await this.ticketRepository.filtered({ filter: { userId: user._id } });
+    const tickets = await (
+      await this.ticketRepository.query({ filter: { userId: user._id } })
+    ).items;
 
     // delete created tickets without allocation
     await this.ticketRepository.delete(

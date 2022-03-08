@@ -16,7 +16,7 @@ class FilterBuilder<T> {
     Object.assign(this.filter, filter);
   }
 
-  getFilter() {
+  build() {
     return this.filter;
   }
 }

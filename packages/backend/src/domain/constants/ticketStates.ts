@@ -4,7 +4,7 @@ const AuthorizationStates = ["Purchase Approved", "Purchase Denied"] as const;
 
 type AuthorizationState = typeof AuthorizationStates[number];
 const AuthorizationState = mixed((x: any): x is AuthorizationState =>
-  AuthorizationStates.includes(x)
+  x ? AuthorizationStates.includes(x) : true
 );
 
 const ReviewStates = ["Information Incomplete", "Information Complete"] as const;
