@@ -1,6 +1,6 @@
 import { Id } from "@backend/domain/common/id";
 import { sortDirection } from "@backend/domain/constants/sortDirection";
-import { InferType, object, string } from "yup";
+import { InferType, number, object, string } from "yup";
 import { ticketField } from "./ticketField";
 
 const TicketQuery = object({
@@ -11,6 +11,9 @@ const TicketQuery = object({
 
   sortField: ticketField.defined(),
   sortDirection: sortDirection.defined(),
+
+  pageNumber: number(),
+  pageSize: number(),
 }).partial();
 
 type TicketQuery = InferType<typeof TicketQuery>;

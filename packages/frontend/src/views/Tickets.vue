@@ -14,7 +14,7 @@ import {
   TicketInformationModel,
   TicketPriceModel,
 } from "@frontend/utilities/forms";
-import { EmptyTicketQuery } from "@frontend/utilities/ticket";
+import { defaultTicketQuery } from "@frontend/utilities/ticket";
 import { FormContext } from "vee-validate";
 import { onMounted, ref } from "vue";
 
@@ -24,7 +24,7 @@ const { ticketBusiness } = useBusiness();
 const table = ref({
   items: [] as TicketDto[],
   total: 0,
-  query: EmptyTicketQuery(),
+  query: defaultTicketQuery(),
 });
 
 const modals = ref({
@@ -143,7 +143,10 @@ onMounted(getTickets);
         @click="onCreateClick" />
     </view-title>
 
-    <table-filters v-model:query="table.query" @change="getTickets" />
+    <table-filters
+      v-model:query="table.query"
+      :ticket-total="table.total"
+      @change="getTickets" />
 
     <ticket-table
       :tickets="table.items"

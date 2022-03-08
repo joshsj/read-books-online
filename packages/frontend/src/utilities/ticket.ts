@@ -1,4 +1,5 @@
 import { AuthorizationState, ReviewState, TicketState, TicketQuery } from "@client/models";
+import { PageSize } from "./constants";
 
 const DefaultVariant = "info";
 
@@ -20,6 +21,10 @@ const stateVariant = (state?: TicketState): string => {
 const terminalStateVariant = (state?: TerminalState) =>
   state ? TerminalStateVariants[state] : undefined;
 
-const EmptyTicketQuery = (): TicketQuery => ({ filter: {} });
+const defaultTicketQuery = (): TicketQuery => ({
+  filter: {},
+  pageNumber: 1,
+  pageSize: PageSize,
+});
 
-export { DefaultVariant, stateVariant, terminalStateVariant, EmptyTicketQuery };
+export { DefaultVariant, stateVariant, terminalStateVariant, defaultTicketQuery };

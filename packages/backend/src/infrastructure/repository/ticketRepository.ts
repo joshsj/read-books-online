@@ -12,7 +12,7 @@ class TicketRepository extends MongoRepository<Ticket> implements ITicketReposit
 
   private readonly UsernameFields = ["created.by", "allocated.to", "authorized.by"] as const;
 
-  public async query({ filter, sortField, sortDirection }: TicketQuery) {
+  public async query({ filter, sortField, sortDirection, pageNumber, pageSize }: TicketQuery) {
     const builder = new FilterBuilder<Ticket>();
 
     if (filter?.information) {
@@ -24,14 +24,11 @@ class TicketRepository extends MongoRepository<Ticket> implements ITicketReposit
     }
 
     const sort =
-      sortField && sortDirection
-        ? {
-            field: sortField,
-            direction: sortDirection,
-          }
-        : undefined;
+      sortField && sortDirection ? { field: sortField, direction: sortDirection } : undefined;
 
-    return await this._query({ filter: builder.build(), sort });
+    const page = pageNumber && pageSize ? { number: pageNumber, size: pageSize } : undefined;
+
+    return await this._query({ filter: builder.build(), sort, page });
   }
 }
 

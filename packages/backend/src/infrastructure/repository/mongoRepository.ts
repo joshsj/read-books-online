@@ -55,7 +55,7 @@ class MongoRepository<T extends Entity> implements IRepository<T> {
       items: await this.model
         .find(filter ?? {})
         .sort(sort ? { [sort.field]: sort.direction } : {})
-        .skip(page ? page.number * page.size : this.EscapePaginationValue)
+        .skip(page ? (page.number - 1) * page.size : this.EscapePaginationValue)
         .limit(page ? page.size : this.EscapePaginationValue)
         .lean<T[]>({ autopopulate: true })
         .exec(),

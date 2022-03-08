@@ -124,11 +124,7 @@ createApp(App)
 
     pagination: {
       override: true,
-      rootClass: ({}: string, { props }: { props: { rounded?: boolean } }) => {
-        const classes = ["pagination"];
-        props.rounded && classes.push("is-rounded");
-        return classes.join(" ");
-      },
+      rootClass: "pagination",
       sizeClass: "is-",
       simpleClass: "is-simple",
       linkClass: "pagination-link",
@@ -136,7 +132,7 @@ createApp(App)
       linkDisabledClass: "is-disabled",
       nextBtnClass: "pagination-next",
       prevBtnClass: "pagination-previous",
-      infoClass: "display-none",
+      infoClass: "mr-2",
     },
 
     switch: {
