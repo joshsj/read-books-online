@@ -122,7 +122,7 @@ const canSelectUser = computed(() =>
       simple
       :total="ticketTotal"
       :per-page="PageSize"
-      v-model:current="query.pageNumber"
+      :current="query.pageNumber"
       @update:current="
         query.pageNumber = $event;
         onChange(false);
