@@ -72,4 +72,4 @@ export const submittingPriceOtherTicket =
   "You cannot submit the price of a ticket which is allocated to another employee";
 
 export const messagingNotAssociatedToTicket =
-  "You cannot send messages about a ticket to which you are not associated";
+  "You cannot message about tickets to which you are not associated";

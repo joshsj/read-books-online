@@ -9,6 +9,7 @@ defineProps({
   altButtonText: { type: String, default: "Close" },
   altButtonVariant: { type: String, default: "" },
   altButtonDisabled: { type: Boolean, default: false },
+  altButtonHidden: { type: Boolean, default: false },
 
   loading: { type: Boolean, default: false },
 });
@@ -34,8 +35,12 @@ const close = () => {
 <template>
   <!-- TODO check why update:active doesn't emit on close -->
   <o-modal @close="close">
-    <header class="modal-card-head">
-      <p class="modal-card-title">{{ title }}</p>
+    <header class="modal-card-head level">
+      <p class="modal-card-title level-left">{{ title }}</p>
+
+      <div class="level-right">
+        <slot name="header" />
+      </div>
     </header>
 
     <section class="modal-card-body">
@@ -50,6 +55,7 @@ const close = () => {
         @click="onMainClick" />
 
       <o-button
+        v-show="!altButtonHidden"
         :label="altButtonText"
         :variant="altButtonVariant"
         :disabled="altButtonDisabled"

@@ -25,7 +25,7 @@ const { notify } = useInteractor();
 const users = ref<ReferenceDataDto[]>([]);
 
 const getUsers = async () => {
-  const response = await store.pageLoad(client.referenceData.get("user"));
+  const response = await store.page.load(client.referenceData.get("user"));
 
   if (isRBOError(response)) {
     notify(response);

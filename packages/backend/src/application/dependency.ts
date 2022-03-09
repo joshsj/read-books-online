@@ -25,6 +25,11 @@ import {
   SendMessageRequestValidator,
 } from "./message/commands/sendMessage";
 import {
+  GetMessagesQueryHandler,
+  GetMessagesRequestAuthorizer,
+  GetMessagesRequestValidator,
+} from "./message/queries/getMessages";
+import {
   GetReferenceDataQueryHandler,
   GetReferenceDataRequestValidator,
 } from "./referenceData/queries/getReferenceData";
@@ -171,6 +176,7 @@ const registerApplicationDependencies = () => {
     () => new GetUsersRequestValidator(),
     (c) => new UpdateUserRequestValidator(c.resolve(Dependency.userRepository)),
     (c) => new SendMessageRequestValidator(c.resolve(Dependency.ticketRepository)),
+    (c) => new GetMessagesRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -220,6 +226,11 @@ const registerApplicationDependencies = () => {
       ),
     (c) =>
       new SendMessageRequestAuthorizer(
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.identityService)
+      ),
+    (c) =>
+      new GetMessagesRequestAuthorizer(
         c.resolve(Dependency.ticketRepository),
         c.resolve(Dependency.identityService)
       ),
@@ -277,6 +288,7 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService),
         () => c.resolve(Dependency.cqrs)
       ),
+    (c) => new GetMessagesQueryHandler(c.resolve(Dependency.messageRepository)),
   ]);
 
   registerNotificationHandlers([

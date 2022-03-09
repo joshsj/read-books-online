@@ -9,10 +9,10 @@ const delayedRef =
 
 const fakeLoad = () =>
   new Promise<void>((resolve) => {
-    store.pageLoading = true;
+    store.page.loading = true;
 
     setTimeout(() => {
-      store.pageLoading = false;
+      store.page.loading = false;
       resolve();
     }, 150);
   });

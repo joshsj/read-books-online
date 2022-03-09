@@ -2,4 +2,6 @@ type Class<T, TParam extends any[]> = {
   new (...params: TParam): T;
 };
 
-export { Class };
+type Some<T> = T | T[];
+
+export { Class, Some };

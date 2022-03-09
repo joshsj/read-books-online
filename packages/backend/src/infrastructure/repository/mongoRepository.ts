@@ -6,10 +6,10 @@ import { Id, isId } from "@backend/domain/common/id";
 import { SortDirection as SortDirection } from "@backend/domain/constants/sortDirection";
 import { ReferenceData } from "@backend/domain/entities/referenceData";
 import { ensure } from "@core/utilities";
+import { Some } from "@core/utilities/types";
 import { FilterQuery, Model } from "mongoose";
 import { ObjectSchema, ValidationError } from "yup";
 
-type Some<T> = T | T[];
 type Associable<T> = {
   [K in keyof T]: T[K] extends Date
     ? T[K]

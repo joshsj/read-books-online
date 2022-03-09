@@ -39,3 +39,5 @@ export {
   TicketStates,
 } from "@backend/domain/constants/ticketStates";
 export { SendMessageRequest } from "@backend/application/message/commands/sendMessage";
+export { GetMessagesRequest } from "@backend/application/message/queries/getMessages";
+export { MessageDto } from "@backend/application/message/queries/messageDto";

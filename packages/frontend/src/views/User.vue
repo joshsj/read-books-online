@@ -23,7 +23,7 @@ const { userBusiness } = useBusiness();
 
 const user = ref<UserDto | undefined>();
 const getUser = async () => {
-  const response = await store.pageLoad(client.user.get(props.username));
+  const response = await store.page.load(client.user.get(props.username));
 
   if (isRBOError(response)) {
     notify(response);

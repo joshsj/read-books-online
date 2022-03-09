@@ -95,7 +95,7 @@ const priceModalRef = ref<
 >();
 
 const getTickets = async () => {
-  const response = await store.pageLoad(client.ticket.get(table.value.query));
+  const response = await store.page.load(client.ticket.get(table.value.query));
 
   if (isRBOError(response)) {
     notify(response);

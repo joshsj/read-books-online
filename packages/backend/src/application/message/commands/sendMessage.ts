@@ -12,6 +12,7 @@ import {
 import { DelayedDependency, Request } from "@backend/application/common/utilities/cqrs";
 import { Id, newId } from "@backend/domain/common/id";
 import { Message } from "@backend/domain/entities/message";
+import { isAssociatedToTicket } from "@backend/domain/entities/user";
 import { ICommandHandler } from "@core/cqrs/types/request";
 import { ICQRS } from "@core/cqrs/types/service";
 import { ensure } from "@core/utilities";
@@ -52,10 +53,8 @@ class SendMessageRequestAuthorizer implements IRequestAuthorizer<SendMessageRequ
     const ticket = (await this.ticketRepository.get(request.ticketId))!;
     const currentUser = await this.identityService.getCurrentUser();
 
-    const validIds = [ticket.created.by._id, ticket.allocated?.to._id, ticket.authorized?.by?._id];
-
     ensure(
-      validIds.includes(currentUser._id),
+      isAssociatedToTicket(currentUser, ticket),
       new RBOError("authorization", messagingNotAssociatedToTicket)
     );
   }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
-
 import { ref } from "vue";
 import { route } from "@frontend/router";
 import { store } from "@frontend/store";
 import { useLogin } from "@frontend/plugins/login";
+import Chat from "./views/Chat.vue";
+
+document.getElementsByTagName("html")[0]!.classList.add("has-navbar-fixed-top");
 
 const { logout, isLoggedIn } = useLogin();
 
@@ -77,7 +78,8 @@ const toggleNavbar = () =>
     <router-view />
   </main>
 
-  <o-loading :full-page="true" :active="store.pageLoading" />
+  <chat />
+  <o-loading :full-page="true" :active="store.page.loading" />
 </template>
 
 <style scoped lang="scss">

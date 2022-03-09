@@ -20,7 +20,7 @@ const { userBusiness } = useBusiness();
 const table = ref({ items: [] as UserDto[] });
 
 const getUsers = async () => {
-  const response = await store.pageLoad(client.user.get());
+  const response = await store.page.load(client.user.get());
 
   if (isRBOError(response)) {
     notify(response);

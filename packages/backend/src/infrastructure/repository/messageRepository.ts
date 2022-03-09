@@ -7,6 +7,10 @@ class MessageRepository extends MongoRepository<Message> implements IMessageRepo
   constructor() {
     super(Message, MessageModel);
   }
+
+  async getByTicketId(ticketId: string) {
+    return (await this._query({ filter: { ticket: ticketId } })).items;
+  }
 }
 
 export { MessageRepository };

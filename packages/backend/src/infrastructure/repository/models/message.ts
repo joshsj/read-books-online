@@ -12,6 +12,6 @@ const MessageSchema: Schema<Message> = {
   content: { type: String },
 };
 
-const MessageModel = model<Message>("Message", Message, MessageSchema);
+const MessageModel = model<Message>("Message", Message, MessageSchema, true);
 
 export { MessageSchema, MessageModel };

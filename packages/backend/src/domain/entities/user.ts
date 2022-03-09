@@ -2,6 +2,7 @@ import { string, object, array, InferType, boolean } from "yup";
 import { Role } from "@backend/domain/constants/role";
 import { Entity } from "@backend/domain/common/entity";
 import { Username } from "@backend/domain/common/constrainedTypes";
+import { Ticket } from "./ticket";
 
 const User = object({
   username: Username.defined(),
@@ -13,4 +14,7 @@ const User = object({
 
 type User = InferType<typeof User>;
 
-export { User };
+const isAssociatedToTicket = (user: User, ticket: Ticket): boolean =>
+  [ticket.created.by._id, ticket.allocated?.to._id, ticket.authorized?.by?._id].includes(user._id);
+
+export { User, isAssociatedToTicket };

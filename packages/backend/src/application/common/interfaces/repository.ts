@@ -47,7 +47,9 @@ type ITicketRepository = IRepository<Ticket> & {
   query(query: TicketQuery): Promise<QueryResult<Ticket>>;
 };
 
-type IMessageRepository = IRepository<Message>;
+type IMessageRepository = IRepository<Message> & {
+  getByTicketId(ticketId: Id): Promise<Message[]>;
+};
 
 export {
   IWritableRepository,

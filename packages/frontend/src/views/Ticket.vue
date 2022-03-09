@@ -81,7 +81,7 @@ const priceModal = reactive({
 const ticket = ref<TicketDto | undefined>();
 
 const getTicket = async () => {
-  const response = await store.pageLoad(client.ticket.get(props.ticketId));
+  const response = await store.page.load(client.ticket.get(props.ticketId));
 
   if (isRBOError(response)) {
     notify(response);
@@ -89,7 +89,7 @@ const getTicket = async () => {
     return;
   }
 
-  ticket.value = response;
+  ticket.value = store.chat.activeTicket = response;
 };
 
 const onCompleteClick = () => {
@@ -113,15 +113,22 @@ onMounted(getTicket);
 <template>
   <div v-if="ticket" class="container">
     <view-title title="Ticket">
-      <o-button
-        v-if="ticketBusiness.canCancel(ticket)"
-        variant="danger"
-        label="Cancel"
-        @click="
+      <div class="buttons">
+        <o-button
+          label="Chat"
+          variant="light"
+          @click="store.chat.active = true" />
+
+        <o-button
+          v-if="ticketBusiness.canCancel(ticket)"
+          variant="danger"
+          label="Cancel"
+          @click="
           ticketBusiness
             .cancel(ticket!)
             .then((x) => {x && router.push(route({ name: 'tickets' }))})
         " />
+      </div>
     </view-title>
 
     <div class="columns is-6">
