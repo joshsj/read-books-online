@@ -27,11 +27,6 @@ const IConfiguration = object({
       certPath: string().strict().required(),
       keyPath: string().strict().required(),
     }),
-
-    cookie: object({
-      secret: string().strict().required(),
-      refreshTokenKey: string().strict().required(),
-    }),
   }),
 
   email: object({

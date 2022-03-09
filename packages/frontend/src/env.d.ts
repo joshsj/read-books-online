@@ -11,6 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_API_URL: string;
   readonly VITE_HTTPS_KEY_PATH: string;
   readonly VITE_HTTPS_CERT_PATH: string;
+  readonly VITE_REFRESH_TOKEN_KEY: string;
 }
 
 interface ImportMeta {

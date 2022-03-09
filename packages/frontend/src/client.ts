@@ -17,7 +17,6 @@ const requester: RBOClientRequester = ({ endpoint, body, method }) => {
     method,
     body,
     headers,
-    credentials: "include",
   })
     .then((res) => res.text())
     .then((text) => JSON.parse(text, reviver))

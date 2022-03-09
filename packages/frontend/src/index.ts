@@ -1,6 +1,6 @@
 import App from "@frontend/App.vue";
 import { client, isRBOError } from "@frontend/client";
-import { toUserStore } from "@frontend/plugins/login";
+import { preserveTokens, preserveTokens } from "@frontend/plugins/login";
 import { createRouter } from "@frontend/router";
 import { store } from "@frontend/store";
 import "@frontend/styles.scss";
@@ -23,15 +23,18 @@ import {
   Checkbox,
 } from "@oruga-ui/oruga-next";
 import { createApp } from "vue";
+import { getCookie } from "./utilities/http";
 
 store.apiUrl = import.meta.env.VITE_API_URL;
 
 // attempt initial authentication using refresh token
-store.user = await (async () => {
-  const response = await client.auth.get();
+const refreshToken = getCookie(import.meta.env.VITE_REFRESH_TOKEN_KEY);
 
-  return isRBOError(response) ? undefined : toUserStore(response.token);
-})();
+if (refreshToken) {
+  const response = await client.auth.get(refreshToken);
+
+  !isRBOError(response) && preserveTokens(response);
+}
 
 createApp(App)
   .use(createRouter())

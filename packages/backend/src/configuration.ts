@@ -14,8 +14,6 @@ const EnvKeys = [
   "MONGO_DB_NAME",
   "HASHING_SALT_ROUNDS",
   "AUTH_EXPIRES_IN_MS",
-  "COOKIE_SECRET",
-  "COOKIE_REFRESH_TOKEN_KEY",
   "JWT_SECRET",
   "JWT_ALGORITHM",
   "JWT_ISSUER",
@@ -53,11 +51,6 @@ const getConfiguration = (): IConfiguration => {
       https: {
         certPath: path.normalize(env.SERVER_HTTPS_CERT_PATH),
         keyPath: path.normalize(env.SERVER_HTTPS_KEY_PATH),
-      },
-
-      cookie: {
-        secret: env.COOKIE_SECRET,
-        refreshTokenKey: env.COOKIE_REFRESH_TOKEN_KEY,
       },
     },
 

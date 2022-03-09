@@ -1,18 +1,13 @@
+import { AccountDto } from "@backend/application/common/dtos/accountDto";
 import { Id } from "@backend/domain/common/id";
 import { User } from "@backend/domain/entities/user";
-import { AccountDto } from "@backend/application/common/dtos/accountDto";
-import { RefreshToken } from "@backend/domain/entities/refreshToken";
+import { TokensDto } from "../dtos/tokensDto";
 
-type AuthTokenValue = string;
-
-type Tokens = {
-  authenticationTokenValue: AuthTokenValue;
-  refreshToken: RefreshToken;
-};
+type AuthenticationTokenValue = string;
 
 type IIdentityService = {
-  login(account: AccountDto): Promise<Tokens>;
-  login(refresh: "refresh"): Promise<Tokens>;
+  login(account: AccountDto): Promise<TokensDto>;
+  login(refresh: "refresh"): Promise<TokensDto>;
 
   logout(): Promise<void>;
 
@@ -22,4 +17,4 @@ type IIdentityService = {
   getCurrentUser(): Promise<User>;
 };
 
-export { IIdentityService, AuthTokenValue, Tokens };
+export { IIdentityService, AuthenticationTokenValue };

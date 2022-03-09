@@ -33,7 +33,7 @@ const getClient = () => {
       );
     }
 
-    authenticationToken = response.token;
+    authenticationToken = response.authentication.value;
   };
 
   const unauthenticate = (): void => (authenticationToken = undefined);

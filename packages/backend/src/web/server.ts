@@ -9,7 +9,6 @@ import { authRoutes } from "@backend/web/api/routes/auth";
 import { referenceDataRoutes } from "@backend/web/api/routes/referenceData";
 import { ticketRoutes } from "@backend/web/api/routes/ticket";
 import { userRoutes } from "@backend/web/api/routes/user";
-import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express, { Express, Router } from "express";
 import { readFile } from "fs/promises";
@@ -28,10 +27,7 @@ class Server {
   async start(): Promise<{ expressApp: Express; socketServer: IoServer }> {
     const { https, port } = this.configuration.server;
 
-    const cors: CorsOptions = {
-      origin: this.configuration.appUrl,
-      credentials: true,
-    };
+    const cors: CorsOptions = { origin: this.configuration.appUrl };
     const serverOptions: ServerOptions = {
       key: await readFile(https.keyPath),
       cert: await readFile(https.certPath),
@@ -61,7 +57,6 @@ class Server {
 
     return express()
       .use(express.json({ strict: true }))
-      .use(cookieParser(this.configuration.server.cookie.secret))
       .use(cors(corsOptions))
       .use(httpContextServiceProvider)
       .use(requestLogger)

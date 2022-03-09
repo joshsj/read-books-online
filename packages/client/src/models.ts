@@ -1,7 +1,7 @@
 export { AccountDto } from "@backend/application/common/dtos/accountDto";
 export { JWTPayloadDto } from "@backend/application/common/dtos/jwtPayloadDto";
 export { QueryDto } from "@backend/application/common/dtos/queryDto";
-export { TokenDto } from "@backend/application/common/dtos/tokenDto";
+export type { TokensDto } from "@backend/application/common/dtos/tokensDto";
 export { BriefUserDto } from "@backend/application/common/dtos/userDto";
 export { ReferenceDataDto } from "@backend/application/referenceData/queries/referenceDataDto";
 export { AllocateTicketRequest } from "@backend/application/ticket/commands/allocateTicket";

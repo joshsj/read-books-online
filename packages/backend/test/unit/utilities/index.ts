@@ -23,10 +23,6 @@ const createConfiguration = (): IConfiguration => ({
 
   server: {
     port: 1,
-    cookie: {
-      secret: "secret",
-      refreshTokenKey: "refreshTokenKey",
-    },
     https: {
       keyPath: ".",
       certPath: ".",

@@ -12,7 +12,7 @@ import {
   SubmitTicketPriceRequest,
   TicketDto,
   TicketQuery,
-  TokenDto,
+  TokensDto,
   UpdateUserRequest,
   UserDto,
   Username,
@@ -27,8 +27,8 @@ type IUserClient = {
 };
 
 type IAuthClient = {
-  auth: Endpoint<"get", void, TokenDto> &
-    Endpoint<"post", AccountDto, TokenDto> &
+  auth: Endpoint<"get", string, TokensDto> &
+    Endpoint<"post", AccountDto, TokensDto> &
     Endpoint<"delete">;
 };
 

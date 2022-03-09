@@ -1,12 +1,13 @@
 import { RefreshTokenValue } from "@backend/domain/entities/refreshToken";
-import { AuthTokenValue } from "./identityService";
+import { AuthenticationTokenValue } from "./identityService";
 
 type IHttpContext = Readonly<{
   type: "http" | "socket";
   id: number;
-  authenticationTokenValue: AuthTokenValue | undefined;
+}> & {
+  authenticationTokenValue: AuthenticationTokenValue | undefined;
   refreshTokenValue: RefreshTokenValue | undefined;
-}>;
+};
 
 type IHttpContextService = { getCurrent(): IHttpContext };
 

@@ -1,5 +1,6 @@
 import { AccountDto } from "@backend/application/common/dtos/accountDto";
 import { JWTPayloadDto } from "@backend/application/common/dtos/jwtPayloadDto";
+import { TokensDto } from "@backend/application/common/dtos/tokensDto";
 import {
   expiredRefreshToken,
   incorrectUsernamePassword,
@@ -13,7 +14,7 @@ import { RBOError } from "@backend/application/common/error/rboError";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { IHashingService } from "@backend/application/common/interfaces/hashingService";
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
-import { IIdentityService, Tokens } from "@backend/application/common/interfaces/identityService";
+import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import {
   IRefreshTokenRepository,
   IUserRepository,
@@ -49,15 +50,15 @@ class IdentityService implements IIdentityService {
     );
   }
 
-  login(refresh: "refresh"): Promise<Tokens>;
-  login(account: AccountDto): Promise<Tokens>;
-  async login(accountOrRefresh: AccountDto | "refresh"): Promise<Tokens> {
+  login(refresh: "refresh"): Promise<TokensDto>;
+  login(account: AccountDto): Promise<TokensDto>;
+  async login(accountOrRefresh: AccountDto | "refresh"): Promise<TokensDto> {
     return typeof accountOrRefresh === "object"
       ? this.loginFromDetails(accountOrRefresh)
       : this.loginFromRefresh();
   }
 
-  private async loginFromDetails({ username, password }: AccountDto): Promise<Tokens> {
+  private async loginFromDetails({ username, password }: AccountDto): Promise<TokensDto> {
     const user = await this.userRepository.getByUsername(username);
 
     ensure(!!user, new RBOError("missing", incorrectUsernamePassword(username)));
@@ -71,7 +72,7 @@ class IdentityService implements IIdentityService {
     return this.configureTokens(user);
   }
 
-  private async loginFromRefresh(): Promise<Tokens> {
+  private async loginFromRefresh(): Promise<TokensDto> {
     const { refreshTokenValue } = this.httpContextService.getCurrent();
     ensure(!!refreshTokenValue, new RBOError("authentication", noRefreshToken));
 
@@ -99,7 +100,7 @@ class IdentityService implements IIdentityService {
     await this.refreshTokenRepository.delete(refreshToken._id);
   }
 
-  private async configureTokens(user: User): Promise<Tokens> {
+  private async configureTokens(user: User): Promise<TokensDto> {
     const {
       auth: {
         expiresInMs,
@@ -134,8 +135,11 @@ class IdentityService implements IIdentityService {
         (_, authenticationTokenValue) =>
           authenticationTokenValue
             ? resolve({
-                authenticationTokenValue,
-                refreshToken,
+                authentication: { value: authenticationTokenValue },
+                refresh: {
+                  value: refreshToken.value,
+                  expires: refreshToken.expires,
+                },
               })
             : reject(new RBOError("authentication"))
       )
