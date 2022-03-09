@@ -30,6 +30,8 @@ const socket = {
       socket.send(msg);
     });
 
+    socket.on("message", console.log);
+
     socket.connect();
   },
 

@@ -6,23 +6,20 @@ import { registerInfrastructureDependencies } from "@backend/infrastructure/depe
 import { createMongoConnection } from "@backend/infrastructure/repository/connection";
 import { Server } from "@backend/web/server";
 import { container } from "tsyringe";
-import { MessageNotificationHandler } from "./web/socket/handlers/messageNotificationHandler";
+import { registerWebDependencies } from "@backend/web/dependency";
 
 const main = async () => {
   registerApplicationDependencies();
   registerInfrastructureDependencies();
+  registerWebDependencies();
   registerInitDependencies();
 
   await createMongoConnection();
 
-  const { socketServer } = await new Server(
+  await new Server(
     container.resolve<ILogger>(Dependency.logger),
     container.resolve<IConfiguration>(Dependency.configuration)
   ).start();
-
-  container.register(Dependency.notificationHandler, {
-    useFactory: () => new MessageNotificationHandler(socketServer),
-  });
 };
 
 main();

@@ -106,6 +106,8 @@ const Dependency = toDependencies([
   "requestValidator",
   "requestAuthorizer",
   "notificationHandler",
+  // socket
+  "sockets",
 ]);
 
 const registerBehaviors = () => {
