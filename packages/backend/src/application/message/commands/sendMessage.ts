@@ -84,20 +84,9 @@ class SendMessageCommandHandler implements ICommandHandler<SendMessageRequest> {
 
     await this.messageRepository.insert(message);
 
-    const recipientIds = [
-      ticket.allocated?.to._id,
-      ticket.authorized?.by?._id,
-      ticket.created.by._id,
-    ].filter((x): x is string => (x ? x !== from._id : false));
-
-    if (!recipientIds.length) {
-      return;
-    }
-
     const notification: MessageNotification = {
       notificationName: "messageNotification",
-      recipientIds,
-      content,
+      messageId: message._id,
     };
 
     await this.cqrs().publish(notification);

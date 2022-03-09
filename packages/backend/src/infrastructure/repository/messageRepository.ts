@@ -9,7 +9,12 @@ class MessageRepository extends MongoRepository<Message> implements IMessageRepo
   }
 
   async getByTicketId(ticketId: string) {
-    return (await this._query({ filter: { ticket: ticketId } })).items;
+    return (
+      await this._query({
+        filter: { ticket: ticketId },
+        sort: { field: "at", direction: "asc" },
+      })
+    ).items;
   }
 }
 

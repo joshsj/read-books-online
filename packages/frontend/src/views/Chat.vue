@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { store } from "@frontend/store";
-import { MessageDto, BriefUserDto } from "@client/models";
+import { BriefUserDto, MessageDto } from "@client/models";
+import { formatDate } from "@core/utilities/date";
 import RboModal from "@frontend/components/general/Modal.vue";
-import { computed } from "vue";
 import { socket } from "@frontend/socket";
+import { store } from "@frontend/store";
+import { computed, ref } from "vue";
 
-const refresh = () =>
-  socket.send({
-    requestName: "getMessagesRequest",
-    ticketId: store.chat.activeTicket?._id,
-  });
+const ticketId = computed(() => store.chat.activeTicket?._id);
+const newMessage = ref("");
+const searchQuery = ref("");
+const messagesContainer = ref<HTMLDivElement>();
+const scrollToLatestMessage = () =>
+  messagesContainer.value?.scrollTo({ top: Number.MAX_SAFE_INTEGER });
 
 const messages = computed((): MessageDto[] => {
   const ticketId = store.chat.activeTicket?._id;
@@ -20,8 +22,25 @@ const messages = computed((): MessageDto[] => {
 
   const messages = store.chat.messages[ticketId];
 
-  return messages ?? [];
+  if (!messages) {
+    return [];
+  }
+
+  return messages;
 });
+
+const sendMessage = () => {
+  socket.send({
+    requestName: "sendMessageRequest",
+    content: newMessage.value,
+    ticketId: ticketId.value,
+  });
+
+  newMessage.value = "";
+  scrollToLatestMessage();
+};
+
+const isOwnMessage = (from: BriefUserDto) => from._id === store.user?._id;
 </script>
 
 <template>
@@ -32,38 +51,73 @@ const messages = computed((): MessageDto[] => {
     :alt-button-hidden="true"
     v-model:active="store.chat.active">
     <template #header>
-      <o-button variant="success" @click="refresh" icon-right="refresh" />
+      <o-input placeholder="Search" v-model="searchQuery" icon="search" />
     </template>
 
-    <div
-      v-for="{ at, content, from } in messages"
-      :key="at"
-      class="message-container"
-      :class="{
-        'is-justify-content-flex-end': from._id === store.user?._id,
-      }">
-      <div class="message is-small">
-        <div class="message-header">{{ from.username }}</div>
-        <div class="message-body">{{ content }}</div>
+    <div id="messages-container" ref="messagesContainer">
+      <div
+        v-for="{ at, content, from } in messages"
+        :key="at"
+        class="notification-container"
+        :class="{
+          'is-justify-content-flex-end': isOwnMessage(from),
+        }">
+        <div
+          class="notification is-size-7"
+          :class="{
+            'is-warning': searchQuery
+              ? content.includes(searchQuery)
+              : undefined,
+          }">
+          <o-tooltip
+            :label="formatDate(at, 'full')"
+            :position="isOwnMessage(from) ? 'left' : 'right'">
+            <span v-if="!isOwnMessage(from)" class="has-text-weight-medium">
+              {{ from.username }}:
+            </span>
+
+            {{ content }}
+          </o-tooltip>
+        </div>
       </div>
     </div>
 
     <div v-if="!messages.length" class="notification is-info is-light">
       No messages
     </div>
+
+    <form @submit.prevent="sendMessage">
+      <div class="is-flex-grow-1">
+        <o-input v-model="newMessage" placeholder="Message" required />
+      </div>
+
+      <o-button native-type="submit" label="Send" variant="info" class="ml-2" />
+    </form>
   </rbo-modal>
 </template>
 
 <style scoped lang="scss">
 @import "bulma/bulma.sass";
 
-.message-container {
-  @extend .is-flex;
-  @extend .is-justify-content-flex-start;
-  @extend .mb-4;
+// fixed heights for scrollable messages & static message box
+#messages-container {
+  overflow-y: auto;
+  height: calc(100% - 3.5em);
 }
 
-.message {
+form {
+  @extend .is-flex;
+  @extend .is-align-items-flex-end;
+  height: 3.5em;
+}
+
+.notification-container {
+  @extend .is-flex;
+  @extend .is-justify-content-flex-start;
+  @extend .mb-3;
+}
+
+.notification {
   max-width: 75%;
 }
 </style>

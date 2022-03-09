@@ -15,6 +15,7 @@ import express, { Express, Router } from "express";
 import { readFile } from "fs/promises";
 import { createServer as createHttpServer, Server as HttpServer, ServerOptions } from "https";
 import { Server as IoServer } from "socket.io";
+import socketIoParser from "socket.io-msgpack-parser";
 import { container as defaultContainer } from "tsyringe";
 import { authenticator } from "./socket/common/middlewares/authenticator";
 import { configurePerSocketContainer } from "./socket/common/middlewares/configureContainer";
@@ -70,7 +71,7 @@ class Server {
   }
 
   private setupSocket(httpServer: HttpServer, cors: CorsOptions): SocketServer {
-    const server: SocketServer = new IoServer(httpServer, { cors });
+    const server: SocketServer = new IoServer(httpServer, { cors, parser: socketIoParser });
 
     const serverContainer = defaultContainer.register<Socket[]>(Dependency.sockets, {
       useFactory: () => [...server.sockets.sockets.values()],

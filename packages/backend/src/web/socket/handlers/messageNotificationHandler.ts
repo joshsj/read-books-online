@@ -1,7 +1,9 @@
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
+import { IMessageRepository } from "@backend/application/common/interfaces/repository";
 import { Dependency } from "@backend/application/dependency";
 import { MessageNotification } from "@backend/application/message/notifications/message";
-import { Id } from "@backend/domain/common/id";
+import { MessageDto } from "@backend/application/message/queries/messageDto";
+import { Id, isId } from "@backend/domain/common/id";
 import { INotificationHandler } from "@core/cqrs/types/notification";
 import { DependencyContainer } from "tsyringe";
 import { Socket } from "../common/utilities/types";
@@ -9,30 +11,32 @@ import { Socket } from "../common/utilities/types";
 class MessageNotificationHandler implements INotificationHandler<MessageNotification> {
   handles = "messageNotification" as const;
 
-  constructor(private readonly sockets: Socket[]) {}
+  constructor(
+    private readonly sockets: Socket[],
+    private readonly messageRepository: IMessageRepository
+  ) {}
 
-  async handle({ recipientIds, content }: MessageNotification) {
-    for (const socket of this.sockets) {
-      if (!socket.data.container) {
-        continue;
-      }
+  async handle({ messageId }: MessageNotification) {
+    const message = (await this.messageRepository.get(messageId))!;
+    const messageDto = MessageDto.fromMessage(message);
 
-      for (const recipientId of recipientIds) {
-        if (!(await this.isRecipient(socket.data.container, recipientId))) {
-          continue;
-        }
+    const recipientIds = [
+      message.ticket.created?.by._id,
+      message.ticket.allocated?.to._id,
+      message.ticket.authorized?.by?._id,
+    ].filter(isId);
 
-        socket.send({ msg: content });
-      }
-    }
+    this.sockets
+      .filter(({ data: { container } }) => container && this.isRecipient(container, recipientIds))
+      .forEach((s) => s.send(messageDto));
   }
 
-  private async isRecipient(container: DependencyContainer, recipientId: Id): Promise<boolean> {
+  private async isRecipient(container: DependencyContainer, recipientIds: Id[]): Promise<boolean> {
     const socketUserId = await container
       .resolve<IIdentityService>(Dependency.identityService)
       .getCurrentUserId();
 
-    return recipientId === socketUserId;
+    return recipientIds.includes(socketUserId);
   }
 }
 
