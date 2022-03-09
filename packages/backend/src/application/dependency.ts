@@ -20,6 +20,11 @@ import { toDependencies } from "@core/utilities/dependency";
 import { container, FactoryProvider, InjectionToken } from "tsyringe";
 import { IRequestAuthorizer, IRequestValidator } from "./common/interfaces/cqrs";
 import {
+  SendMessageCommandHandler,
+  SendMessageRequestAuthorizer,
+  SendMessageRequestValidator,
+} from "./message/commands/sendMessage";
+import {
   GetReferenceDataQueryHandler,
   GetReferenceDataRequestValidator,
 } from "./referenceData/queries/getReferenceData";
@@ -93,6 +98,7 @@ const Dependency = toDependencies([
   "userRepository",
   "refreshTokenRepository",
   "ticketRepository",
+  "messageRepository",
   // cqrs
   "cqrs",
   "requestHandler",
@@ -162,6 +168,7 @@ const registerApplicationDependencies = () => {
     (c) => new GetUserRequestValidator(c.resolve(Dependency.userRepository)),
     () => new GetUsersRequestValidator(),
     (c) => new UpdateUserRequestValidator(c.resolve(Dependency.userRepository)),
+    (c) => new SendMessageRequestValidator(c.resolve(Dependency.ticketRepository)),
   ]);
 
   registerAuthorizers([
@@ -209,6 +216,11 @@ const registerApplicationDependencies = () => {
         c.resolve(Dependency.identityService),
         c.resolve(Dependency.userRepository)
       ),
+    (c) =>
+      new SendMessageRequestAuthorizer(
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.identityService)
+      ),
   ]);
 
   registerRequestHandlers([
@@ -255,6 +267,13 @@ const registerApplicationDependencies = () => {
       new UpdateUserCommandHandler(
         c.resolve(Dependency.userRepository),
         c.resolve(Dependency.ticketRepository)
+      ),
+    (c) =>
+      new SendMessageCommandHandler(
+        c.resolve(Dependency.messageRepository),
+        c.resolve(Dependency.ticketRepository),
+        c.resolve(Dependency.identityService),
+        () => c.resolve(Dependency.cqrs)
       ),
   ]);
 

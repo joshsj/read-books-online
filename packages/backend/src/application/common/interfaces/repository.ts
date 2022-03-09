@@ -1,6 +1,7 @@
 import { TicketQuery } from "@backend/application/ticket/queries/ticketQuery";
 import { Entity } from "@backend/domain/common/entity";
 import { Id } from "@backend/domain/common/id";
+import { Message } from "@backend/domain/entities/message";
 import { ReferenceData } from "@backend/domain/entities/referenceData";
 import { RefreshToken, RefreshTokenValue } from "@backend/domain/entities/refreshToken";
 import { Ticket } from "@backend/domain/entities/ticket";
@@ -46,12 +47,15 @@ type ITicketRepository = IRepository<Ticket> & {
   query(query: TicketQuery): Promise<QueryResult<Ticket>>;
 };
 
+type IMessageRepository = IRepository<Message>;
+
 export {
   IWritableRepository,
   IReadableRepository,
   IRepository,
+  QueryResult,
   IUserRepository,
   IRefreshTokenRepository,
   ITicketRepository,
-  QueryResult,
+  IMessageRepository,
 };

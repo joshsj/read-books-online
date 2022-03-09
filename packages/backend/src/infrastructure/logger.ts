@@ -10,14 +10,17 @@ class Logger implements ILogger {
   constructor(private readonly httpContextService?: IHttpContextService) {}
 
   log(context: ILoggerContext, data: any, ...rest: any[]) {
-    const header =
-      bracket(context) +
-      (this.httpContextService
-        ? ` ${bracket("id:" + this.httpContextService.getCurrent().id.toString())}`
-        : "");
+    const headers: string[] = [context];
+
+    if (this.httpContextService) {
+      const { id, type } = this.httpContextService.getCurrent();
+
+      headers.push(type);
+      headers.push(`ID: ${id}`);
+    }
 
     rest.unshift(data);
-    rest.unshift(header);
+    rest.unshift(headers.map(bracket).join(" "));
 
     console.log(rest.map(pretty).join(EOL) + EOL);
   }

@@ -4,6 +4,7 @@ import { IHttpContextService } from "@backend/application/common/interfaces/http
 import { IIdentityService } from "@backend/application/common/interfaces/identityService";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import {
+  IMessageRepository,
   IRefreshTokenRepository,
   ITicketRepository,
   IUserRepository,
@@ -15,6 +16,7 @@ import { Logger } from "@backend/infrastructure/logger";
 import { RefreshTokenRepository } from "@backend/infrastructure/repository/refreshTokenRepository";
 import { UserRepository } from "@backend/infrastructure/repository/userRepository";
 import { container } from "tsyringe";
+import { MessageRepository } from "./repository/messageRepository";
 import { TicketRepository } from "./repository/ticketRepository";
 
 const registerInfrastructureDependencies = () => {
@@ -49,6 +51,9 @@ const registerInfrastructureDependencies = () => {
     })
     .register<ITicketRepository>(Dependency.ticketRepository, {
       useValue: new TicketRepository(),
+    })
+    .register<IMessageRepository>(Dependency.messageRepository, {
+      useValue: new MessageRepository(),
     });
 };
 

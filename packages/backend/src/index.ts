@@ -1,11 +1,12 @@
-import { Server } from "@backend/api/server";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
 import { ILogger } from "@backend/application/common/interfaces/logger";
 import { Dependency, registerApplicationDependencies } from "@backend/application/dependency";
 import { registerInitDependencies } from "@backend/dependency";
 import { registerInfrastructureDependencies } from "@backend/infrastructure/dependency";
 import { createMongoConnection } from "@backend/infrastructure/repository/connection";
+import { Server } from "@backend/web/server";
 import { container } from "tsyringe";
+import { MessageNotificationHandler } from "./web/socket/handlers/messageNotificationHandler";
 
 const main = async () => {
   registerApplicationDependencies();
@@ -14,12 +15,14 @@ const main = async () => {
 
   await createMongoConnection();
 
-  const server = new Server(
+  const { socketServer } = await new Server(
     container.resolve<ILogger>(Dependency.logger),
     container.resolve<IConfiguration>(Dependency.configuration)
-  );
+  ).start();
 
-  await server.start();
+  container.register(Dependency.notificationHandler, {
+    useFactory: () => new MessageNotificationHandler(socketServer),
+  });
 };
 
 main();

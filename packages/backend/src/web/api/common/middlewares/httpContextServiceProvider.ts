@@ -1,7 +1,7 @@
 import { IHttpContextService } from "@backend/application/common/interfaces/httpContextService";
 import { Dependency } from "@backend/application/dependency";
 import { HttpContextService } from "@backend/infrastructure/httpContextService";
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { Handler } from "express";
 import { container } from "tsyringe";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";
@@ -20,6 +20,7 @@ const httpContextServiceProvider: Handler = handleAsync(
     requestContainer.register<IHttpContextService>(Dependency.httpContextService, {
       useFactory: () =>
         new HttpContextService({
+          type: "http",
           id: contexts,
           authenticationTokenValue,
           refreshTokenValue:

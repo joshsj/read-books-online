@@ -38,3 +38,4 @@ export {
   TicketState,
   TicketStates,
 } from "@backend/domain/constants/ticketStates";
+export { SendMessageRequest } from "@backend/application/message/commands/sendMessage";

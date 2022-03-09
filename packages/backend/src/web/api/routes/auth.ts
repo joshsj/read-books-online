@@ -1,4 +1,4 @@
-import { handleAsync } from "@backend/api/common/utilities/request";
+import { handleAsync } from "@backend/web/api/common/utilities/request";
 import { AccountDto } from "@backend/application/common/dtos/accountDto";
 import { TokenDto } from "@backend/application/common/dtos/tokenDto";
 import { IConfiguration } from "@backend/application/common/interfaces/configuration";

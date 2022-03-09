@@ -1,5 +1,6 @@
 import { Id, Role } from "@client/models";
-import { reactive, UnwrapNestedRefs } from "vue";
+import { reactive, UnwrapNestedRefs, watch } from "vue";
+import { socket } from "./socket";
 
 type UserStore = Readonly<{
   authenticationToken: string;
@@ -28,5 +29,10 @@ const store: UnwrapNestedRefs<Store> = reactive<Store>({
   apiUrl: undefined,
   user: undefined,
 });
+
+watch(
+  () => store.user,
+  (x) => socket[x ? "open" : "close"]()
+);
 
 export { store, Store, UserStore };

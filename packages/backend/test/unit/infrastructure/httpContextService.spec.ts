@@ -9,6 +9,7 @@ describe("HTTP Context Service", () => {
 
       const sut = new HttpContextService({
         id: 0,
+        type: "http",
         authenticationTokenValue,
         refreshTokenValue,
       });
