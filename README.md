@@ -6,7 +6,7 @@ A university project, built with a full JS stack.
 
 Source code for the application
 
-### /packages/core
+### /core
 
 Functionality available to all other projects:
 
@@ -14,7 +14,7 @@ Functionality available to all other projects:
 - Utility functions
 - Unit tests
 
-### /packages/backend
+### /backend
 
 Modelled on Jason Taylor's
 [Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture#overview):
@@ -28,7 +28,7 @@ Modelled on Jason Taylor's
 - Error handling
 - Unit & integration tests
 
-### /packages/client
+### /client
 
 Middleman between the /backend and /frontend:
 
@@ -37,7 +37,7 @@ Middleman between the /backend and /frontend:
 - Javascript Proxy provider for the API type definition
 - Unit tests
 
-### /packages/frontend
+### /frontend
 
 Single-page application served as a website:
 
