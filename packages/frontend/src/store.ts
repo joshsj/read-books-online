@@ -48,8 +48,6 @@ const store: UnwrapNestedRefs<Store> = reactive<Store>({
 
     messages: {},
     updateMessages: (messages) => {
-      console.log(messages);
-
       // overwrite
       if (Array.isArray(messages)) {
         // extract from first ticket
