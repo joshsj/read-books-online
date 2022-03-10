@@ -2,14 +2,7 @@
 
 A university project, built with a full JS stack.
 
-## Directory Structure
-
-### /docs
-
-- Notes
-- Assignment brief
-
-### /packages
+## /packages Structure
 
 Source code for the application
 
