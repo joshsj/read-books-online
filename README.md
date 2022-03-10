@@ -55,9 +55,9 @@ Single-page application served as a website:
 | --------------------- | ----------------------------------- |
 | module-alias          | Import path aliasing                |
 | tsyringe              | Dependency Injection                |
+| dotenv                | Environment variables               |
 | **Backend**           |
 | express               | API server                          |
-| dotenv                | Environment variables               |
 | bcrypt                | Password encryption                 |
 | jsonwebtoken          | JWTs                                |
 | mongoose              | MongoDB interaction                 |
