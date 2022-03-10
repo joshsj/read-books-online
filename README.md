@@ -197,7 +197,7 @@ example, to run the backend unit tests:
 4. Run `npm run test:unit`
 
 **Note:** before running integration tests, ensure the users
-specified in the .env file have been set up.
+specified in the .env file must exist.
 
 ## Resources
 
