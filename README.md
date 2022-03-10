@@ -151,8 +151,7 @@ following case-sensitive key-value pairs.
 | `VITE_HTTPS_KEY_PATH`                  | Path to HTTPS key file                                                                         | C:/Projects/https-cert/server.key                                                       |
 | `VITE_HTTPS_CERT_PATH`                 | Path to HTTPS key file                                                                         | C:/Projects/https-cert/server.cert                                                      |
 | `VITE_REFRESH_TOKEN_KEY`               | Identifier for the refresh token cookie                                                        | readBooksOnlineRefreshToken                                                             |
-
-E2E_BASE_URL=https://127.0.0.1:3000
+| `E2E_BASE_URL`                         | URL to frontend application                                                                    | https://127.0.0.1:3000                                                                  |
 
 These values are formatted as `key=value`; e.g.,
 `NODE_ENV=development`
