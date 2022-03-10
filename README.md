@@ -180,7 +180,8 @@ been created.
 
 ### Seeding
 
-Assigning the authorizer role to a user is handled within
+All data can be managed using the website, except assigning
+the authorizer role to a user. This is handled within
 MongoDB:
 
 1. Start the application
