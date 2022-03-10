@@ -5,12 +5,14 @@
     "start": "vite",
     "build": "echo frontend does not implement a build script",
     "test:unit": "echo frontend does not implement unit tests",
+    "test:e2e": "cypress open",
     "delete-modules": "rimraf ./node_modules"
   },
   "dependencies": {
     "@mdi/font": "^6.5.95",
     "@oruga-ui/oruga-next": "^0.5.2",
     "bulma": "^0.9.3",
+    "dotenv": "^16.0.0",
     "jwt-decode": "^3.1.2",
     "socket.io-client": "^4.4.1",
     "vee-validate": "^4.5.7",
@@ -22,7 +24,7 @@
     "@types/node": "^16.11.7",
     "@vitejs/plugin-vue": "^2.0.0",
     "chai-as-promised": "^7.1.1",
-    "cypress": "^9.2.1",
+    "cypress": "^9.5.1",
     "rimraf": "^3.0.2",
     "sass": "^1.47.0",
     "typescript": "^4.4.4",

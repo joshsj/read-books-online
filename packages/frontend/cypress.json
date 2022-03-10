@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cypress-io/cypress/develop/cli/schema/cypress.schema.json",
+
+  "pluginsFile": "test/e2e/configuration/plugins.ts",
+  "supportFile": "test/e2e/configuration/support.ts",
+  "integrationFolder": "test/e2e",
+  "testFiles": "**/*.spec.ts",
+
+  "fixturesFolder": false,
+  "video": false
+}
