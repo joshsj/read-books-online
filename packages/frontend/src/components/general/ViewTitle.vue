@@ -8,7 +8,8 @@ const defaultTitleClass = "title mb-0";
 
 <template>
   <div
-    class="block is-flex is-justify-content-space-between is-align-items-center">
+    class="view-title block is-flex is-justify-content-space-between is-align-items-center"
+    data-cy="view-title">
     <div>
       <slot name="title" :defaultClass="defaultTitleClass">
         <h1 :class="defaultTitleClass">{{ title }}</h1>

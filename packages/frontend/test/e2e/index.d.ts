@@ -3,9 +3,14 @@
 declare global {
   namespace Cypress {
     interface Chainable {
-      pageTitle(): Chainable<JQuery<HTMLHeadingElement>>;
-      nav(): Chainable<JQuery<HTMLDivElement>>;
-      main(): Chainable<JQuery<HTMLDivElement>>;
+      nav: () => Chainable<JQuery<HTMLElement>>;
+      main: () => Chainable<JQuery<HTMLElement>>;
+
+      viewTitle: () => Chainable<JQuery<HTMLElement>>;
+      modal: () => {
+        el: Chainable<JQuery<HTMLDivElement>>;
+        buttons: Chainable<JQuery<HTMLButtonElement>>;
+      };
     }
   }
 }

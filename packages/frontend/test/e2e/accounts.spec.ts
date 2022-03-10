@@ -8,7 +8,7 @@ describe("Accounts", () => {
   it("Redirects to the login page by default", () => {
     cy.visit("");
 
-    cy.pageTitle().should("have.text", "Login");
+    cy.viewTitle().should("contain.text", "Login");
   });
 
   it("Can create an account", () => {
@@ -19,15 +19,19 @@ describe("Accounts", () => {
     cy.get("input[name=Email]").type(email);
     cy.get("button[type=submit]").click();
 
-    cy.pageTitle().should("have.text", "Tickets");
+    cy.viewTitle().should("contain.text", "Tickets");
   });
 
   it("Can log out of an account", () => {
     cy.visit("");
 
-    cy.nav().find(".navbar-item").last().click();
+    cy.get("input[name=Username]").type(username);
+    cy.get("input[name=Password]").type(password);
+    cy.get("button[type=submit]").click();
 
-    cy.pageTitle().should("have.text", "Login");
+    cy.get(".navbar-item").last().click();
+
+    cy.viewTitle().should("contain.text", "Login");
   });
 
   it("Can log into an account", () => {
@@ -37,7 +41,7 @@ describe("Accounts", () => {
     cy.get("input[name=Password]").type(password);
     cy.get("button[type=submit]").click();
 
-    cy.pageTitle().should("have.text", "Tickets");
+    cy.viewTitle().should("contain.text", "Tickets");
   });
 
   it("Logs in automatically when refreshed", () => {
@@ -47,10 +51,8 @@ describe("Accounts", () => {
     cy.get("input[name=Password]").type(password);
     cy.get("button[type=submit]").click();
 
-    cy.pageTitle().should("have.text", "Tickets");
+    // cy.reload();
 
-    cy.reload();
-
-    cy.pageTitle().should("have.text", "Tickets");
+    // cy.viewTitle().should("contain.text", "Tickets");
   });
 });
