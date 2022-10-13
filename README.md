@@ -1,7 +1,10 @@
 # Read Books Online (RBO)
 
-A university project, built with a full JS stack: a platform to manage puchase requests in a book store.
 
+A CRUD application to manage purchase requests and employees featuring ticket status tracking, email notifications, and real-time chat.
+
+Architected like Jason Taylor's Clean Architecture, it's built with a full Typescript stack: MongoDB and Mongoose for persistence; Node, Express, yup, tsyringe, and bcrypt in the backend; HTML, CSS, Vue, and Socket.io in the frontend; and Mocha, Chai, and Cypress for testing.
+                
 ## /packages Structure
 
 Source code for the application
@@ -48,35 +51,6 @@ Single-page application served as a website:
 - Application logic
 - Error handling
 - End-to-end tests
-
-## Libraries and Frameworks
-
-| Name                  | For                                 |
-| --------------------- | ----------------------------------- |
-| module-alias          | Import path aliasing                |
-| tsyringe              | Dependency Injection                |
-| dotenv                | Environment variables               |
-| **Backend**           |
-| express               | API server                          |
-| bcrypt                | Password encryption                 |
-| jsonwebtoken          | JWTs                                |
-| mongoose              | MongoDB interaction                 |
-| yup                   | Run-time model schemas              |
-| nodemailer            | Emailing                            |
-| socket.io             | Sockets                             |
-| **Frontend**          |
-| Vue                   | SPA framework                       |
-| Oruga                 | Functional Vue components           |
-| Bulma                 | CSS framework                       |
-| Vee Validate          | Vue component validation            |
-| Vite                  | Building, bundling, serving content |
-| **Testing**           |
-| mocha                 | Unit testing                        |
-| chai                  | Assertions                          |
-| chai-as-promised      | Async assertions                    |
-| sinon                 | Method spies                        |
-| mongodb-memory-server | Mock database                       |
-| cypress               | End-to-end testing                  |
 
 ## Prerequisites
 
