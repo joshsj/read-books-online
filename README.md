@@ -1,6 +1,6 @@
 # Read Books Online (RBO)
 
-A university project, built with a full JS stack.
+A university project, built with a full JS stack: a platform to manage puchase requests in a book store.
 
 ## /packages Structure
 
